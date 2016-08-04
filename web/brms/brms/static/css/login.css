@@ -1,0 +1,21 @@
+html{
+	width:100%;
+	height:100%;
+}
+a,a:hover{text-decoration: none;}
+/* ------------------------------------------登陆页样式------------------------------------------ */
+body{
+	width:100%;
+	height: 100%;
+	min-width: 900px;
+	position:relative;
+	background:#fff url(../img/body_bg.gif) right bottom no-repeat !important;
+	background-size: 40% auto;
+}
+.login-box-body, .register-box-body {
+    background: #fff !important;
+    padding: 20px;
+    border-top: 10px !important;
+    color: #666;
+	box-shadow: 0 0 20px rgba(0,0,0,0.5) !important;
+}
