@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title%}会议室预订管理系统|登录{% endblock %}
+
+{% block body_class%}class="hold-transition login-page"{% endblock %}
+
+{% block body%}
+
+
+
+
+{% endblock %}
+{% block mainjs %}
+<script>
+  $(function () {
+    $('input').iCheck({
+      checkboxClass: 'icheckbox_square-blue',
+      radioClass: 'iradio_square-blue',
+      increaseArea: '20%' // optional
+    });
+  });
+</script>
+{% endblock %}
