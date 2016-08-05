@@ -26,7 +26,7 @@ def login(request):
         sys_dict = SysDict()
         sys_dict.dict_name = '会议室1'
         sys_dict.dict_type = '多媒体会议室'
-        sys_dict.create_time = str(datetime.now().date())
+        sys_dict.create_time = str(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         session.add(sys_dict)
         session.flush()
 
