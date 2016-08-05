@@ -1,30 +1,32 @@
 /*==============================================================*/
 /* DBMS name:      PostgreSQL 9.x                               */
-/* Created on:     2016/8/5 10:47:44                            */
+/* Created on:     2016/8/5 17:50:26                            */
 /*==============================================================*/
 
 
-drop table brms.has_boardroom;
+drop table has_boardroom;
 
-drop table brms.has_meet_bdr;
+drop table has_meet_bdr;
 
-drop table brms.has_meeting;
+drop table has_meeting;
 
-drop table brms.sys_dict;
+drop table sys_dict;
 
-drop table brms.sys_org;
+drop table sys_menu;
 
-drop table brms.sys_per_brtype;
+drop table sys_org;
 
-drop table brms.sys_permission;
+drop table sys_per_brtype;
 
-drop table brms.sys_role;
+drop table sys_permission;
 
-drop table brms.sys_role_permission;
+drop table sys_role;
 
-drop table brms.sys_user;
+drop table sys_role_permission;
 
-drop table brms.sys_user_role;
+drop table sys_user;
+
+drop table sys_user_role;
 
 /*==============================================================*/
 /* Table: has_boardroom                                         */
@@ -36,10 +38,10 @@ create table has_boardroom (
    config               VARCHAR(512)         null,
    picture              VARCHAR(200)         null,
    pad_code             VARCHAR(60)          null,
-   org_id               INT4                 null,
-   type                 INT4                 null,
+   org_id               INT8                 null,
+   type                 INT8                 null,
    create_time          VARCHAR(19)          null,
-   create_user          INT4                 null,
+   create_user          INT8                 null,
    state                VARCHAR(3)           null
 );
 
@@ -108,14 +110,14 @@ create table has_meeting (
    id                   SERIAL               not null,
    name                 VARCHAR(128)         null,
    description          VARCHAR(512)         null,
-   org_id               INT4                 null,
+   org_id               INT8                 null,
    repeat               VARCHAR(3)           null,
    start_date           VARCHAR(10)          null,
    end_date             VARCHAR(10)          null,
    start_time           VARCHAR(5)           null,
    end_time             VARCHAR(5)           null,
    create_time          VARCHAR(19)          null,
-   create_user          INT4                 null,
+   create_user          INT8                 null,
    state                VARCHAR(3)           null
 );
 
@@ -166,7 +168,7 @@ create table sys_dict (
    dict_name            VARCHAR(128)         null,
    dict_type            VARCHAR(512)         null,
    create_time          VARCHAR(19)          null,
-   create_user          INT4                 null
+   create_user          INT8                 null
 );
 
 comment on table sys_dict is
@@ -188,6 +190,40 @@ alter table sys_dict
    add constraint PK_SYS_DICT primary key (id);
 
 /*==============================================================*/
+/* Table: sys_menu                                              */
+/*==============================================================*/
+create table sys_menu (
+   id                   SERIAL               not null,
+   name                 VARCHAR(40)          not null,
+   is_parent            VARCHAR(3)           null,
+   parent_id            INT8                 null,
+   target               VARCHAR(300)         null,
+   url                  VARCHAR(300)         null,
+   icon_name            VARCHAR(100)         null,
+   sort_index           INT8                 null,
+   create_user          INT8                 null,
+   create_time          VARCHAR(19)          null
+);
+
+comment on table sys_menu is
+'菜单信息表';
+
+comment on column sys_menu.id is
+'权限ID';
+
+comment on column sys_menu.name is
+'会议室类型';
+
+comment on column sys_menu.is_parent is
+'是否父节点（1-是;0-否）(或者菜单组)';
+
+comment on column sys_menu.parent_id is
+'父菜单ID';
+
+alter table sys_menu
+   add constraint PK_SYS_MENU primary key (id, name);
+
+/*==============================================================*/
 /* Table: sys_org                                               */
 /*==============================================================*/
 create table sys_org (
@@ -198,10 +234,10 @@ create table sys_org (
    org_manager          VARCHAR(64)          null,
    phone                VARCHAR(30)          null,
    address              VARCHAR(256)         null,
-   org_seq              INT4                 null,
+   org_seq              INT8                 null,
    state                VARCHAR(3)           null,
    create_time          VARCHAR(19)          null,
-   create_user          INT4                 null,
+   create_user          INT8                 null,
    update_time          VARCHAR(19)          null
 );
 
@@ -242,9 +278,9 @@ alter table sys_org
 /* Table: sys_per_brtype                                        */
 /*==============================================================*/
 create table sys_per_brtype (
-   per_id               INT4                 not null,
-   boardroom_type       INT4                 not null,
-   create_user          INT4                 null,
+   per_id               INT8                 not null,
+   boardroom_type       INT8                 not null,
+   create_user          INT8                 null,
    create_time          VARCHAR(19)          null
 );
 
@@ -268,7 +304,7 @@ create table sys_permission (
    permission_name      VARCHAR(128)         null,
    permission_desc      VARCHAR(512)         null,
    create_time          VARCHAR(19)          null,
-   create_user          INT4                 null,
+   create_user          INT8                 null,
    state                VARCHAR(3)           null
 );
 
@@ -303,7 +339,7 @@ create table sys_role (
    role_id              SERIAL               not null,
    role_name            VARCHAR(60)          null,
    role_desc            VARCHAR(512)         null,
-   create_user          INT4                 null,
+   create_user          INT8                 null,
    create_time          VARCHAR(19)          null
 );
 
@@ -332,9 +368,9 @@ alter table sys_role
 /* Table: sys_role_permission                                   */
 /*==============================================================*/
 create table sys_role_permission (
-   role_id              INT4                 not null,
-   per_id               INT4                 not null,
-   create_user          INT4                 null,
+   role_id              INT8                 not null,
+   per_id               INT8                 not null,
+   create_user          INT8                 null,
    create_time          VARCHAR(19)          null
 );
 
@@ -365,19 +401,19 @@ create table sys_user (
    user_pwd             VARCHAR(32)          null,
    user_no              VARCHAR(32)          null,
    user_name            VARCHAR(64)          null,
-   max_period           INT4                 null,
+   max_period           INT8                 null,
    email                VARCHAR(50)          null,
    phone                VARCHAR(32)          null,
    address              VARCHAR(256)         null,
-   user_type            INT4                 null,
-   gender               VARCHAR(32)          null,
+   user_type            INT8                 null,
+   sex                  VARCHAR(32)          null,
    nation               VARCHAR(32)          null,
    birthday             VARCHAR(10)          null,
-   position             VARCHAR(32)          null,
-   create_user          INT4                 null,
+   "position"           VARCHAR(32)          null,
+   create_user          INT8                 null,
    create_time          VARCHAR(19)          null,
    update_time          VARCHAR(19)          null,
-   org_id               INT4                 null,
+   org_id               INT8                 null,
    state                VARCHAR(3)           null
 );
 
@@ -414,7 +450,7 @@ comment on column sys_user.address is
 comment on column sys_user.user_type is
 '用户类型';
 
-comment on column sys_user.gender is
+comment on column sys_user.sex is
 '性别';
 
 comment on column sys_user.nation is
@@ -424,7 +460,7 @@ comment on column sys_user.birthday is
 '出生日期';
 
 comment on column sys_user."position" is
-'职位';
+'职业';
 
 comment on column sys_user.create_user is
 '创建人';
@@ -448,9 +484,9 @@ alter table sys_user
 /* Table: sys_user_role                                         */
 /*==============================================================*/
 create table sys_user_role (
-   role_id              INT4                 not null,
-   user_id              INT4                 not null,
-   create_user          INT4                 null,
+   role_id              INT8                 not null,
+   user_id              INT8                 not null,
+   create_user          INT8                 null,
    create_time          VARCHAR(19)          null
 );
 
