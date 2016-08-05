@@ -123,7 +123,7 @@ class SysUser(Base):
     phone = Column(VARCHAR(32))                 # 联系电话
     address = Column(VARCHAR(256))              # 联系地址
     user_type = Column(INT)                     # 用户类型
-    err_count = Column(INT, default=0)     # 密码错误次数
+    err_count = Column(INT, default=0)          # 密码错误次数
     unlock_time = Column(DateTime, default=datetime.now())  # 解锁时间
     gender = Column(INT)                        # 性别
     nation = Column(VARCHAR(32))                # 民族
@@ -142,3 +142,21 @@ class SysUserRole(Base):
     user_id = Column(INT, primary_key=True)     # 用户ID
     create_time = Column(VARCHAR(19))           # 创建时间
     create_user = Column(INT)                   # 创建人
+
+
+class SysMenu(Base):
+    __tablename__ = 'sys_menu'                  # 菜单信息表
+    id = Column(INT, Sequence('sys_menu_id_seq', schema=BRMS_SCHEMA), primary_key=True)  # 菜单ID
+    name = Column(VARCHAR(40))                  # 菜单名称
+    parent_id = Column(INT)                     # 父菜单ID
+    target = Column(VARCHAR(300))               #
+    url = Column(VARCHAR(300))                  # 页面地址
+    icon_name = Column(VARCHAR(100))            # 菜单图标
+    sort_index = Column(INT)                    # 排序
+    create_time = Column(VARCHAR(19))           # 创建时间
+    create_user = Column(INT)                   # 创建人
+
+
+
+
+
