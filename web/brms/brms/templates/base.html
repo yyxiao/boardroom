@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>会议室预订管理系统</title>
@@ -8,10 +8,6 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
   <link rel="stylesheet" href="{{request.static_url('brms:static/bootstrap/css/bootstrap.min.css')}}">
-  <!-- Font Awesome -->
-{#  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">#}
-  <!-- Ionicons -->
-{#  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">#}
   <!-- Theme style -->
   <link rel="stylesheet" href="{{request.static_url('brms:static/AdminLTE-2.3.5/css/AdminLTE.min.css')}}">
   <!-- iCheck -->
@@ -23,15 +19,15 @@
   <script src="{{request.static_url('brms:static/tml5shiv/3.7.3/html5shiv.min.js')}}"></script>
   <script src="{{request.static_url('brms:static/respond/1.4.2/respond.min.js')}}"></script>
   <![endif]-->
-</head>
-<body {% block body_class %}{% endblock%}>
+  </head>
+  <body {% block body_class %}{% endblock%}>
     <!-- jQuery 2.2.3 -->
     <script src="{{request.static_url('brms:static/plugins/jQuery/jquery-2.2.3.min.js')}}"></script>
     <!-- Bootstrap 3.3.6 -->
     <script src="{{request.static_url('brms:static/bootstrap/js/bootstrap.min.js')}}"></script>
     <!-- iCheck -->
     <script src="{{request.static_url('brms:static/plugins/iCheck/icheck.min.js')}}"></script>
-    {% block mainjs %}{% endblock %}
     {% block body %}{% endblock %}
+    {% block mainjs %}{% endblock %}
   </body>
 </html>

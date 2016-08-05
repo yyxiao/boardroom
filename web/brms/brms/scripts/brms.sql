@@ -370,10 +370,10 @@ create table sys_user (
    phone                VARCHAR(32)          null,
    address              VARCHAR(256)         null,
    user_type            INT4                 null,
-   sex                  VARCHAR(32)          null,
+   gender               VARCHAR(32)          null,
    nation               VARCHAR(32)          null,
    birthday             VARCHAR(10)          null,
-   "position"           VARCHAR(32)          null,
+   position             VARCHAR(32)          null,
    create_user          INT4                 null,
    create_time          VARCHAR(19)          null,
    update_time          VARCHAR(19)          null,
@@ -414,7 +414,7 @@ comment on column sys_user.address is
 comment on column sys_user.user_type is
 '用户类型';
 
-comment on column sys_user.sex is
+comment on column sys_user.gender is
 '性别';
 
 comment on column sys_user.nation is
@@ -424,7 +424,7 @@ comment on column sys_user.birthday is
 '出生日期';
 
 comment on column sys_user."position" is
-'职业';
+'职位';
 
 comment on column sys_user.create_user is
 '创建人';
