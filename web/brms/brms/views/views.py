@@ -28,7 +28,7 @@ def index(request):
     # dbs = request.dbsession
     sys_menu_list = [{'url': '/touser', 'icon': 'fa fa-user', 'name': '用户管理'},
                      {'url': '/toorg', 'icon': 'fa fa-sitemap', 'name': '机构管理'},
-                     {'url': '/torole', 'icon': 'fa fa-user-secret', 'name': '角色管理'},
+                     {'url': '/torole/list', 'icon': 'fa fa-user-secret', 'name': '角色管理'},
                      {'url': '/toauthorization', 'icon': 'fa fa-unlock-alt', 'name': '授权管理'},
                      {'url': '/toboardroom', 'icon': 'fa fa-university', 'name': '会议室管理'},
                      {'url': '/toterminal', 'icon': 'fa fa-television', 'name': '终端管理'}]

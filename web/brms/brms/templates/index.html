@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block title%}会议室预订管理系统|登录{% endblock %}
 
 {% block link %}
@@ -87,7 +86,7 @@
             </a>
             <ul class="treeview-menu">
               {% for menu in request.session.loginUserSession.sysMenuList %}
-                  <li><a href="{{ menu.url }}"><i class="{{ menu.icon }}"></i>{{ menu.name }}</a></li>
+                  <li><a href="javascript:loadcontent('{{ menu.url }}');"><i class="{{ menu.icon }}"></i>{{ menu.name }}</a></li>
               {% endfor %}
                 {#                <li><a href="/touser"><i class="fa fa-user"></i>用户管理</a></li>#}
                 {#                <li><a href="/toorg"><i class="fa fa-sitemap"></i>机构管理</a></li>#}
@@ -106,20 +105,10 @@
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Dashboard
-        <small>Control panel</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Dashboard</li>
-      </ol>
-    </section>
 
     <!-- Main content -->
-    <section class="content">
-
+    <section class="content" id="mainContent">
+        {% block content %}{% endblock %}
     </section>
     <!-- /.content -->
 
@@ -162,4 +151,5 @@
 <script src="{{request.static_url('brms:static/plugins/fastclick/fastclick.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{request.static_url('brms:static/AdminLTE-2.3.5/js/app.min.js')}}"></script>
+<script src="{{request.static_url('brms:static/js/index.js')}}"></script>
 {% endblock %}
