@@ -13,9 +13,7 @@ def request_login(func):
     def _request_login(request):
         try:
             user_name = request.session['userName']
-            print('200')
         except:
-            print('302')
             return HTTPFound(request.route_url('login'))
         return func(request)
 
