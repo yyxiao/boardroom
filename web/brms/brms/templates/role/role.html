@@ -8,8 +8,8 @@
 
 	<div class="panel-body">
 		<div class="form-inline">
-			<label>角色:</label> <input type="text" class="form-control"
-				id="roleName" name="roleName" placeholder="">
+			<label>角色名称:</label> <input type="text" class="form-control"
+				id="search" name="search" placeholder="">
 			<label>
 			<button type="button" class="btn btn-primary" onclick="list(1)">
 					<i class="icon-search" id="icon_search"></i>&nbsp;查询&nbsp;
@@ -23,7 +23,6 @@
 		</div>
 		<div class="panel-body">
 			<div id="listWrapper">
-                {% include 'role/list.html' %}
             </div>
 		</div>
 	</div>

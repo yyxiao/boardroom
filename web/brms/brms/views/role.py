@@ -21,9 +21,6 @@ def to_role(request):
     """
     dbs = request.dbsession
     url = request.path
-    role_name = request.POST.get('name', '')
-    page_no = int(request.POST.get('page', '1'))
-    (roles, paginator) = find_roles(dbs, role_name, page_no)
     return render_to_response('role/role.html', locals(), request)
 
 

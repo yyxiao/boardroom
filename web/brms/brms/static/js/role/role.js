@@ -3,7 +3,7 @@ list(1)
  * list role
  */
 function list(page) {
-	var url = "/role/list_role";
+	var url = "/role/list";
 	var data = {
 		"name" : $("#search").val(),
 		"page" : page,
