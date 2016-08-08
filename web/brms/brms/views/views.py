@@ -14,6 +14,7 @@ from pyramid.renderers import render_to_response
 from pyramid.view import view_config
 
 from brms.service.loginutil import request_login, UserTools
+from brms.service.role_service import find_roles
 from ..models.model import SysUser
 
 
@@ -28,6 +29,15 @@ def index(request):
 def restpwd(request):
 
     return render_to_response('resetpwd.html', locals(), request)
+
+
+@view_config(route_name='list_role')
+def list_role(request):
+    dbs = request.dbsession
+    role_name = request.POST.get('name', '')
+    page_no = int(request.POST.get('page', '1'))
+    (roles, paginator) = find_roles(dbs, role_name, page_no)
+    return render_to_response('role/list.html', locals(), request)
 
 
 @view_config(route_name='login')
