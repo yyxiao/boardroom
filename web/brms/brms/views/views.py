@@ -7,12 +7,14 @@ __mtime__ = '2016-08-03'
 """
 
 import base64
+
 import transaction
-from pyramid.view import view_config
-from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound
-from ..models.model import SysDict, SysUser
-from ..common.loginutil import request_login, UserTools
+from pyramid.renderers import render_to_response
+from pyramid.view import view_config
+
+from brms.service.loginutil import request_login, UserTools
+from ..models.model import SysUser
 
 
 @view_config(route_name='home')
