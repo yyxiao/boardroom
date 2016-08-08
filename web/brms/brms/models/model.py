@@ -3,7 +3,8 @@ from sqlalchemy import (
     INT,
     VARCHAR,
     Sequence,
-    DateTime
+    DateTime,
+    TEXT
 )
 from datetime import datetime
 from .meta import Base
@@ -29,8 +30,8 @@ class HasBoardroom(Base):
 
 class HasMeetBdr(Base):
     __tablename__ = 'has_meet_bdr'              # 会议会议室关系表
-    meeting_id = Column(INT, primary_key=True)                           # 会议ID
-    boardroom_id = Column(INT, primary_key=True)                         # 会议室ID
+    meeting_id = Column(INT, primary_key=True)      # 会议ID
+    boardroom_id = Column(INT, primary_key=True)    # 会议室ID
     create_user = Column(INT)                   # 创建人
     create_time = Column(VARCHAR(19))           # 创建时间
 
@@ -42,6 +43,7 @@ class HasMeeting(Base):
     description = Column(VARCHAR(512))          # 会议描述
     org_id = Column(INT)                        # 机构ID
     repeat = Column(VARCHAR(3))                 # 是否重复会议
+    repeat_date = Column(VARCHAR(200))          # 重复日期
     start_date = Column(VARCHAR(10))            # 开始日期
     end_date = Column(VARCHAR(10))              # 结束日期
     start_time = Column(VARCHAR(5))             # 开始时间
@@ -51,11 +53,45 @@ class HasMeeting(Base):
     state = Column(VARCHAR(3))                  # 状态
 
 
+class HasPad(Base):
+    __tablename__ = 'has_pad'                   # 终端设备表
+    pad_id = Column(INT, Sequence('has_pad_id_seq', schema=BRMS_SCHEMA), primary_key=True)
+    pad_code = Column(VARCHAR(100))             # 终端编号
+    org_id = Column(INT)                        # 机构ID
+    last_time = Column(VARCHAR(19))             # 最后通信时间
+    last_funct = Column(VARCHAR(200))           # 最后通信方法
+    create_time = Column(VARCHAR(19))           # 创建时间
+    create_user = Column(INT)                   # 创建人
+
+
 class SysDict(Base):
     __tablename__ = 'sys_dict'                  # 字典表
     id = Column(INT, Sequence('sys_dict_id_seq', schema=BRMS_SCHEMA), primary_key=True)      # 字典ID
     dict_name = Column(VARCHAR(128))            # 字典名称
-    dict_type = Column(VARCHAR(512))            # 字典类型
+    dict_type = Column(INT)                     # 字典类型
+    create_time = Column(VARCHAR(19))           # 创建时间
+    create_user = Column(INT)                   # 创建人
+
+
+class SysLog(Base):
+    __tablename__ = 'sys_log'                   # 系统日志表
+    log_id = Column(INT, Sequence('sys_log_id_seq', schema=BRMS_SCHEMA), primary_key=True)
+    log_type = Column(VARCHAR(8))               # 日志类型
+    log_content = Column(TEXT)                  # 日志内容
+    deal_result = Column(VARCHAR(20))           # 处理结果
+    create_time = Column(VARCHAR(19))           # 创建时间
+    create_user = Column(INT)                   # 创建人
+
+
+class SysMenu(Base):
+    __tablename__ = 'sys_menu'                  # 菜单信息表
+    id = Column(INT, Sequence('sys_menu_id_seq', schema=BRMS_SCHEMA), primary_key=True)  # 菜单ID
+    name = Column(VARCHAR(40))                  # 菜单名称
+    parent_id = Column(INT)                     # 父菜单ID
+    target = Column(VARCHAR(300))               #
+    url = Column(VARCHAR(300))                  # 页面地址
+    icon_name = Column(VARCHAR(100))            # 菜单图标
+    sort_index = Column(INT)                    # 排序
     create_time = Column(VARCHAR(19))           # 创建时间
     create_user = Column(INT)                   # 创建人
 
@@ -76,37 +112,19 @@ class SysOrg(Base):
     update_time = Column(VARCHAR(19))           # 更新时间
 
 
-class SysPerBrtype(Base):
-    __tablename__ = 'sys_per_brtype'            # 权限会议室类型关系表
-    per_id = Column(INT, primary_key=True)                                 # 权限ID
-    boardroom_type = Column(INT, primary_key=True)                         # 会议室类型
-    create_time = Column(VARCHAR(19))           # 创建时间
-    create_user = Column(INT)                   # 创建人
-
-
-class SysPermission(Base):
-    __tablename__ = 'sys_permission'            # 权限表
-    id = Column(INT, Sequence('sys_permission_id_seq', schema=BRMS_SCHEMA), primary_key=True)  # 权限ID
-    permission_name = Column(VARCHAR(128))      # 权限名称
-    permission_desc = Column(VARCHAR(512))      # 权限描述
-    create_time = Column(VARCHAR(19))           # 创建时间
-    create_user = Column(INT)                   # 创建人
-    state = Column(VARCHAR(3))                  # 状态
-
-
 class SysRole(Base):
     __tablename__ = 'sys_role'                  # 角色表
     role_id = Column(INT, Sequence('sys_role_id_seq', schema=BRMS_SCHEMA), primary_key=True)   # 角色ID
     role_name = Column(VARCHAR(60))             # 角色名称
     role_desc = Column(VARCHAR(512))            # 角色描述
     create_time = Column(VARCHAR(19))           # 创建时间
-    create_user = Column(INT)                   # 创建人
+    create_user = Column(INT)
 
 
-class SysRolePermission(Base):
-    __tablename__ = 'sys_role_permission'       # 角色权限关系表
+class SysRoleMenu(Base):
+    __tablename__ = 'sys_role_menu'             # 角色菜单关系表
     role_id = Column(INT, primary_key=True)     # 角色ID
-    per_id = Column(INT, primary_key=True)      # 权限ID
+    menu_id = Column(INT, primary_key=True)     # 菜单ID
     create_time = Column(VARCHAR(19))           # 创建时间
     create_user = Column(INT)                   # 创建人
 
@@ -125,7 +143,7 @@ class SysUser(Base):
     user_type = Column(INT)                     # 用户类型
     err_count = Column(INT, default=0)          # 密码错误次数
     unlock_time = Column(DateTime, default=datetime.now())  # 解锁时间
-    gender = Column(INT)                        # 性别
+    sex = Column(INT)                           # 性别
     nation = Column(VARCHAR(32))                # 民族
     birthday = Column(VARCHAR(10))              # 出生日期
     position = Column(VARCHAR(32))              # 职位
@@ -136,6 +154,14 @@ class SysUser(Base):
     state = Column(VARCHAR(3))                  # 状态
 
 
+class SysUserOrg(Base):
+    __tablename__ = 'sys_user_org'              # 用户机构关系表
+    user_id = Column(INT, primary_key=True)     # 用户ID
+    org_id = Column(INT, primary_key=True)      # 机构ID
+    create_time = Column(VARCHAR(19))           # 创建时间
+    create_user = Column(INT)                   # 创建人
+
+
 class SysUserRole(Base):
     __tablename__ = 'sys_user_role'             # 用户角色关系表
     role_id = Column(INT, primary_key=True)     # 角色ID
@@ -144,19 +170,28 @@ class SysUserRole(Base):
     create_user = Column(INT)                   # 创建人
 
 
-class SysMenu(Base):
-    __tablename__ = 'sys_menu'                  # 菜单信息表
-    id = Column(INT, Sequence('sys_menu_id_seq', schema=BRMS_SCHEMA), primary_key=True)  # 菜单ID
-    name = Column(VARCHAR(40))                  # 菜单名称
-    parent_id = Column(INT)                     # 父菜单ID
-    target = Column(VARCHAR(300))               #
-    url = Column(VARCHAR(300))                  # 页面地址
-    icon_name = Column(VARCHAR(100))            # 菜单图标
-    sort_index = Column(INT)                    # 排序
-    create_time = Column(VARCHAR(19))           # 创建时间
-    create_user = Column(INT)                   # 创建人
+# class SysPerBrtype(Base):
+#     __tablename__ = 'sys_per_brtype'            # 权限会议室类型关系表
+#     per_id = Column(INT, primary_key=True)                                 # 权限ID
+#     boardroom_type = Column(INT, primary_key=True)                         # 会议室类型
+#     create_time = Column(VARCHAR(19))           # 创建时间
+#     create_user = Column(INT)                   # 创建人
 
 
+# class SysPermission(Base):
+#     __tablename__ = 'sys_permission'            # 权限表
+#     id = Column(INT, Sequence('sys_permission_id_seq', schema=BRMS_SCHEMA), primary_key=True)  # 权限ID
+#     permission_name = Column(VARCHAR(128))      # 权限名称
+#     permission_desc = Column(VARCHAR(512))      # 权限描述
+#     create_time = Column(VARCHAR(19))           # 创建时间
+#     create_user = Column(INT)                   # 创建人
+#     state = Column(VARCHAR(3))                  # 状态
+                 # 创建人
 
 
-
+# class SysRolePermission(Base):
+#     __tablename__ = 'sys_role_permission'       # 角色权限关系表
+#     role_id = Column(INT, primary_key=True)     # 角色ID
+#     per_id = Column(INT, primary_key=True)      # 权限ID
+#     create_time = Column(VARCHAR(19))           # 创建时间
+#     create_user = Column(INT)                   # 创建人
