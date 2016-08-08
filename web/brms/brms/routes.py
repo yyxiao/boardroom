@@ -7,7 +7,7 @@ def includeme(config):
     config.add_route('my_meeting', '/mymeeting')
     config.include(user_include, '/touser')
     config.include(org_include, '/toorg')
-    config.include(role_include, '/torole')
+    config.include(role_include, '/role')
     config.include(auth_include, '/toauthorization')
     config.include(boardroom_include, '/toboardroom')
     config.include(terminal_include, '/toterminal')
@@ -33,7 +33,7 @@ def org_include(config):
 def role_include(config):
     config.add_route('to_role', '/torole')
     config.add_route('list_role', '/list')
-    config.add_route('to_add_role', '/to_add')
+    config.add_route('to_add', '/to_add')
     config.add_route('add_role', '/add')
 
 

@@ -17,7 +17,6 @@ from pyramid.view import view_config
 from brms.service.loginutil import request_login, UserTools
 from ..models.model import SysUser
 from ..common.dateutils import get_welcome
-from ..service.role_service import find_roles
 
 
 @view_config(route_name='home')
@@ -28,7 +27,7 @@ def index(request):
     # dbs = request.dbsession
     sys_menu_list = [{'url': '/touser', 'icon': 'fa fa-user', 'name': '用户管理'},
                      {'url': '/toorg', 'icon': 'fa fa-sitemap', 'name': '机构管理'},
-                     {'url': '/torole/list', 'icon': 'fa fa-user-secret', 'name': '角色管理'},
+                     {'url': '/role/torole', 'icon': 'fa fa-user-secret', 'name': '角色管理'},
                      {'url': '/toauthorization', 'icon': 'fa fa-unlock-alt', 'name': '授权管理'},
                      {'url': '/toboardroom', 'icon': 'fa fa-university', 'name': '会议室管理'},
                      {'url': '/toterminal', 'icon': 'fa fa-television', 'name': '终端管理'}]
@@ -101,15 +100,6 @@ def logout(request):
     del(request.session['user_name_db'])
     del(request.session['loginUserSession'])
     return render_to_response('login.html', {}, request)
-
-
-@view_config(route_name='list_role')
-def list_role(request):
-    dbs = request.dbsession
-    role_name = request.POST.get('name', '')
-    page_no = int(request.POST.get('page', '1'))
-    (roles, paginator) = find_roles(dbs, role_name, page_no)
-    return render_to_response('role/list.html', locals(), request)
 
 
 # 仅供测试
