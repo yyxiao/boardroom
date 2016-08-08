@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      PostgreSQL 9.x                               */
-/* Created on:     2016/8/5 17:50:26                            */
+/* Created on:     2016/8/8 15:26:46                            */
 /*==============================================================*/
 
 
@@ -10,21 +10,23 @@ drop table has_meet_bdr;
 
 drop table has_meeting;
 
+drop table has_pad;
+
 drop table sys_dict;
+
+drop table sys_log;
 
 drop table sys_menu;
 
 drop table sys_org;
 
-drop table sys_per_brtype;
-
-drop table sys_permission;
-
 drop table sys_role;
 
-drop table sys_role_permission;
+drop table sys_role_menu;
 
 drop table sys_user;
+
+drop table sys_user_org;
 
 drop table sys_user_role;
 
@@ -112,6 +114,7 @@ create table has_meeting (
    description          VARCHAR(512)         null,
    org_id               INT8                 null,
    repeat               VARCHAR(3)           null,
+   repeat_date          VARCHAR(200)         null,
    start_date           VARCHAR(10)          null,
    end_date             VARCHAR(10)          null,
    start_time           VARCHAR(5)           null,
@@ -161,12 +164,52 @@ alter table has_meeting
    add constraint PK_HAS_MEETING primary key (id);
 
 /*==============================================================*/
+/* Table: has_pad                                               */
+/*==============================================================*/
+create table has_pad (
+   pad_id               SERIAL               not null,
+   pad_code             VARCHAR(100)         null,
+   org_id               INT8                 null,
+   last_time            VARCHAR(19)          null,
+   last_funct           VARCHAR(200)         null,
+   create_user          INT8                 null,
+   create_time          VARCHAR(19)          null
+);
+
+comment on table has_pad is
+'终端设备表';
+
+comment on column has_pad.pad_id is
+'终端ID';
+
+comment on column has_pad.pad_code is
+'终端编码';
+
+comment on column has_pad.org_id is
+'机构ID';
+
+comment on column has_pad.last_time is
+'最后通信时间';
+
+comment on column has_pad.last_funct is
+'最后通信方法';
+
+comment on column has_pad.create_user is
+'创建人';
+
+comment on column has_pad.create_time is
+'创建时间';
+
+alter table has_pad
+   add constraint PK_HAS_PAD primary key (pad_id);
+
+/*==============================================================*/
 /* Table: sys_dict                                              */
 /*==============================================================*/
 create table sys_dict (
    id                   SERIAL               not null,
    dict_name            VARCHAR(128)         null,
-   dict_type            VARCHAR(512)         null,
+   dict_type            INT8                 null,
    create_time          VARCHAR(19)          null,
    create_user          INT8                 null
 );
@@ -190,12 +233,47 @@ alter table sys_dict
    add constraint PK_SYS_DICT primary key (id);
 
 /*==============================================================*/
+/* Table: sys_log                                               */
+/*==============================================================*/
+create table sys_log (
+   log_id               SERIAL               not null,
+   log_type             VARCHAR(8)           null,
+   log_content          TEXT                 null,
+   deal_result          VARCHAR(20)          null,
+   create_user          INT8                 null,
+   create_time          VARCHAR(19)          null
+);
+
+comment on table sys_log is
+'系统日志表';
+
+comment on column sys_log.log_id is
+'日志ID';
+
+comment on column sys_log.log_type is
+'日志类型';
+
+comment on column sys_log.log_content is
+'日志内容';
+
+comment on column sys_log.deal_result is
+'处理结果';
+
+comment on column sys_log.create_user is
+'创建人';
+
+comment on column sys_log.create_time is
+'创建时间';
+
+alter table sys_log
+   add constraint PK_SYS_LOG primary key (log_id);
+
+/*==============================================================*/
 /* Table: sys_menu                                              */
 /*==============================================================*/
 create table sys_menu (
    id                   SERIAL               not null,
    name                 VARCHAR(40)          not null,
-   is_parent            VARCHAR(3)           null,
    parent_id            INT8                 null,
    target               VARCHAR(300)         null,
    url                  VARCHAR(300)         null,
@@ -213,9 +291,6 @@ comment on column sys_menu.id is
 
 comment on column sys_menu.name is
 '会议室类型';
-
-comment on column sys_menu.is_parent is
-'是否父节点（1-是;0-否）(或者菜单组)';
 
 comment on column sys_menu.parent_id is
 '父菜单ID';
@@ -275,64 +350,6 @@ alter table sys_org
    add constraint PK_SYS_ORG primary key (id);
 
 /*==============================================================*/
-/* Table: sys_per_brtype                                        */
-/*==============================================================*/
-create table sys_per_brtype (
-   per_id               INT8                 not null,
-   boardroom_type       INT8                 not null,
-   create_user          INT8                 null,
-   create_time          VARCHAR(19)          null
-);
-
-comment on table sys_per_brtype is
-'权限会议室类型关系表';
-
-comment on column sys_per_brtype.per_id is
-'权限ID';
-
-comment on column sys_per_brtype.boardroom_type is
-'会议室类型';
-
-alter table sys_per_brtype
-   add constraint PK_SYS_PER_BRTYPE primary key (per_id, boardroom_type);
-
-/*==============================================================*/
-/* Table: sys_permission                                        */
-/*==============================================================*/
-create table sys_permission (
-   id                   SERIAL               not null,
-   permission_name      VARCHAR(128)         null,
-   permission_desc      VARCHAR(512)         null,
-   create_time          VARCHAR(19)          null,
-   create_user          INT8                 null,
-   state                VARCHAR(3)           null
-);
-
-comment on table sys_permission is
-'权限表';
-
-comment on column sys_permission.id is
-'权限ID';
-
-comment on column sys_permission.permission_name is
-'权限名称';
-
-comment on column sys_permission.permission_desc is
-'权限描述';
-
-comment on column sys_permission.create_time is
-'创建时间';
-
-comment on column sys_permission.create_user is
-'创建者';
-
-comment on column sys_permission.state is
-'状态';
-
-alter table sys_permission
-   add constraint PK_SYS_PERMISSION primary key (id);
-
-/*==============================================================*/
 /* Table: sys_role                                              */
 /*==============================================================*/
 create table sys_role (
@@ -365,32 +382,32 @@ alter table sys_role
    add constraint PK_SYS_ROLE primary key (role_id);
 
 /*==============================================================*/
-/* Table: sys_role_permission                                   */
+/* Table: sys_role_menu                                         */
 /*==============================================================*/
-create table sys_role_permission (
+create table sys_role_menu (
    role_id              INT8                 not null,
-   per_id               INT8                 not null,
+   menu_id              INT8                 not null,
    create_user          INT8                 null,
    create_time          VARCHAR(19)          null
 );
 
-comment on table sys_role_permission is
-'角色权限关系表';
+comment on table sys_role_menu is
+'角色菜单关系表';
 
-comment on column sys_role_permission.role_id is
+comment on column sys_role_menu.role_id is
 '角色ID';
 
-comment on column sys_role_permission.per_id is
-'权限ID';
+comment on column sys_role_menu.menu_id is
+'菜单ID';
 
-comment on column sys_role_permission.create_user is
+comment on column sys_role_menu.create_user is
 '创建人';
 
-comment on column sys_role_permission.create_time is
+comment on column sys_role_menu.create_time is
 '创建时间';
 
-alter table sys_role_permission
-   add constraint PK_SYS_ROLE_PERMISSION primary key (role_id, per_id);
+alter table sys_role_menu
+   add constraint PK_SYS_ROLE_MENU primary key (role_id, menu_id);
 
 /*==============================================================*/
 /* Table: sys_user                                              */
@@ -406,6 +423,8 @@ create table sys_user (
    phone                VARCHAR(32)          null,
    address              VARCHAR(256)         null,
    user_type            INT8                 null,
+   err_count            INT4                 null,
+   unlock_time          TIMESTAMP            null,
    sex                  VARCHAR(32)          null,
    nation               VARCHAR(32)          null,
    birthday             VARCHAR(10)          null,
@@ -479,6 +498,34 @@ comment on column sys_user.state is
 
 alter table sys_user
    add constraint PK_SYS_USER primary key (id);
+
+/*==============================================================*/
+/* Table: sys_user_org                                          */
+/*==============================================================*/
+create table sys_user_org (
+   user_id              INT8                 not null,
+   ord_id               INT8                 not null,
+   create_user          INT8                 null,
+   create_time          VARCHAR(19)          null
+);
+
+comment on table sys_user_org is
+'用户机构关系表';
+
+comment on column sys_user_org.user_id is
+'角色ID';
+
+comment on column sys_user_org.ord_id is
+'机构ID';
+
+comment on column sys_user_org.create_user is
+'创建人';
+
+comment on column sys_user_org.create_time is
+'创建时间';
+
+alter table sys_user_org
+   add constraint PK_SYS_USER_ORG primary key (user_id, ord_id);
 
 /*==============================================================*/
 /* Table: sys_user_role                                         */
