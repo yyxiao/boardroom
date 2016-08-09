@@ -99,9 +99,11 @@ function add() {
 		success : function(data) {
 			if (data.success == "true") {
 				$("#addModal").modal('hide');
+				$.messager.popup("新增角色成功！");
 				list(1)
 			}
 			else{
+				$.messager.popup("新增角色失败，请检查相关信息后重试！");
 			}
 		},
 	})
