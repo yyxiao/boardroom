@@ -49,7 +49,7 @@ class HasMeeting(Base):
     start_time = Column(VARCHAR(5))             # 开始时间
     end_time = Column(VARCHAR(5))               # 结束时间
     create_time = Column(VARCHAR(19))           # 创建时间
-    create_uesr = Column(INT)                   # 创建人
+    create_user = Column(INT)                   # 创建人
     state = Column(VARCHAR(3))                  # 状态
 
 
