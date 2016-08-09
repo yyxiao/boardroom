@@ -34,7 +34,10 @@ def role_include(config):
     config.add_route('to_role', '/to_role')
     config.add_route('list_role', '/list')
     config.add_route('to_add', '/to_add')
+    config.add_route('delete_role', '/del')
     config.add_route('add', '/add')
+    config.add_route('to_update', '/to_update')
+    config.add_route('update_role', '/update')
 
 
 def auth_include(config):

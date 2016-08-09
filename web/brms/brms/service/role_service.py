@@ -55,3 +55,18 @@ def add(dbs, role):
     except Exception:
         error_msg = '新增角色失败，请核对后重试'
     return error_msg
+
+
+def delete_role(dbs, role_id):
+    error_msg = ''
+    try:
+        with transaction.manager:
+            dbs.query(SysRole).filter(SysRole.role_id == role_id).delete()
+    except Exception:
+        error_msg = '删除角色失败，请核对后重试'
+    return error_msg
+
+
+def find_role(dbs, role_id):
+    role = dbs.query(SysRole).filter(SysRole.role_id == role_id).first()
+    return role

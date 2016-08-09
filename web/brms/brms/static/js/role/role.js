@@ -122,7 +122,7 @@ function to_update() {
 			if (status == "error") {
 				redirect_to("/");
 			} else {
-				$("#updateModal").modal();
+				$("#addModal").modal();
 			}
 		});
 	} else {
@@ -134,24 +134,8 @@ function to_update() {
  */
 function update() {
 	var id = $("#role_id").val()
-	var code = $.trim($("#code").val());
 	var name = $.trim($("#name").val());
 	var desc = $.trim($("#desc").val());
-	if (code == '') {
-		$('#code').focus();
-		$('#role_cue').html("<font color='red'>角色代码不能为空</font>");
-		return false;
-	}
-	if (is_str_unsafe(code) == true) {
-		$('#code').focus();
-		$('#role_cue').html("<font color='red'>角色代码含有非法字符</font>");
-		return false;
-	}
-	if (is_str_toolong(code) == true) {
-		$('#code').focus();
-		$('#role_cue').html("<font color='red'>角色代码超过最大长度</font>");
-		return false;
-	}
 	if (name == '') {
 		$('#name').focus();
 		$('#role_cue').html("<font color='red'>角色名称不能为空</font>");
@@ -187,7 +171,6 @@ function update() {
 		url : "/role/update",
 		data : {
 			"id" : id,
-			"code" : code,
 			"name" : name,
 			"desc" : desc
 		},
@@ -196,7 +179,7 @@ function update() {
 		},
 		success : function(data) {
 			if (data.success) {
-				$("#updateModal").modal('hide');
+				$("#addModal").modal('hide');
 				$.messager.popup("更新角色成功！");
 				list(1)
 			}
@@ -221,11 +204,11 @@ function del() {
 					"id" : idbox.val()
 				},
 				error : function() {
-					$.messager.popup("更新角色失败");
+					$.messager.popup("删除角色失败");
 				},
 				success : function(data) {
 					if (data.success) {
-						$.messager.popup("角色删除成功！");
+						$.messager.popup("删除角色成功！");
 						list(1)
 					}
 				},
