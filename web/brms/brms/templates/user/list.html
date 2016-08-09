@@ -1,0 +1,65 @@
+<div class="panel panel-success">
+	<div class="panel-body">
+		<table class="table">
+			<tr>
+				<th></th>
+				<th>用户账号</th>
+				<th>用户姓名</th>
+                <th>所属机构</th>
+                <th>角色</th>
+                <th>预约期限</th>
+                <th>用户类型</th>
+                <th>电子邮箱</th>
+                <th>联系电话</th>
+                <th>职位</th>
+                <th>状态</th>
+                <th>创建时间</th>
+            </tr>
+			{% for user in users %}
+			<tr>
+				<td><input type="checkbox" name="idbox" value="{{user.user_id}}" onclick="checkuser(this)"></td>
+				<td>{{user.user_account}}</td>
+				<td>{{user.user_name}}</td>
+                <td>{{user.org_name}}</td>
+                <td>{{user.role_name}}</td>
+                <td>{{user.max_period}}</td>
+                <td>{{user.user_type}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.phone}}</td>
+                <td>{{user.position}}</td>
+                <td>{{user.state}}</td>
+                <td>{{user.create_time}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+</div>
+
+<nav>
+	<ul class="pagination">
+		{% if paginator.page_no == 1 %}
+		<li class="disabled"><a>首页</a></li>
+		<li class="disabled"><a>上一页</a></li>
+		{% else %}
+		<li><a href="/user/list?page=1">首页</a></li>
+		<li><a	href="/user/list?page={{ paginator.previous_page }}">上一页</a></li>
+		{% endif %}
+
+		{% for page in paginator.page_list %}
+		<li><a href="/user/list?page={{ page }}">{{ page }}</a></li>
+		{% endfor %}
+
+		{% if paginator.page_no == paginator.pages %}
+		<li class="disabled"><a>下一页</a></li>
+		<li class="disabled"><a>末页</a></li>
+		{% else %}
+		<li><a href="/user/list?page={{ paginator.next_page }}">下一页</a></li>
+		<li><a href="/user/list?page={{ paginator.pages }}">末页</a></li>
+		{% endif %}
+		<li class="disabled"><a>共{{ paginator.pages }}页&nbsp; 到第&nbsp;<input
+				id="pageNo" style="width: 30px; height: 17px;" type="text"
+				value="{{ paginator.next_page }}">&nbsp;页
+		</a></li>
+		<li><a href="javascript:page()">确定</a></li>
+	</ul>
+</nav>
