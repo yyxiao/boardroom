@@ -12,7 +12,7 @@ from pyramid.httpexceptions import HTTPFound
 def request_login(func):
     def _request_login(request):
         try:
-            user_name = request.session['userName']
+            user_name = request.session['userAccount']
         except:
             return HTTPFound(request.route_url('login'))
         return func(request)
