@@ -48,7 +48,6 @@ def restpwd(request):
 @view_config(route_name='login')
 def login(request):
     if request.method == 'POST':
-        print('######## login')
         # code = request.params['validate']
         # if code:
         #     if code != request.session['validate']:

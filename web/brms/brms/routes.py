@@ -16,11 +16,14 @@ def includeme(config):
 
 def user_include(config):
     config.add_route('to_user', '/to_user')
-    config.add_route('user_setting', '/user_setting')
     config.add_route('list_user', '/list')
+    config.add_route('to_add_user', '/to_add_user')
     config.add_route('add_user', '/add_user')
+    config.add_route('to_delete_user', '/to_delete_user')
     config.add_route('delete_user', '/delete_user')
+    config.add_route('to_update_user', '/to_update_user')
     config.add_route('update_user', '/update_user')
+    config.add_route('user_setting', '/user_setting')
 
 
 def org_include(config):

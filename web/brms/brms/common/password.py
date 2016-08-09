@@ -12,13 +12,13 @@ _letter_cases = "abcdefghjkmnpqrstuvwxy"  # 小写字母，去除可能干扰的
 _upper_cases = _letter_cases.upper()  # 大写字母
 _numbers = ''.join(map(str, range(3, 10)))  # 数字
 _special_character = "!@#$%^&*"
-init_chars = ''.join((_letter_cases, _upper_cases, _numbers, _special_character))   # 拼接字符串
+init_chars = ''.join((_letter_cases, _upper_cases, _numbers))   # 拼接字符串
 length = 8
 
 
 def init_password():
     password = random.sample(init_chars, length)
-    return password
+    return ''.join(password)
 
 
 def get_password(passwd):
