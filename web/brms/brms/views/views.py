@@ -25,12 +25,12 @@ def index(request):
     welcome = get_welcome()
     # user_name = request.session['userName']
     # dbs = request.dbsession
-    sys_menu_list = [{'url': '/touser', 'icon': 'fa fa-user', 'name': '用户管理'},
-                     {'url': '/toorg', 'icon': 'fa fa-sitemap', 'name': '机构管理'},
-                     {'url': '/role/torole', 'icon': 'fa fa-user-secret', 'name': '角色管理'},
-                     {'url': '/toauthorization', 'icon': 'fa fa-unlock-alt', 'name': '授权管理'},
-                     {'url': '/toboardroom', 'icon': 'fa fa-university', 'name': '会议室管理'},
-                     {'url': '/toterminal', 'icon': 'fa fa-television', 'name': '终端管理'}]
+    sys_menu_list = [{'url': '/user/to_user', 'icon': 'fa fa-user', 'name': '用户管理'},
+                     {'url': '/org/to_org', 'icon': 'fa fa-sitemap', 'name': '机构管理'},
+                     {'url': '/role/to_role', 'icon': 'fa fa-user-secret', 'name': '角色管理'},
+                     {'url': '/auth/to_auth', 'icon': 'fa fa-unlock-alt', 'name': '授权管理'},
+                     {'url': '/boardroom/to_br', 'icon': 'fa fa-university', 'name': '会议室管理'},
+                     {'url': '/terminal/to_terminal', 'icon': 'fa fa-television', 'name': '终端管理'}]
     login_user_session = {
         'sys_menu': True,
         'sysMenuList': sys_menu_list,
@@ -103,31 +103,3 @@ def logout(request):
     del(request.session['user_name_db'])
     del(request.session['loginUserSession'])
     return render_to_response('login.html', {}, request)
-
-
-# 仅供测试
-@view_config(route_name='add_user')
-def add_user(request):
-    if request.method == 'POST':
-        # TODO
-        print('######## add user')
-        dbs = request.dbsession
-        with transaction.manager:
-            user = SysUser()
-            user.user_account = 'sysadmin'
-            user.user_name = '系统管理员'
-            user.user_pwd = 'MDAwMDAw'
-            user.max_period = 30
-            user.position = '系统管理员'
-            user.org_id = 0
-            user.user_type = 0
-            user.user_no = '0'
-            user.state = '1'
-
-            dbs.add(user)
-            dbs.flush()
-
-        return HTTPFound(request.route_url("login"))
-    else:
-        # TODO 编写模板
-        return Response('add user')
