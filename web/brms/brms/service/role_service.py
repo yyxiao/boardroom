@@ -8,6 +8,7 @@ __mtime__ = 2016/8/8
 from datetime import datetime
 from ..models.model import *
 from ..common.paginator import Paginator
+import transaction
 
 
 def find_roles(dbs, role_name, page_no):
@@ -21,8 +22,9 @@ def find_roles(dbs, role_name, page_no):
     roles = dbs.query(SysRole.role_id,
                       SysRole.role_name,
                       SysRole.role_desc,
-                      SysRole.create_user,
-                      SysRole.create_time)
+                      SysUser.user_name,
+                      SysRole.create_time)\
+        .outerjoin(SysUser, SysUser.id == SysRole.create_user)
     if role_name:
         roles = roles.filter(SysRole.role_name.like('%'+role_name+'%'))
     user_list = roles.order_by(SysRole.create_time)
@@ -43,3 +45,13 @@ def find_roles(dbs, role_name, page_no):
         }
         lists.append(temp_dict)
     return lists, paginator
+
+
+def add(dbs, role):
+    error_msg = ''
+    try :
+        with transaction.manager:
+            dbs.add(role)
+    except Exception:
+        error_msg = '新增角色失败，请核对后重试'
+    return error_msg

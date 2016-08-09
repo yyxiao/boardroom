@@ -54,24 +54,8 @@ function to_add() {
  * add role
  */
 function add() {
-	var code = $.trim($("#code").val());
 	var name = $.trim($("#name").val());
 	var desc = $.trim($("#desc").val());
-	if (code == '') {
-		$('#code').focus();
-		$('#role_cue').html("<font color='red'>角色代码不能为空</font>");
-		return false;
-	}
-	if (is_str_unsafe(code) == true) {
-		$('#code').focus();
-		$('#role_cue').html("<font color='red'>角色代码含有非法字符</font>");
-		return false;
-	}
-	if (is_str_toolong(code) == true) {
-		$('#code').focus();
-		$('#role_cue').html("<font color='red'>角色代码超过最大长度</font>");
-		return false;
-	}
 	if (name == '') {
 		$('#name').focus();
 		$('#role_cue').html("<font color='red'>角色名称不能为空</font>");
@@ -106,7 +90,6 @@ function add() {
 		type : "POST",
 		url : "/role/add",
 		data : {
-			"code" : code,
 			"name" : name,
 			"desc" : desc
 		},
@@ -116,11 +99,9 @@ function add() {
 		success : function(data) {
 			if (data.success == "true") {
 				$("#addModal").modal('hide');
-				$.messager.popup("新增角色成功！");
 				list(1)
 			}
 			else{
-				$.messager.popup("新增角色失败，请检查相关信息后重试！");
 			}
 		},
 	})

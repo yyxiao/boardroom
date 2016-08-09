@@ -9,6 +9,7 @@ import datetime
 date_pattern = '%Y%m%d'  # 日期格式
 time_pattern = '%H%M%S'  # 时间模式
 datetime_pattern = '%Y%m%d %H%M%S'  # 日期时间模式
+datetime_format = '%Y-%m-%d %H:%M:%S' # 标准时间格式
 
 START_QUARTER = '2012-1'
 

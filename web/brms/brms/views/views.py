@@ -72,7 +72,8 @@ def login(request):
                     error_msg = '用户不存在'
                 elif user.err_count >= 5:
                     if UserTools.unlock(user):
-                        request.session['userName'] = user_name
+                        request.session['userAccount'] = user_name
+                        request.session['userId'] = user.id
                         request.session['user_name_db'] = user.user_name
                         return HTTPFound(request.route_url("home"))
                     else:
@@ -82,7 +83,8 @@ def login(request):
                     UserTools.count_err(user)
                     dbs.flush()
                 else:
-                    request.session['userName'] = user_name
+                    request.session['userAccount'] = user_name
+                    request.session['userId'] = user.id
                     request.session['user_name_db'] = user.user_name
                     return HTTPFound(request.route_url("home"))
 
@@ -96,7 +98,8 @@ def login(request):
 @view_config(route_name='logout')
 @request_login
 def logout(request):
-    del(request.session['userName'])
+    del(request.session['userAccount'])
+    del(request.session['userId'])
     del(request.session['user_name_db'])
     del(request.session['loginUserSession'])
     return render_to_response('login.html', {}, request)

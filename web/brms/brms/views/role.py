@@ -9,7 +9,10 @@ __mtime__ = 2016/8/8
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
-from ..service.role_service import find_roles
+from ..service.role_service import find_roles, add
+from ..models.model import SysRole
+from ..common.dateutils import datetime_format
+from datetime import datetime
 
 
 @view_config(route_name='to_role')
@@ -38,3 +41,24 @@ def to_add(request):
     dbs = request.dbsession
     # role_name = find_role(dbs)
     return render_to_response('role/add.html', locals(), request)
+
+
+@view_config(route_name='add', renderer='json')
+def add_role(request):
+    dbs = request.dbsession
+    role = SysRole()
+    role.role_name = request.POST.get('name', '')
+    role.role_desc = request.POST.get('desc', '')
+    role.create_user = request.session['userId']
+    role.create_time = datetime.now().strftime(datetime_format)
+    error_msg = add(dbs, role)
+    if error_msg:
+        json = {
+            'success': 'false',
+            'error_msg': error_msg,
+        }
+    else:
+        json = {
+            'success': 'true',
+        }
+    return json
