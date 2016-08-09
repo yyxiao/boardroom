@@ -36,14 +36,14 @@ def list_role(request):
     return render_to_response('role/list.html', locals(), request)
 
 
-@view_config(route_name='to_add')
+@view_config(route_name='to_add_role')
 def to_add(request):
     dbs = request.dbsession
     # role_name = find_role(dbs)
     return render_to_response('role/add.html', locals(), request)
 
 
-@view_config(route_name='add', renderer='json')
+@view_config(route_name='add_role', renderer='json')
 def add_role(request):
     dbs = request.dbsession
     role = SysRole()
@@ -81,7 +81,7 @@ def del_role(request):
     return json
 
 
-@view_config(route_name='to_update')
+@view_config(route_name='to_update_role')
 def to_update(request):
     dbs = request.dbsession
     role_id = request.POST.get('id', '')

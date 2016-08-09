@@ -11,6 +11,7 @@ def includeme(config):
     config.include(auth_include, '/authorization')
     config.include(boardroom_include, '/boardroom')
     config.include(terminal_include, '/terminal')
+    config.include(meeting_include, '/meeting')
 
 
 def user_include(config):
@@ -33,10 +34,10 @@ def org_include(config):
 def role_include(config):
     config.add_route('to_role', '/to_role')
     config.add_route('list_role', '/list')
-    config.add_route('to_add', '/to_add')
+    config.add_route('to_add_role', '/to_add')
     config.add_route('delete_role', '/del')
-    config.add_route('add', '/add')
-    config.add_route('to_update', '/to_update')
+    config.add_route('add_role', '/add')
+    config.add_route('to_update_role', '/to_update')
     config.add_route('update_role', '/update')
 
 
@@ -60,3 +61,13 @@ def terminal_include(config):
     config.add_route('add_terminal', '/add_terminal')
     config.add_route('delete_terminal', '/delete_terminal')
     config.add_route('update_terminal', '/update_terminal')
+
+
+def meeting_include(config):
+    config.add_route('to_meeting', '/to_meeting')
+    config.add_route('list_meeting', '/list')
+    config.add_route('to_add_meeting', '/to_add')
+    config.add_route('delete_meeting', '/del')
+    config.add_route('add_meeting', '/add')
+    config.add_route('to_update_meeting', '/to_update')
+    config.add_route('update_meeting', '/update')
