@@ -31,7 +31,7 @@ def index(request):
                      {'url': '/org/to_org', 'icon': 'fa fa-sitemap', 'name': '机构管理'},
                      {'url': '/role/to_role', 'icon': 'fa fa-user-secret', 'name': '角色管理'},
                      {'url': '/auth/to_auth', 'icon': 'fa fa-unlock-alt', 'name': '授权管理'},
-                     {'url': '/boardroom/to_br', 'icon': 'fa fa-university', 'name': '会议室管理'},
+                     {'url': '/boardroom/to_boardroom', 'icon': 'fa fa-university', 'name': '会议室管理'},
                      {'url': '/terminal/to_terminal', 'icon': 'fa fa-television', 'name': '终端管理'},
                      {'url': '/meeting/to_meeting', 'icon': 'fa fa-television', 'name': '会议管理'}]
     login_user_session = {
