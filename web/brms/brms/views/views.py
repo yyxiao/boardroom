@@ -17,6 +17,7 @@ from pyramid.view import view_config
 from brms.service.loginutil import request_login, UserTools
 from ..models.model import SysUser
 from ..common.dateutils import get_welcome
+from ..service.pad_service import find_pad_by_id
 
 
 @view_config(route_name='home')
@@ -107,27 +108,33 @@ def logout(request):
 
 @view_config(route_name='padLogin', renderer='json')
 def pad_login(request):
-    if request.method == 'POST':
-        dbs = request.dbsession
-        user_account = request.params['user_account']
-        pad_code = request.params['pad_code']
-        password = base64.encodestring(request.params['password'].encode()).decode('utf-8').replace('\n', '')
-        error_msg = ''
-        if not pad_code:
-            error_msg = '终端编码不能为空'
-        elif not user_account:
-            error_msg = '用户账号不能为空'
-        else:
-            with transaction.manager:
-                user = dbs.query(SysUser).filter(SysUser.user_account == user_account).first()
-                if not user:
-                    error_msg = '用户不存在'
-                elif password != user.user_pwd:
-                    error_msg = '密码错误'
-                    UserTools.count_err(user)
-                    dbs.flush()
-        if error_msg:
-            request.session['error_msg'] = error_msg
-            return render_to_response('login.html', locals(), request)
+    dbs = request.dbsession
+    user_account = request.params['userAccount']
+    pad_code = request.params['padCode']
+    password = base64.encodestring(request.params['password'].encode()).decode('utf-8').replace('\n', '')
+    error_msg = ''
+    if not pad_code:
+        error_msg = '终端编码不能为空'
+    elif not user_account:
+        error_msg = '用户账号不能为空'
     else:
-        return render_to_response('login.html', {}, request)
+        with transaction.manager:
+            user = dbs.query(SysUser).filter(SysUser.user_account == user_account).first()
+            if not user:
+                error_msg = '用户不存在'
+            elif password != user.user_pwd:
+                error_msg = '密码错误'
+                UserTools.count_err(user)
+                dbs.flush()
+            else:
+                find_pad_by_id(dbs, pad_code, user.id)
+    if error_msg:
+        json = {
+            'success': 'false',
+            'error_msg': error_msg,
+        }
+    else:
+        json = {
+            'success': 'true',
+        }
+    return json

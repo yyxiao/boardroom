@@ -68,6 +68,15 @@ def date_to_cn(d):
         return ''
 
 
+def date_now():
+    """
+    获取当前时间——用于创建时间
+    :return:
+    """
+    dnow = datetime.datetime.now().strftime(datetime_format)
+    return dnow
+
+
 # 获取下一天, 日期格式为:yyyyMMdd
 def get_next_date(sdate):
     ddate = datetime.datetime.strptime(sdate, date_pattern)

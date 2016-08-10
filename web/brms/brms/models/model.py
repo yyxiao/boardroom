@@ -55,7 +55,7 @@ class HasMeeting(Base):
 
 class HasPad(Base):
     __tablename__ = 'has_pad'                   # 终端设备表
-    pad_id = Column(INT, Sequence('has_pad_id_seq', schema=BRMS_SCHEMA), primary_key=True)
+    id = Column(INT, Sequence('has_pad_id_seq', schema=BRMS_SCHEMA), primary_key=True)
     pad_code = Column(VARCHAR(100))             # 终端编号
     org_id = Column(INT)                        # 机构ID
     last_time = Column(VARCHAR(19))             # 最后通信时间

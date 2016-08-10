@@ -167,7 +167,7 @@ alter table has_meeting
 /* Table: has_pad                                               */
 /*==============================================================*/
 create table has_pad (
-   pad_id               SERIAL               not null,
+   id               SERIAL               not null,
    pad_code             VARCHAR(100)         null,
    org_id               INT8                 null,
    last_time            VARCHAR(19)          null,
@@ -179,7 +179,7 @@ create table has_pad (
 comment on table has_pad is
 '终端设备表';
 
-comment on column has_pad.pad_id is
+comment on column has_pad.id is
 '终端ID';
 
 comment on column has_pad.pad_code is
@@ -201,7 +201,7 @@ comment on column has_pad.create_time is
 '创建时间';
 
 alter table has_pad
-   add constraint PK_HAS_PAD primary key (pad_id);
+   add constraint PK_HAS_PAD primary key (id);
 
 /*==============================================================*/
 /* Table: sys_dict                                              */

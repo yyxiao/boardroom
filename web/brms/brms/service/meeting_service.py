@@ -63,7 +63,7 @@ def find_meetings(dbs, meeting_name, create_user, page_no):
 
 def add(dbs, meeting):
     error_msg = ''
-    try :
+    try:
         with transaction.manager:
             dbs.add(meeting)
     except Exception:
