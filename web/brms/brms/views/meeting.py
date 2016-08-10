@@ -49,10 +49,12 @@ def add_meeting(request):
     dbs = request.dbsession
     meeting = HasMeeting()
     pad_code = request.POST.get('pad_code', '')
-    if pad_code:
-        # 查找pad对应的会议室
-        dbs.query(HasBoardroom.id,HasBoardroom.name).outerjoin(HasPad, HasPad.id == HasBoardroom.pad_id)
-
+    # if pad_code:
+    #     # 查找pad对应的会议室
+    #     board_room = dbs.query(HasBoardroom.id, HasBoardroom.name).\
+    #         outerjoin(HasPad, HasPad.id == HasBoardroom.pad_id).\
+    #         filter(HasPad.pad_code == pad_code)
+    #     if board_room:
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
     meeting.start_date = request.POST.get('start_date', '')

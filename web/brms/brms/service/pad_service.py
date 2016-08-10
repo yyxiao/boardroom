@@ -39,3 +39,32 @@ def find_pad_by_id(dbs, pad_code, create_user):
             logger.error(e)
             error_msg = '新增设备失败，请稍后后重试'
     return pad, error_msg
+
+
+def find_meetings(dbs):
+    error_msg = ''
+    meetings = dbs.query(HasMeeting)
+    lists = []
+    for meeting in meetings:
+        id = meeting.id
+        name = meeting.name
+        description = meeting.description
+        start_date = meeting.start_date
+        end_date = meeting.end_date
+        start_time = meeting.start_time
+        end_time = meeting.end_time
+        create_user = meeting.create_user
+        create_time = meeting.create_time
+        temp_dict = {
+            'id': id,
+            'name': name,
+            'description': description,
+            'start_date': start_date,
+            'end_date': end_date,
+            'start_time': start_time,
+            'end_time': end_time,
+            'create_user': create_user,
+            'create_time': create_time,
+        }
+        lists.append(temp_dict)
+    return lists, error_msg

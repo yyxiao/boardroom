@@ -9,7 +9,10 @@ from datetime import datetime
 from ..models.model import *
 from ..common.paginator import Paginator
 import transaction
+import logging
 
+
+logger = logging.getLogger('operator')
 
 def find_meetings(dbs, meeting_name, create_user, page_no):
     """
@@ -66,7 +69,8 @@ def add(dbs, meeting):
     try:
         with transaction.manager:
             dbs.add(meeting)
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         error_msg = '新增会议失败，请核对后重试'
     return error_msg
 

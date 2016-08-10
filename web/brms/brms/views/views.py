@@ -18,7 +18,7 @@ from brms.service.loginutil import request_login, UserTools
 from ..models.model import SysUser
 from ..common.dateutils import get_welcome
 from ..common.jsonutils import serialize
-from ..service.pad_service import find_pad_by_id
+from ..service.pad_service import find_pad_by_id, find_meetings
 
 
 @view_config(route_name='home')
@@ -144,5 +144,40 @@ def pad_login(request):
         json_a = {
             'success': 'true',
             'pad': pad_d
+        }
+    return json_a
+
+
+@view_config(route_name='meetingList', renderer='json')
+def meeting_list(request):
+    """
+    会议list
+    :param request:
+    :return:
+    """
+    dbs = request.dbsession
+    user_account = request.params['userAccount']
+    pad_code = request.params['padCode']
+    error_msg = ''
+    if not pad_code:
+        error_msg = '终端编码不能为空'
+    elif not user_account:
+        error_msg = '用户账号不能为空'
+    else:
+        with transaction.manager:
+            user = dbs.query(SysUser).filter(SysUser.user_account == user_account).first()
+            if not user:
+                error_msg = '用户不存在'
+            else:
+                meetings, error_msg = find_meetings(dbs)
+    if error_msg:
+        json_a = {
+            'success': 'false',
+            'error_msg': error_msg,
+        }
+    else:
+        json_a = {
+            'success': 'true',
+            'meeting': meetings
         }
     return json_a
