@@ -88,12 +88,18 @@
 	</div>
 </div>
 <script>
+    var nowdate = new Date();
+    var end_date = date.setDate(nowdate.getDate()+1);
+    alert(nowdate);
+    alert(end_date);
     $("#start_date").datetimepicker({
         language: 'zh-CN',
         autoclose: true,
         todayHighlight: true,
         format: 'yyyy-mm-dd',
-        startDate: '2016-08-10',
-        endDate: '2016-08-15'
+        startDate: new Date(),
+        endDate: end_date,
+        minView: 2,
+        maxView: 3
     });
 </script>
