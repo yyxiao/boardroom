@@ -61,6 +61,7 @@ function add() {
 	var user_name = $.trim($("#user_name_add").val());
 	var branch = $.trim($("#branch_add").val());
 	// var password = $.trim($("#password_add").val());
+    var max_period = $.trim($("#max_period_add").val());
 	var email = $.trim($("#email_add").val());
 	var phone = $.trim($("#phone_add").val());
 	var position = $.trim($("#position_add").val());
@@ -100,16 +101,14 @@ function add() {
 		$('#user_cue').html("<font color='red'>用户机构不能为空</font>");
 		return false;
 	}
-	// if (password == '') {
-	// 	$('#password_add').focus();
-	// 	$('#user_cue').html("<font color='red'>用户密码不能为空</font>");
-	// 	return false;
-	// }
-	// if (is_str_toolong(password) == true) {
-	// 	$('#password_add').focus();
-	// 	$('#user_cue').html("<font color='red'>用户密码超过最大长度</font>");
-	// 	return false;
-	// }
+    if (max_period == '') {
+        $('#max_period_add').value = 7;
+        max_period = 7;
+    }
+    if (max_period > 30 || max_period < 1) {
+        $('#max_period').focus();
+        $('#user_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
+    }
 	if (email == '') {
 		$('#email_add').focus();
 		$('#user_cue').html("<font color='red'>用户email不能为空</font>");
@@ -128,6 +127,7 @@ function add() {
 			"user_account" : user_account,
 			"user_name" : user_name,
 			"org_id" : branch,
+            "max_period": max_period,
 			"email" : email,
 			"phone" : phone,
 			"position" : position,
@@ -177,6 +177,7 @@ function update() {
 	var user_name = $.trim($("#user_name_add").val());
 	var branch = $.trim($("#branch_add").val());
 	// var password = $.trim($("#password_add").val());
+    var max_period = $.trim($("#max_period_add").val());
 	var email = $.trim($("#email_add").val());
 	var phone = $.trim($("#phone_add").val());
 	var position = $.trim($("#position_add").val());
@@ -220,6 +221,14 @@ function update() {
 		$('#user_cue').html("<font color='red'>用户机构不能为空</font>");
 		return false;
 	}
+    if (max_period == '') {
+        $('#max_period_add').value = 7;
+        max_period = 7;
+    }
+    if (max_period > 30 || max_period < 1) {
+        $('#max_period').focus();
+        $('#user_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
+    }
 	if (email == '') {
 		$('#email_add').focus();
 		$('#user_cue').html("<font color='red'>用户email不能为空</font>");
@@ -239,6 +248,7 @@ function update() {
 			"user_account" : user_account,
 			"user_name" : user_name,
 			"org_id" : branch,
+            "max_period": max_period,
 			"email" : email,
 			"phone" : phone,
 			"position" : position,
