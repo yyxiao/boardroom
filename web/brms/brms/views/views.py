@@ -17,6 +17,7 @@ from pyramid.view import view_config
 from brms.service.loginutil import request_login, UserTools
 from ..models.model import SysUser
 from ..common.dateutils import get_welcome
+from ..common.jsonutils import serialize
 from ..service.pad_service import find_pad_by_id
 
 
@@ -108,6 +109,11 @@ def logout(request):
 
 @view_config(route_name='padLogin', renderer='json')
 def pad_login(request):
+    """
+    设备初始化登录
+    :param request:
+    :return:
+    """
     dbs = request.dbsession
     user_account = request.params['userAccount']
     pad_code = request.params['padCode']
@@ -127,14 +133,16 @@ def pad_login(request):
                 UserTools.count_err(user)
                 dbs.flush()
             else:
-                find_pad_by_id(dbs, pad_code, user.id)
+                pad, error_msg = find_pad_by_id(dbs, pad_code, user.id)
+            pad_d = serialize(pad)
     if error_msg:
-        json = {
+        json_a = {
             'success': 'false',
             'error_msg': error_msg,
         }
     else:
-        json = {
+        json_a = {
             'success': 'true',
+            'pad': pad_d
         }
-    return json
+    return json_a
