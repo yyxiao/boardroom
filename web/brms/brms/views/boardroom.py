@@ -30,6 +30,8 @@ def boardrooms(request):
     :param request:
     :return:
     """
+    dbs = request.dbsession
+    branches = find_branch(dbs)
     return render_to_response('boardroom/boardroom.html', locals(), request)
 
 
@@ -44,6 +46,7 @@ def boardroom_list(request):
     name = request.params['br_name']
     config = request.params['br_config']
     org_id = request.params['org_id']
+    flag = request.params['flag']
     (boardrooms, paginator) = find_boardrooms(dbs, name=name, config=config, org_id=org_id)
     return render_to_response('boardroom/list.html', locals(), request)
 
