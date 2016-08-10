@@ -50,6 +50,7 @@ def add_meeting(request):
     meeting = HasMeeting()
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
+    meeting.start_date = request.POST.get('start_date', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
     error_msg = add(dbs, meeting)
@@ -97,6 +98,7 @@ def update_meeting(request):
     meeting = find_meeting(dbs, meeting_id)
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
+    meeting.start_date = request.POST.get('start_date', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
     error_msg = add(dbs, meeting)

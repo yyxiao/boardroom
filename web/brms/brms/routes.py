@@ -3,6 +3,7 @@ def includeme(config):
     config.add_route('home', '/')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
+    config.add_route('padLogin', '/padLogin')
     config.add_route('reset_pwd', '/reset_pwd')
     config.add_route('my_meeting', '/my_meeting')
     config.include(user_include, '/user')

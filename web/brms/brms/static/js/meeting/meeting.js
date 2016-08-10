@@ -56,6 +56,7 @@ function to_add() {
 function add() {
 	var name = $.trim($("#name").val());
 	var desc = $.trim($("#desc").val());
+	var start_date = $("#start_date").val();
 	if (name == '') {
 		$('#name').focus();
 		$('#meeting_cue').html("<font color='red'>会议主题不能为空</font>");
@@ -91,7 +92,8 @@ function add() {
 		url : "/meeting/add",
 		data : {
 			"name" : name,
-			"desc" : desc
+			"desc" : desc,
+			"start_date" : start_date
 		},
 		error : function() {
 			$.messager.popup("新增会议失败");
@@ -136,6 +138,7 @@ function update() {
 	var id = $("#meeting_id").val()
 	var name = $.trim($("#name").val());
 	var desc = $.trim($("#desc").val());
+	var start_date = $("#start_date").val();
 	if (name == '') {
 		$('#name').focus();
 		$('#meeting_cue').html("<font color='red'>会议主题不能为空</font>");
@@ -172,7 +175,8 @@ function update() {
 		data : {
 			"id" : id,
 			"name" : name,
-			"desc" : desc
+			"desc" : desc,
+			"start_date" : start_date
 		},
 		error : function() {
 			$.messager.popup("更新会议失败");
