@@ -10,7 +10,7 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
 from ..service.meeting_service import find_meetings, add, delete_meeting, find_meeting
-from ..models.model import HasMeeting
+from ..models.model import *
 from ..common.dateutils import datetime_format
 from datetime import datetime
 
@@ -48,9 +48,17 @@ def to_add(request):
 def add_meeting(request):
     dbs = request.dbsession
     meeting = HasMeeting()
+    pad_code = request.POST.get('pad_code', '')
+    if pad_code:
+        # 查找pad对应的会议室
+        dbs.query(HasBoardroom.id,HasBoardroom.name).outerjoin(HasPad, HasPad.id == HasBoardroom.pad_id)
+
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
     meeting.start_date = request.POST.get('start_date', '')
+    meeting.end_date = request.POST.get('end_date', '')
+    meeting.start_time = request.POST.get('start_time', '')
+    meeting.end_time = request.POST.get('end_time', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
     error_msg = add(dbs, meeting)

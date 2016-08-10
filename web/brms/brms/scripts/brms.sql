@@ -39,7 +39,7 @@ create table has_boardroom (
    description          VARCHAR(512)         null,
    config               VARCHAR(512)         null,
    picture              VARCHAR(200)         null,
-   pad_code             VARCHAR(60)          null,
+   pad_id             VARCHAR(60)          null,
    org_id               INT8                 null,
    type                 INT8                 null,
    create_time          VARCHAR(19)          null,
@@ -65,7 +65,7 @@ comment on column has_boardroom.config is
 comment on column has_boardroom.picture is
 '会议室图片';
 
-comment on column has_boardroom.pad_code is
+comment on column has_boardroom.pad_id is
 '设备编号';
 
 comment on column has_boardroom.org_id is
