@@ -1,4 +1,4 @@
-list(1)
+list(1);
 /*
  * list meeting
  */
@@ -47,7 +47,6 @@ function to_add() {
 		} else {
 			$("#addModal").modal();
 		}
-
 	});
 }
 /*
