@@ -4,24 +4,18 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>会议室预订管理系统</title>
-  <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
   <link rel="stylesheet" href="{{request.static_url('brms:static/bootstrap/css/bootstrap.css')}}">
-  <!-- Theme style -->
   <link rel="stylesheet" href="{{request.static_url('brms:static/AdminLTE-2.3.5/css/AdminLTE.min.css')}}">
   {% block link %}{% endblock %}
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
   <script src="{{request.static_url('brms:static/tml5shiv/3.7.3/html5shiv.min.js')}}"></script>
   <script src="{{request.static_url('brms:static/respond/1.4.2/respond.min.js')}}"></script>
   <![endif]-->
   </head>
   <body {% block body_class %}{% endblock%}>
-    <!-- jQuery 2.2.3 -->
     <script src="{{request.static_url('brms:static/plugins/jQuery/jquery-2.2.3.min.js')}}"></script>
-    <!-- Bootstrap 3.3.6 -->
     <script src="{{request.static_url('brms:static/bootstrap/js/bootstrap.min.js')}}"></script>
     <script src="{{request.static_url('brms:static/js/jquery.bootstrap.min.js')}}"></script>
     <script src="{{request.static_url('brms:static/js/base.js')}}"></script>

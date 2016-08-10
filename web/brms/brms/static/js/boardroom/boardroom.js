@@ -3,12 +3,11 @@ list(1);
  * list user
  */
 function list(page) {
-	var url = "/user/list";
+	var url = "/boardroom/list";
 	var data = {
-		"user_account" : $("#user_account").val(),
-		"user_name" : $("#user_name").val(),
+		"br_name" : $("#br_name").val(),
+		"br_config" : $("#br_config").val(),
 		"org_id" : $("#org_id").val(),
-		"role_name" : $("#role_name").val(),
 		"page" : page
 	};
 	$("#listWrapper").load(url, data, function(response, status) {
