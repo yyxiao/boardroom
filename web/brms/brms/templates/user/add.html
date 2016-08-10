@@ -12,7 +12,7 @@
             <form id="addForm" action="{% if user %}/user/update_user{% else %}/user/add_user{% endif %}" method="post"
                   class="form-horizontal">
                 {% if user %}
-                    <input id="user_id" name="user_id" class="hidden" value="{{ user.id }}">
+                    <input id="user_id" name="user_id" class="hidden" value="{{ user.user_id }}">
                 {% endif %}
                 <div class="form-group">
                     <label for="input user_account_add" class="col-sm-2 control-label">用户账号</label>
@@ -44,13 +44,25 @@
                     <div class="col-sm-9">
                         <select class="form-control" id="branch_add" name="branch_add">
                             {% if user %}
-                                <option value="{{ user.org_id }}" selected="selected">海银财富</option>
+                                <option value="{{ user.org_id }}" selected="selected">{{ user.org_name }}</option>
                             {% endif %}
                             <option value=""></option>
                             {% for branch in branches %}
                                 <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
                             {% endfor %}
                         </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input max_period" class="col-sm-2 control-label">预约期限</label>
+                    <div class="col-sm-9">
+                        {% if user %}
+                            <input name="max_period_add" type="text" class="form-control" value="{{ user.max_period }}"
+                               id="max_period_add">
+                        {% else %}
+                            <input name="max_period_add" type="text" class="form-control" placeholder="默认为7天"
+                               id="max_period_add">
+                        {% endif %}
                     </div>
                 </div>
                 <div class="form-group">

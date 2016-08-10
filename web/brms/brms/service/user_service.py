@@ -13,15 +13,16 @@ from ..common.paginator import Paginator
 logger = logging.getLogger('operator')
 
 
-def find_users(dbs, user_account, user_name, org_id, role_name, page_no):
+def find_users(dbs, user_account=None, user_name=None, org_id=None, role_name=None, page_no=1, user_id=None):
     '''
-    查询用户
+    查找符合条件的用户， 返回用户列表和分页对象
     :param dbs:
     :param user_account:
     :param user_name:
     :param org_id:
     :param role_name:
     :param page_no:
+    :param user_id:
     :return:
     '''
 
@@ -36,7 +37,8 @@ def find_users(dbs, user_account, user_name, org_id, role_name, page_no):
                       SysUser.phone,
                       SysUser.position,
                       SysUser.state,
-                      SysUser.create_time) \
+                      SysUser.create_time,
+                      SysUser.org_id,) \
         .outerjoin(SysOrg, SysOrg.id == SysUser.org_id)\
         .outerjoin(SysUserRole, SysUser.id == SysUserRole.user_id)\
         .outerjoin(SysRole, SysUserRole.role_id == SysRole.role_id)
@@ -49,6 +51,8 @@ def find_users(dbs, user_account, user_name, org_id, role_name, page_no):
         users = users.filter(SysUser.org_id == org_id)
     if role_name:
         users = users.filter(SysRole.role_name.like('%' + role_name + '%'))
+    if user_id:
+        users = users.filter(SysUser.id == user_id)
 
     user_list = users.order_by(SysUser.create_time)
     results, paginator = Paginator(user_list, page_no).to_dict()
@@ -66,6 +70,7 @@ def find_users(dbs, user_account, user_name, org_id, role_name, page_no):
         position = obj[9] if obj[9] else ''
         state = obj[10] if obj[10] else ''
         create_time = obj[11] if obj[11] else ''
+        org_id = obj[12] if obj[12] else ''
         temp_dict = {
             'user_id': user_id,
             'user_account': user_account,
@@ -78,20 +83,34 @@ def find_users(dbs, user_account, user_name, org_id, role_name, page_no):
             'phone': phone,
             'position': position,
             'state': state,
-            'create_time': create_time
+            'create_time': create_time,
+            'org_id': org_id
         }
         lists.append(temp_dict)
     return lists, paginator
 
 
 def find_user(dbs, user_id):
-    user = dbs.query(SysUser).filter(SysUser.id == user_id).first()
-    if user:
-        return user
+    '''
+    根据用户id查找用户
+    :param dbs:
+    :param user_id:
+    :return:
+    '''
+    (users, paginator) = find_users(dbs, user_id=user_id)
+
+    if len(users) >= 1:
+        return users[0]
     return None
 
 
 def add(dbs, user):
+    '''
+    添加用户
+    :param dbs:
+    :param user:
+    :return:
+    '''
     try:
         with transaction.manager:
             dbs.add(user)
@@ -103,13 +122,17 @@ def add(dbs, user):
 
 
 def update(dbs, user):
-    print('update2')
+    '''
+    更新用户信息
+    :param dbs:
+    :param user:
+    :return:
+    '''
     try:
         with transaction.manager:
             print(user.id)
             user_old = dbs.query(SysUser).filter(SysUser.id == user.id).first()
             if user_old:
-                print('update4')
                 user_old.user_name = user.user_name
                 user_old.phone = user.phone
                 user_old.address = user.address
@@ -119,7 +142,6 @@ def update(dbs, user):
                 user_old.org_id = user.org_id
                 user_old.position = user.position
                 user_old.state = user.state
-        print('update3')
         return ''
     except Exception as e:
         logger.error(e)
@@ -127,6 +149,12 @@ def update(dbs, user):
 
 
 def delete(dbs, user_id):
+    '''
+    删除用户
+    :param dbs:
+    :param user_id:
+    :return:
+    '''
     try:
         with transaction.manager:
             dbs.query(SysUser).filter(SysUser.id == user_id).delete()
@@ -135,7 +163,9 @@ def delete(dbs, user_id):
         logger.error(e)
         return '删除用户失败！'
 
+
 def send_email(address, content):
+    '''发送密码到用户email'''
     print(content)
     pass
     # TODO
