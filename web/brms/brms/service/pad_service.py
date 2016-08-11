@@ -41,11 +41,11 @@ def find_pad_by_id(dbs, pad_code, create_user):
     return pad, error_msg
 
 
-def find_meetings(dbs, user):
+def find_meetings(dbs, pad_code):
     """
     pad获取会议列表，近三天
     :param dbs:
-    :param user:
+    :param pad_code:
     :return:
     """
     error_msg = ''

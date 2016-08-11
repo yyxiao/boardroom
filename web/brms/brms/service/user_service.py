@@ -7,7 +7,7 @@ __mtime__ = 2016-08-09
 
 import transaction
 import logging
-from ..models.model import SysUser, SysRole, SysOrg, SysUserRole
+from ..models.model import *
 from ..common.paginator import Paginator
 
 logger = logging.getLogger('operator')
@@ -169,4 +169,30 @@ def send_email(address, content):
     print(content)
     pass
     # TODO
+
+
+def user_checking(dbs, pad_code, user_id):
+    """
+    验证用户是否可以使用该pad申请会议
+    :param dbs:
+    :param pad_code:
+    :param user_id:
+    :return:
+    """
+    msg = ''
+    try:
+        orgs = dbs.query(HasBoardroom, SysUserOrg.org_id) \
+            .outerjoin(SysUserOrg, SysUserOrg.org_id == HasBoardroom.org_id) \
+            .outerjoin(SysUser, SysUser.id == SysUserOrg.user_id)\
+            .outerjoin(HasPad, HasBoardroom.pad_id == HasPad.id)
+        if user_id:
+            orgs = orgs.filter(SysUser.id == user_id)
+        if pad_code:
+            orgs = orgs.filter(HasPad.pad_code == pad_code)
+        print(orgs)
+
+    except Exception as e:
+        logger.error(e)
+        msg = '验证用户失败！'
+    return orgs, msg
 

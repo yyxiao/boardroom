@@ -109,6 +109,9 @@ def update_meeting(request):
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
     meeting.start_date = request.POST.get('start_date', '')
+    meeting.end_date = request.POST.get('end_date', '')
+    meeting.start_time = request.POST.get('start_time', '')
+    meeting.end_time = request.POST.get('end_time', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
     error_msg = add(dbs, meeting)

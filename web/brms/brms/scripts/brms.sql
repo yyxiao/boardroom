@@ -39,7 +39,7 @@ create table has_boardroom (
    description          VARCHAR(512)         null,
    config               VARCHAR(512)         null,
    picture              VARCHAR(200)         null,
-   pad_id             VARCHAR(60)          null,
+   pad_id               INT8                  null,
    org_id               INT8                 null,
    type                 INT8                 null,
    create_time          VARCHAR(19)          null,
