@@ -41,9 +41,20 @@ def find_pad_by_id(dbs, pad_code, create_user):
     return pad, error_msg
 
 
-def find_meetings(dbs):
+def find_meetings(dbs, user):
+    """
+    pad获取会议列表，近三天
+    :param dbs:
+    :param user:
+    :return:
+    """
     error_msg = ''
-    meetings = dbs.query(HasMeeting)
+    meetings = dbs.query(HasMeeting.id, HasMeeting.name, HasMeeting.description,
+                         HasMeeting.start_date, HasMeeting.end_date, HasMeeting.start_time,
+                         HasMeeting.end_time, HasMeeting.create_user, HasMeeting.create_time,
+                         SysUser.user_name, SysUser.phone, SysOrg.org_name)\
+        .outerjoin(SysUser, HasMeeting.create_user == SysUser.id)\
+        .outerjoin(SysOrg, SysUser.org_id == SysOrg.id)
     lists = []
     for meeting in meetings:
         id = meeting.id
@@ -55,9 +66,12 @@ def find_meetings(dbs):
         end_time = meeting.end_time
         create_user = meeting.create_user
         create_time = meeting.create_time
+        user_name = meeting.user_name
+        phone = meeting.phone
+        org_name = meeting.org_name
         temp_dict = {
-            'id': id,
-            'name': name,
+            'meeting_id': id,
+            'meeting_name': name,
             'description': description,
             'start_date': start_date,
             'end_date': end_date,
@@ -65,6 +79,9 @@ def find_meetings(dbs):
             'end_time': end_time,
             'create_user': create_user,
             'create_time': create_time,
+            'user_name': user_name,
+            'user_phone': phone,
+            'org_name': org_name,
         }
         lists.append(temp_dict)
     return lists, error_msg

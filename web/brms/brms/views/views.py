@@ -169,7 +169,7 @@ def meeting_list(request):
             if not user:
                 error_msg = '用户不存在'
             else:
-                meetings, error_msg = find_meetings(dbs)
+                meetings, error_msg = find_meetings(dbs, user)
     if error_msg:
         json_a = {
             'success': 'false',
