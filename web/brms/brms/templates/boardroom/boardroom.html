@@ -2,7 +2,7 @@
     <div class="panel panel-success">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <i class="icon-user" id="icon-user"></i>&nbsp;会议室列表
+                <i class="icon-user" id="icon-user"></i>&nbsp;会议室管理
             </h3>
         </div>
 
@@ -23,7 +23,12 @@
                 </button>
             </div>
             <div class="panel-body">
-                <input id="flag" name="flag" class="hidden" value="if">
+                <input id="flag" name="flag" class="hidden" value="mg">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" onclick="to_add()">新增</button>
+                    <button type="button" class="btn btn-default" onclick="to_update()">修改</button>
+                    <button type="button" class="btn btn-default" onclick="del()">删除</button>
+                </div>
                 <div id="listWrapper"></div>
             </div>
         </div>

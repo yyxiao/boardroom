@@ -8,6 +8,7 @@ function list(page) {
 		"br_name" : $("#br_name").val(),
 		"br_config" : $("#br_config").val(),
 		"org_id" : $("#org_id").val(),
+		"flag" : $("#flag").val(),
 		"page" : page
 	};
 	$("#listWrapper").load(url, data, function(response, status) {
@@ -43,7 +44,7 @@ function checkuser(self) {
  * to add role
  */
 function to_add() {
-	var url = "/user/to_add_user";
+	var url = "/boardroom/to_add_boardroom";
 	$("#modalWrapper").load(url, {}, function(response, status) {
 		if (status == "error") {
 			redirect_to("/");
@@ -164,7 +165,7 @@ function to_update() {
 			}
 		});
 	} else {
-		$.messager.popup('请先选择一个用户！')
+		$.messager.popup('请先选择一个会议室！')
 	}
 }
 /*
