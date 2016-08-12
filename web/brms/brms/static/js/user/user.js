@@ -183,7 +183,7 @@ function update() {
 	var position = $.trim($("#position_add").val());
 	var state = $.trim($("#state_add").val());
     if (user_id == '') {
-        $('#user_cue').html("<font color='red'>用户ID为空,请刷新页面重试</font>");
+        $('#user_cue').html("<font color='red'>更新失败,请刷新页面重试</font>");
         return false;
     }
 	if (user_account == '') {
