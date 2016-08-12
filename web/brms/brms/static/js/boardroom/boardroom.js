@@ -32,7 +32,7 @@ function page() {
 /*
  * uncheck other role
  */
-function checkuser(self) {
+function checkbr(self) {
 	var boxes = $("input[name='idbox']");
 	$.each(boxes, function(index, box) {
 		if (box != self) {
@@ -53,6 +53,28 @@ function to_add() {
 		}
 	});
 }
+
+//upload picture
+function upload() {
+	var formData = new FormData();
+	formData.append('photoimg', $('#photoimg')[0].files[0]);
+	$.ajax({
+		type : "POST",
+		url : "/boardroom/br_upload_pic",
+		data : formData,
+		async: false,
+        cache: false,
+        contentType: false,
+        processData: false,
+		success : function(data) {
+			if (data.resultFlag == "success") {
+				 $("#preview").html('<img src="static/img/boardroom/'+data.name+'" height="150" width="150"/>');
+			} else {
+				$("#preview").html(data.error_msg);
+			}
+		}
+	});
+}
 /*
  * add user
  */
@@ -68,37 +90,37 @@ function add() {
 	var state = $.trim($("#state_add").val());
 	if (user_account == '') {
 		$('#user_account_add').focus();
-		$('#user_cue').html("<font color='red'>用户帐号不能为空</font>");
+		$('#br_cue').html("<font color='red'>用户帐号不能为空</font>");
 		return false;
 	}
 	if (is_str_unsafe(user_account) == true) {
 		$('#user_account_add').focus();
-		$('#user_cue').html("<font color='red'>用户帐号含有非法字符</font>");
+		$('#br_cue').html("<font color='red'>用户帐号含有非法字符</font>");
 		return false;
 	}
 	if (is_str_toolong(user_account) == true) {
 		$('#user_account_add').focus();
-		$('#user_cue').html("<font color='red'>用户帐号超过最大长度</font>");
+		$('#br_cue').html("<font color='red'>用户帐号超过最大长度</font>");
 		return false;
 	}
 	if (user_name == '') {
 		$('#user_name_add').focus();
-		$('#user_cue').html("<font color='red'>用户姓名不能为空</font>");
+		$('#br_cue').html("<font color='red'>用户姓名不能为空</font>");
 		return false;
 	}
 	if (is_str_unsafe(user_name) == true) {
 		$('#user_name_add').focus();
-		$('#user_cue').html("<font color='red'>用户姓名含有非法字符</font>");
+		$('#br_cue').html("<font color='red'>用户姓名含有非法字符</font>");
 		return false;
 	}
 	if (is_str_toolong(user_name) == true) {
 		$('#user_name_add').focus();
-		$('#user_cue').html("<font color='red'>用户姓名超过最大长度</font>");
+		$('#br_cue').html("<font color='red'>用户姓名超过最大长度</font>");
 		return false;
 	}
 	if (branch == '') {
 		$('#branch_add').focus();
-		$('#user_cue').html("<font color='red'>用户机构不能为空</font>");
+		$('#br_cue').html("<font color='red'>用户机构不能为空</font>");
 		return false;
 	}
     if (max_period == '') {
@@ -107,11 +129,11 @@ function add() {
     }
     if (max_period > 30 || max_period < 1) {
         $('#max_period').focus();
-        $('#user_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
+        $('#br_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
     }
 	if (email == '') {
 		$('#email_add').focus();
-		$('#user_cue').html("<font color='red'>用户email不能为空</font>");
+		$('#br_cue').html("<font color='red'>用户email不能为空</font>");
 		return false;
 	}
 	var emailPat=/^([a-zA-Z0-9_-].*)+@([a-zA-Z0-9_-].*)+(.com)$/;
@@ -183,42 +205,42 @@ function update() {
 	var position = $.trim($("#position_add").val());
 	var state = $.trim($("#state_add").val());
     if (user_id == '') {
-        $('#user_cue').html("<font color='red'>用户ID为空,请刷新页面重试</font>");
+        $('#br_cue').html("<font color='red'>用户ID为空,请刷新页面重试</font>");
         return false;
     }
 	if (user_account == '') {
 		$('#user_account_add').focus();
-		$('#user_cue').html("<font color='red'>用户帐号不能为空</font>");
+		$('#br_cue').html("<font color='red'>用户帐号不能为空</font>");
 		return false;
 	}
 	if (is_str_unsafe(user_account) == true) {
 		$('#user_account_add').focus();
-		$('#user_cue').html("<font color='red'>用户帐号含有非法字符</font>");
+		$('#br_cue').html("<font color='red'>用户帐号含有非法字符</font>");
 		return false;
 	}
 	if (is_str_toolong(user_account) == true) {
 		$('#user_account_add').focus();
-		$('#user_cue').html("<font color='red'>用户帐号超过最大长度</font>");
+		$('#br_cue').html("<font color='red'>用户帐号超过最大长度</font>");
 		return false;
 	}
 	if (user_name == '') {
 		$('#user_name_add').focus();
-		$('#user_cue').html("<font color='red'>用户姓名不能为空</font>");
+		$('#br_cue').html("<font color='red'>用户姓名不能为空</font>");
 		return false;
 	}
 	if (is_str_unsafe(user_name) == true) {
 		$('#user_name_add').focus();
-		$('#user_cue').html("<font color='red'>用户姓名含有非法字符</font>");
+		$('#br_cue').html("<font color='red'>用户姓名含有非法字符</font>");
 		return false;
 	}
 	if (is_str_toolong(user_name) == true) {
 		$('#user_name_add').focus();
-		$('#user_cue').html("<font color='red'>用户姓名超过最大长度</font>");
+		$('#br_cue').html("<font color='red'>用户姓名超过最大长度</font>");
 		return false;
 	}
 	if (branch == '') {
 		$('#branch_add').focus();
-		$('#user_cue').html("<font color='red'>用户机构不能为空</font>");
+		$('#br_cue').html("<font color='red'>用户机构不能为空</font>");
 		return false;
 	}
     if (max_period == '') {
@@ -227,11 +249,11 @@ function update() {
     }
     if (max_period > 30 || max_period < 1) {
         $('#max_period').focus();
-        $('#user_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
+        $('#br_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
     }
 	if (email == '') {
 		$('#email_add').focus();
-		$('#user_cue').html("<font color='red'>用户email不能为空</font>");
+		$('#br_cue').html("<font color='red'>用户email不能为空</font>");
 		return false;
 	}
 	var emailPat=/^([a-zA-Z0-9_-].*)+@([a-zA-Z0-9_-].*)+(.com)$/;

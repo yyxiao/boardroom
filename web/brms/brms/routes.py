@@ -60,6 +60,7 @@ def boardroom_include(config):
     config.add_route('delete_br', '/delete_boardroom')
     config.add_route('update_br', '/update_boardroom')
     config.add_route('br_booking', '/boardroom_booking')
+    config.add_route('br_upload_pic', '/br_upload_pic')
 
 
 def terminal_include(config):
