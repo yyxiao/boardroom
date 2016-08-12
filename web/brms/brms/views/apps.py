@@ -25,8 +25,8 @@ def pad_login(request):
     :return:
     """
     dbs = request.dbsession
-    user_account = request.GET.get('userAccount', '')
-    pad_code = request.GET.get('padCode', '')
+    user_account = request.POST.get('user_account', '')
+    pad_code = request.POST.get('pad_code', '')
     password = base64.encodebytes(request.params['password'].encode()).decode('utf-8').replace('\n', '')
     error_msg = ''
     if not pad_code:
@@ -66,9 +66,9 @@ def user_check(request):
     :return:
     """
     dbs = request.dbsession
-    user_account = request.params['userAccount']
-    pad_code = request.params['padCode']
-    password = base64.encodebytes(request.params['password'].encode()).decode('utf-8').replace('\n', '')
+    user_account = request.POST.get('user_account', '')
+    pad_code = request.POST.get('pad_code', '')
+    password = base64.encodebytes(request.POST.get('password', '').encode()).decode('utf-8').replace('\n', '')
     error_msg = ''
     if not pad_code:
         error_msg = '终端编码不能为空'
@@ -110,7 +110,7 @@ def meeting_list(request):
     :return:
     """
     dbs = request.dbsession
-    pad_code = request.params['padCode']
+    pad_code = request.POST.get('pad_code', '')
     error_msg = ''
     if not pad_code:
         error_msg = '终端编码不能为空'
@@ -131,6 +131,17 @@ def meeting_list(request):
     return json_a
 
 
+@view_config(route_name='app_index', renderer='json')
+def index(request):
+    """
+    :return:
+    """
+    json_a = {
+        'success': 'true',
+    }
+    return json_a
+
+
 @view_config(route_name='pad_add_meeting', renderer='json')
 def pad_add_meeting(request):
     dbs = request.dbsession
@@ -142,7 +153,7 @@ def pad_add_meeting(request):
     elif not pad_code:
         error_msg = '终端编码不能为空'
     else:
-        meeting.name = request.POST.get('meet_name', '')
+        meeting.name = request.POST.get('meeting_name', '')
         meeting.description = request.POST.get('description', '')
         meeting.start_date = request.POST.get('start_date', '')
         meeting.end_date = request.POST.get('end_date', '')

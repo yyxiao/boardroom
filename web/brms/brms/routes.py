@@ -19,7 +19,7 @@ def app_include(config):
     config.add_route('padLogin', '/padLogin')
     config.add_route('userCheck', '/userCheck')
     config.add_route('meetingList', '/meetingList')
-    config.add_route('index', '/index')
+    config.add_route('app_index', '/index')
     config.add_route('pad_add_meeting', '/pad_add_meeting')
 
 
@@ -73,11 +73,11 @@ def boardroom_include(config):
 def terminal_include(config):
     config.add_route('to_terminal', '/to_terminal')
     config.add_route('list_terminal', '/list')
-    config.add_route('add_terminal', '/add_terminal')
+    config.add_route('add_terminal', '/add')
     config.add_route('to_add_terminal', '/to_add')
     config.add_route('to_update_terminal', '/to_update')
-    config.add_route('delete_terminal', '/delete_terminal')
-    config.add_route('update_terminal', '/update_terminal')
+    config.add_route('delete_terminal', '/del')
+    config.add_route('update_terminal', '/update')
 
 
 def meeting_include(config):

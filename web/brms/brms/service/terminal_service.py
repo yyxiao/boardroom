@@ -10,19 +10,24 @@ from ..common.paginator import Paginator
 import transaction
 
 
-def find_terminals(dbs, pad_code, page_no):
+def find_terminals(dbs, pad_code, meeting_name, page_no):
     """
     终端列表
     :param dbs:
     :param pad_code:
+    :param meeting_name:
     :param page_no:
     :return:
     """
-    terminals = dbs.query(HasPad.id, HasPad.pad_code, HasPad.last_time, SysUser.user_name, HasPad.create_time)\
-        .outerjoin(SysUser, SysUser.id == HasPad.create_user)
+    terminals = dbs.query(HasPad.id, HasPad.pad_code, HasPad.last_time, SysUser.user_name,
+                          HasPad.create_time, HasBoardroom.name)\
+        .outerjoin(SysUser, SysUser.id == HasPad.create_user)\
+        .outerjoin(HasBoardroom, HasBoardroom.pad_id == HasPad.id)
     if pad_code:
         terminals = terminals.filter(HasPad.pad_code.like('%'+pad_code+'%'))
-    pad_list = terminals.order_by(HasPad.create_time)
+    if meeting_name:
+        terminals = terminals.filter(HasPad.pad_code.like('%' + pad_code + '%'))
+    pad_list = terminals.order_by(HasPad.create_time.desc())
     results, paginator = Paginator(pad_list, page_no).to_dict()
     lists = []
     for obj in results:
@@ -31,12 +36,14 @@ def find_terminals(dbs, pad_code, page_no):
         last_time = obj[2] if obj[2] else ''
         user_name = obj[3] if obj[3] else ''
         create_time = obj[4] if obj[4] else ''
+        bdr_name = obj[5] if obj[5] else ''
         temp_dict = {
             'id': id,
             'pad_code': pad_code,
             'last_time': last_time,
-            'user_name': user_name,
+            'create_user': user_name,
             'create_time': create_time,
+            'bdr_name': bdr_name,
         }
         lists.append(temp_dict)
     return lists, paginator

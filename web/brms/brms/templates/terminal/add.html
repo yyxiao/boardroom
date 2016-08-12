@@ -3,16 +3,16 @@
 		<div class="modal-content">
 			<div class="modal-header">
                 {% if role %}
-				    <h4 class="modal-title">更新角色</h4>
+				    <h4 class="modal-title">更新设备</h4>
                 {% else %}
-                    <h4 class="modal-title">新增角色</h4>
+                    <h4 class="modal-title">新增设备</h4>
                 {% endif %}
 			</div>
             <p id="role_cue"></p>
 			<div class="form-horizontal">
                 {% if role %}
 				    <div class="form-group">
-                      <label class="col-sm-2 control-label">角色代码</label>
+                      <label class="col-sm-2 control-label">设备代码</label>
                       <div class="col-sm-9">
                         <input name="role_id" type="text" class="form-control" readonly="readonly"
                                id="role_id" value="{{role.role_id}}">
@@ -20,7 +20,7 @@
                     </div>
                 {% endif %}
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">角色名称</label>
+                  <label class="col-sm-2 control-label">设备名称</label>
                   <div class="col-sm-9">
                     {% if role %}
                         <input name="name" type="text" class="form-control" id="name" value="{{role.role_name}}">
@@ -30,7 +30,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">角色描述</label>
+                  <label class="col-sm-2 control-label">设备描述</label>
                   <div class="col-sm-9">
                     {% if role %}
                         <input name="desc" type="text" class="form-control" id="desc" value="{{role.role_desc}}">

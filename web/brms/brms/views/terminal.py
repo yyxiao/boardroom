@@ -28,9 +28,10 @@ def to_terminal(request):
 @view_config(route_name='list_terminal')
 def list_terminal(request):
     dbs = request.dbsession
-    pad_code = request.POST.get('pad_code', '')
+    pad_code = request.POST.get('search_code', '')
+    meeting_name = request.POST.get('search_meeting_name', '')
     page_no = int(request.POST.get('page', '1'))
-    (terminals, paginator) = find_terminals(dbs, pad_code, page_no)
+    (terminals, paginator) = find_terminals(dbs, pad_code, meeting_name, page_no)
     return render_to_response('terminal/list.html', locals(), request)
 
 

@@ -2,15 +2,16 @@
 <div class="panel panel-success">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			<i class="icon-role" id="icon-role"></i>&nbsp;角色列表
+			<i class="icon-terminal" id="icon-terminal"></i>&nbsp;终端列表
 		</h3>
 	</div>
 
 	<div class="panel-body">
 		<div class="form-inline">
-			<label>角色名称:</label>
-            <input type="text" class="form-control"
-				id="search" name="search" placeholder="">
+            <label>终端编号:</label>
+            <input type="text" class="form-control"	id="search_code" name="search_code">
+			<label>会议室名称:</label>
+            <input type="text" class="form-control" id="search_meeting_name" name="search_meeting_name">
 			<label>
 			    <button type="button" class="btn btn-primary" onclick="list(1)">
 					<i class="icon-search" id="icon_search"></i>&nbsp;查询&nbsp;
@@ -31,6 +32,6 @@
 
 <div id="modalWrapper"></div>
 
-<script src="{{ request.static_url('brms:static/js/role/role.js') }}"></script>
+<script src="{{ request.static_url('brms:static/js/terminal/terminal.js') }}"></script>
 {% endblock %}
 
