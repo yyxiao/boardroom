@@ -1,13 +1,13 @@
 list(1)
 /*
- * list role
+ * list terminal
  */
 function list(page) {
 	var url = "/terminal/list";
 	var data = {
 		"search_code" : $("#search_code").val(),
 		"search_meeting_name" : $("#search_meeting_name").val(),
-		"page" : page,
+		"page" : page
 	}
 	$("#listWrapper").load(url, data, function(response, status) {
 		if (status == 'error') {
@@ -29,8 +29,8 @@ function page() {
 /*
  * uncheck other terminal
  */
-function checkrole(self) {
-	var boxes = $("input[name='idbox']")
+function checkterminal(self) {
+	var boxes = $("input[name='idbox']");
 	$.each(boxes, function(index, box) {
 		if (box != self) {
 			box.checked = false;
@@ -55,56 +55,39 @@ function to_add() {
  * add terminal
  */
 function add() {
-	var name = $.trim($("#name").val());
-	var desc = $.trim($("#desc").val());
-	if (name == '') {
-		$('#name').focus();
-		$('#role_cue').html("<font color='red'>角色名称不能为空</font>");
+    var pad_code = $.trim($("#pad_code").val());
+	if (pad_code == '') {
+		$('#pad_code').focus();
+		$('#terminal_cue').html("<font color='red'>终端编码不能为空</font>");
 		return false;
 	}
-	if (is_str_unsafe(name) == true) {
-		$('#name').focus();
-		$('#role_cue').html("<font color='red'>角色名称含有非法字符</font>");
+	if (is_str_unsafe(pad_code) == true) {
+		$('#pad_code').focus();
+		$('#terminal_cue').html("<font color='red'>终端编码含有非法字符</font>");
 		return false;
 	}
-	if (is_str_toolong(name) == true) {
-		$('#name').focus();
-		$('#role_cue').html("<font color='red'>角色名称超过最大长度</font>");
-		return false;
-	}
-	if (desc == '') {
-		$('#desc').focus();
-		$('#role_cue').html("<font color='red'>角色描述不能为空</font>");
-		return false;
-	}
-	if (is_str_unsafe(desc) == true) {
-		$('#desc').focus();
-		$('#role_cue').html("<font color='red'>角色描述含有非法字符</font>");
-		return false;
-	}
-	if (is_str_toolong(desc, 100) == true) {
-		$('#desc').focus();
-		$('#role_cue').html("<font color='red'>角色描述超过最大长度</font>");
+	if (is_str_toolong(pad_code) == true) {
+		$('#pad_code').focus();
+		$('#terminal_cue').html("<font color='red'>终端编码超过最大长度</font>");
 		return false;
 	}
 	$.ajax({
 		type : "POST",
 		url : "/terminal/add",
 		data : {
-			"name" : name,
-			"desc" : desc
+			"pad_code" : pad_code
 		},
 		error : function() {
-			$.messager.popup("新增角色失败");
+			$.messager.popup("新增终端失败");
 		},
 		success : function(data) {
 			if (data.success == "true") {
 				$("#addModal").modal('hide');
-				$.messager.popup("新增角色成功！");
+				$.messager.popup("新增终端成功！");
 				list(1)
 			}
 			else{
-				$.messager.popup("新增角色失败，请检查相关信息后重试！");
+				$.messager.popup("新增终端失败，请检查相关信息后重试！");
 			}
 		},
 	})
@@ -127,44 +110,28 @@ function to_update() {
 			}
 		});
 	} else {
-		$.messager.popup("请先选择一个角色");
+		$.messager.popup("请先选择一个终端");
 	}
 }
 /*
  * update terminal
  */
 function update() {
-	var id = $("#role_id").val()
-	var name = $.trim($("#name").val());
-	var desc = $.trim($("#desc").val());
-	if (name == '') {
-		$('#name').focus();
-		$('#role_cue').html("<font color='red'>角色名称不能为空</font>");
+	var id = $("#terminal_id").val()
+	var pad_code = $.trim($("#pad_code").val());
+	if (pad_code == '') {
+		$('#pad_code').focus();
+		$('#terminal_cue').html("<font color='red'>终端编码不能为空</font>");
 		return false;
 	}
-	if (is_str_unsafe(name) == true) {
-		$('#name').focus();
-		$('#role_cue').html("<font color='red'>角色名称含有非法字符</font>");
+	if (is_str_unsafe(pad_code) == true) {
+		$('#pad_code').focus();
+		$('#terminal_cue').html("<font color='red'>终端编码含有非法字符</font>");
 		return false;
 	}
-	if (is_str_toolong(name) == true) {
-		$('#name').focus();
-		$('#role_cue').html("<font color='red'>角色名称超过最大长度</font>");
-		return false;
-	}
-	if (desc == '') {
-		$('#desc').focus();
-		$('#role_cue').html("<font color='red'>角色描述不能为空</font>");
-		return false;
-	}
-	if (is_str_unsafe(desc) == true) {
-		$('#desc').focus();
-		$('#role_cue').html("<font color='red'>角色描述含有非法字符</font>");
-		return false;
-	}
-	if (is_str_toolong(desc, 100) == true) {
-		$('#desc').focus();
-		$('#role_cue').html("<font color='red'>角色描述超过最大长度</font>");
+	if (is_str_toolong(pad_code) == true) {
+		$('#pad_code').focus();
+		$('#terminal_cue').html("<font color='red'>终端编码超过最大长度</font>");
 		return false;
 	}
 	$.ajax({
@@ -172,16 +139,15 @@ function update() {
 		url : "/terminal/update",
 		data : {
 			"id" : id,
-			"name" : name,
-			"desc" : desc
+			"pad_code" : pad_code
 		},
 		error : function() {
-			$.messager.popup("更新角色失败");
+			$.messager.popup("更新终端失败");
 		},
 		success : function(data) {
 			if (data.success) {
 				$("#addModal").modal('hide');
-				$.messager.popup("更新角色成功！");
+				$.messager.popup("更新终端成功！");
 				list(1)
 			}
 		},
@@ -197,7 +163,7 @@ function del() {
 		        ok:{ text: "确定" },
 		        cancel: { text: "取消"}
 		      };
-		$.messager.confirm("提示", "你确定要删除该角色吗？", function() { 
+		$.messager.confirm("提示", "你确定要删除该终端吗？", function() { 
 			$.ajax({
 				type : "POST",
 				url : "/terminal/del",
@@ -205,17 +171,17 @@ function del() {
 					"id" : idbox.val()
 				},
 				error : function() {
-					$.messager.popup("删除角色失败");
+					$.messager.popup("删除终端失败");
 				},
 				success : function(data) {
 					if (data.success) {
-						$.messager.popup("删除角色成功！");
+						$.messager.popup("删除终端成功！");
 						list(1)
 					}
 				},
 			})
 	      });
 	} else {
-		$.messager.popup("请先选择一个角色");
+		$.messager.popup("请先选择一个终端");
 	}
 }

@@ -46,8 +46,7 @@ def to_add(request):
 def add_terminal(request):
     dbs = request.dbsession
     terminal = HasPad()
-    terminal.terminal_name = request.POST.get('name', '')
-    terminal.terminal_desc = request.POST.get('desc', '')
+    terminal.pad_code = request.POST.get('pad_code', '')
     terminal.create_user = request.session['userId']
     terminal.create_time = date_now()
     error_msg = add(dbs, terminal)
@@ -93,8 +92,7 @@ def update_terminal(request):
     dbs = request.dbsession
     terminal_id = request.POST.get('id', '')
     terminal = find_terminal(dbs, terminal_id)
-    terminal.terminal_name = request.POST.get('name', '')
-    terminal.terminal_desc = request.POST.get('desc', '')
+    terminal.pad_code = request.POST.get('pad_code', '')
     terminal.create_user = request.session['userId']
     terminal.create_time = date_now()
     error_msg = add(dbs, terminal)

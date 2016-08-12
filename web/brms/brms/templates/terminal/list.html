@@ -4,7 +4,8 @@
 			<tr>
 				<th></th>
 				<th>设备代码</th>
-                <th>设备描述</th>
+                <th>设备编码</th>
+                <th>会议室名称</th>
                 <th>最后通信时间</th>
                 <th>创建人</th>
                 <th>创建时间</th>
@@ -12,9 +13,10 @@
 			{% for terminal in terminals %}
 			<tr>
 				<td><input type="checkbox" name="idbox"
-					value="{{terminal.id}}" onclick="checkrole(this)"></td>
+					value="{{terminal.id}}" onclick="checkterminal(this)"></td>
 				<td>{{terminal.id}}</td>
 				<td>{{terminal.pad_code}}</td>
+                <td>{{terminal.bdr_name}}</td>
                 <td>{{terminal.last_time}}</td>
                 <td>{{terminal.create_user}}</td>
                 <td>{{terminal.create_time}}</td>

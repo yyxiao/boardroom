@@ -8,6 +8,9 @@ __mtime__ = 2016/8/12
 from ..models.model import *
 from ..common.paginator import Paginator
 import transaction
+import logging
+
+logger = logging.getLogger('operator')
 
 
 def find_terminals(dbs, pad_code, meeting_name, page_no):
@@ -26,7 +29,7 @@ def find_terminals(dbs, pad_code, meeting_name, page_no):
     if pad_code:
         terminals = terminals.filter(HasPad.pad_code.like('%'+pad_code+'%'))
     if meeting_name:
-        terminals = terminals.filter(HasPad.pad_code.like('%' + pad_code + '%'))
+        terminals = terminals.filter(HasBoardroom.name.like('%' + meeting_name + '%'))
     pad_list = terminals.order_by(HasPad.create_time.desc())
     results, paginator = Paginator(pad_list, page_no).to_dict()
     lists = []
@@ -63,12 +66,13 @@ def delete_terminal(dbs, terminal_id):
     error_msg = ''
     try:
         with transaction.manager:
-            dbs.query(HasPad).filter(HasPad.terminal_id == terminal_id).delete()
-    except Exception:
+            dbs.query(HasPad).filter(HasPad.id == terminal_id).delete()
+    except Exception as e:
+        logger.error(e)
         error_msg = '删除终端失败，请核对后重试'
     return error_msg
 
 
 def find_terminal(dbs, terminal_id):
-    terminal = dbs.query(HasPad).filter(HasPad.terminal_id == terminal_id).first()
+    terminal = dbs.query(HasPad).filter(HasPad.id == terminal_id).first()
     return terminal
