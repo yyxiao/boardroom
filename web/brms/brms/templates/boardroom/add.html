@@ -1,0 +1,115 @@
+<div class="modal" id="addModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                {% if boardroom %}
+                    <h4 class="modal-title">修改会议室</h4>
+                {% else %}
+                    <h4 class="modal-title">新增会议室</h4>
+                {% endif %}
+            </div>
+            <p id="br_cue"></p>
+            <form id="addForm" action="{% if boardroom %}/boardroom/update_boardroom{% else %}/boardroom/add_boardroom{% endif %}" method="post"
+                  class="form-horizontal" enctype="multipart/form-data">
+                {% if boardroom %}
+                    <input id="br_id" name="br_id" class="hidden" value="{{ boardroom.br_id }}">
+                {% endif %}
+                <div class="form-group">
+                    <label for="input br_name_add" class="col-sm-2 control-label">名称</label>
+                    <div class="col-sm-9">
+                        {% if boardroom %}
+                            <input name="br_name_add" type="text" class="form-control" value="{{ boardroom.name }}"
+                               id="br_name_add">
+                        {% else %}
+                            <input name="br_name_add" type="text" class="form-control" placeholder="会议室中文名"
+                               id="br_name_add">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input branch_add" class="col-sm-2 control-label">所属机构</label>
+                    <div class="col-sm-9">
+                        <select class="form-control" id="branch_add" name="branch_add">
+                            {% if boardroom %}
+                                <option value="{{ boardroom.org_id }}" selected="selected">{{ boardroom.org_name }}</option>
+                            {% endif %}
+                            <option value=""></option>
+                            {% for branch in branches %}
+                                <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input br_config_add" class="col-sm-2 control-label">配置</label>
+                    <div class="col-sm-9">
+                        {% if boardroom %}
+                            <input name="br_config_add" type="text" class="form-control" value="{{ boardroom.config }}"
+                               id="br_config_add">
+                        {% else %}
+                            <input name="br_config_add" type="text" class="form-control" placeholder="逗号分隔"
+                               id="br_config_add">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input br_desc_add" class="col-sm-2 control-label">描述</label>
+                    <div class="col-sm-9">
+                        {% if boardroom %}
+                            <input name="br_desc_add" type="text" class="form-control" value="{{ boardroom.description }}"
+                               id="br_desc_add">
+                        {% else %}
+                            <input name="br_desc_add" type="text" class="form-control" placeholder="会议室位置大小等介绍"
+                               id="br_desc_add">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input state_add" class="col-sm-2 control-label">状态</label>
+                    <div class="col-sm-9">
+                        {% if boardroom %}
+                            <input name="state_add" type="text" class="form-control" value="{{ boardroom.state }}"
+                               id="state_add">
+                        {% else %}
+                            <input name="state_add" type="text" class="form-control" placeholder="1"
+                               id="state_add">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input br_pic_add" class="col-sm-2 control-label">照片</label>
+                    <div class="col-sm-9">
+                        <input type="file" name="photoimg" id="photoimg" />
+                        {% if boardroom %}
+                            <div id='preview'>
+                                <img src="{{ request.static_url('brms:static/img/boardroom/' + boardroom.picture) }}" height="150" width="150"/>
+                            </div>
+                        {% else %}
+                            <div id='preview'>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary"
+                                onclick="{% if user %}update(){% else %}add(){% endif %}">保存
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $("#addForm").on('change', '#photoimg', function (e) {
+        if(e.target.files.length==1){
+            {#	    $("#preview").html('');#}
+            $("#preview").html('<img src="{{ request.static_url('brms:static/img/boardroom/loader.gif') }}" alt="Uploading...."/>');
+
+            upload();
+        }
+    });
+</script>
