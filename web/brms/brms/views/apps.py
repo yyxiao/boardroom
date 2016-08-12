@@ -143,7 +143,7 @@ def pad_add_meeting(request):
         error_msg = '终端编码不能为空'
     else:
         meeting.name = request.POST.get('name', '')
-        meeting.description = request.POST.get('desc', '')
+        meeting.description = request.POST.get('description', '')
         meeting.start_date = request.POST.get('start_date', '')
         meeting.end_date = request.POST.get('end_date', '')
         meeting.start_time = request.POST.get('start_time', '')
