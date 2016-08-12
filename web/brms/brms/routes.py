@@ -3,12 +3,9 @@ def includeme(config):
     config.add_route('home', '/')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
-    config.add_route('padLogin', '/padLogin')
-    config.add_route('userCheck', '/userCheck')
-    config.add_route('meetingList', '/meetingList')
     config.add_route('reset_pwd', '/reset_pwd')
     config.add_route('my_meeting', '/my_meeting')
-    config.add_route('pad_add_meeting', '/pad_add_meeting')
+    config.include(app_include, '/app')
     config.include(user_include, '/user')
     config.include(org_include, '/org')
     config.include(role_include, '/role')
@@ -16,6 +13,14 @@ def includeme(config):
     config.include(boardroom_include, '/boardroom')
     config.include(terminal_include, '/terminal')
     config.include(meeting_include, '/meeting')
+
+
+def app_include(config):
+    config.add_route('padLogin', '/padLogin')
+    config.add_route('userCheck', '/userCheck')
+    config.add_route('meetingList', '/meetingList')
+    config.add_route('index', '/index')
+    config.add_route('pad_add_meeting', '/pad_add_meeting')
 
 
 def user_include(config):
@@ -69,6 +74,8 @@ def terminal_include(config):
     config.add_route('to_terminal', '/to_terminal')
     config.add_route('list_terminal', '/list')
     config.add_route('add_terminal', '/add_terminal')
+    config.add_route('to_add_terminal', '/to_add')
+    config.add_route('to_update_terminal', '/to_update')
     config.add_route('delete_terminal', '/delete_terminal')
     config.add_route('update_terminal', '/update_terminal')
 

@@ -25,8 +25,8 @@ def pad_login(request):
     :return:
     """
     dbs = request.dbsession
-    user_account = request.params['userAccount']
-    pad_code = request.params['padCode']
+    user_account = request.GET.get('userAccount', '')
+    pad_code = request.GET.get('padCode', '')
     password = base64.encodebytes(request.params['password'].encode()).decode('utf-8').replace('\n', '')
     error_msg = ''
     if not pad_code:
@@ -142,7 +142,7 @@ def pad_add_meeting(request):
     elif not pad_code:
         error_msg = '终端编码不能为空'
     else:
-        meeting.name = request.POST.get('name', '')
+        meeting.name = request.POST.get('meet_name', '')
         meeting.description = request.POST.get('description', '')
         meeting.start_date = request.POST.get('start_date', '')
         meeting.end_date = request.POST.get('end_date', '')
