@@ -44,7 +44,7 @@
                   <div class="col-sm-9">
                     <input name="start_date" type="text" class="form-control" id="start_date"
                     {% if meeting %}
-                    value="{{meeting.start_date}}"
+                    value="{{meeting.start_date}}&nbsp;{{meeting.start_time}}"
                     {% endif %}>
                   </div>
                 </div>
@@ -53,25 +53,7 @@
                   <div class="col-sm-9">
                   <input name="end_date" type="text" class="form-control" id="end_date"
                     {% if meeting %}
-                     value="{{meeting.end_date}}"
-                    {% endif %}>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">开始时间</label>
-                  <div class="col-sm-9">
-                    <input name="start_time" type="text" class="form-control" id="start_time"
-                    {% if meeting %}
-                    value="{{meeting.start_time}}"
-                    {% endif %}>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">结束时间</label>
-                  <div class="col-sm-9">
-                  <input name="end_time" type="text" class="form-control" id="end_time"
-                    {% if meeting %}
-                     value="{{meeting.end_time}}"
+                     value="{{meeting.end_date}}&nbsp;{{meeting.end_time}}"
                     {% endif %}>
                   </div>
                 </div>
@@ -88,18 +70,26 @@
 	</div>
 </div>
 <script>
+    // 当前时间
     var nowdate = new Date();
-    var end_date = date.setDate(nowdate.getDate()+1);
-    alert(nowdate);
-    alert(end_date);
     $("#start_date").datetimepicker({
         language: 'zh-CN',
         autoclose: true,
         todayHighlight: true,
-        format: 'yyyy-mm-dd',
-        startDate: new Date(),
-        endDate: end_date,
-        minView: 2,
-        maxView: 3
+        format: 'yyyy-mm-dd hh:mm',
+        startDate: nowdate,
+        minView: 0,
+        maxView: 3,
+        minuteStep: 30
+    });
+    $("#end_date").datetimepicker({
+        language: 'zh-CN',
+        autoclose: true,
+        todayHighlight: true,
+        format: 'yyyy-mm-dd hh:mm',
+        startDate: nowdate,
+        minView: 0,
+        maxView: 3,
+        minuteStep: 30
     });
 </script>

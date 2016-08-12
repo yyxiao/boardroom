@@ -14,3 +14,7 @@ INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat
 INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('9', '会议9', '会议9滚动', NULL, '', '', '2016-08-12', '2016-08-12', '09:30', '10:00', '2016-08-10 14:33:20', '3', '');
 INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('10', '会议10', '会议10滚动', NULL, '', '', '2016-08-12', '2016-08-12', '11:30', '12:00', '2016-08-10 14:33:20', '3', '');
 INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('11', '会议11', '会议11滚动', NULL, '', '', '2016-08-12', '2016-08-12', '16:30', '17:30', '2016-08-10 14:33:20', '3', '');
+
+-- 会议室初始化
+INSERT INTO "brms"."has_boardroom" ("id", "name", "description", "config", "picture", "pad_id", "org_id", "type", "create_time", "create_user", "state") VALUES ('1', '会议室1', '会议室1', NULL, NULL, '1', '1', NULL, NULL, '3', '1');
+INSERT INTO "brms"."has_boardroom" ("id", "name", "description", "config", "picture", "pad_id", "org_id", "type", "create_time", "create_user", "state") VALUES ('2', '会议室2', '会议室2', NULL, NULL, '2', '1', NULL, NULL, '3', '1');
