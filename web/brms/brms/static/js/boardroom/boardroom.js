@@ -1,6 +1,6 @@
 list(1);
 /*
- * list user
+ * list boardroom
  */
 function list(page) {
 	var url = "/boardroom/list";
@@ -30,7 +30,7 @@ function page() {
 	list(pageNo);
 }
 /*
- * uncheck other role
+ * uncheck other boardroom
  */
 function checkbr(self) {
 	var boxes = $("input[name='idbox']");
@@ -41,7 +41,7 @@ function checkbr(self) {
 	});
 }
 /*
- * to add role
+ * to add boardroom
  */
 function to_add() {
 	var url = "/boardroom/to_add_boardroom";
@@ -57,7 +57,7 @@ function to_add() {
 //upload picture
 function upload() {
 	var formData = new FormData();
-	formData.append('photoimg', $('#photoimg')[0].files[0]);
+	formData.append('br_pic', $('#br_pic_add')[0].files[0]);
 	$.ajax({
 		type : "POST",
 		url : "/boardroom/br_upload_pic",
@@ -68,7 +68,7 @@ function upload() {
         processData: false,
 		success : function(data) {
 			if (data.resultFlag == "success") {
-				 $("#preview").html('<img src="static/img/boardroom/'+data.name+'" height="150" width="150"/>');
+				 $("#preview").html('<img src="static/img/boardroom/tmp/'+data.name+'" height="150" width="150"/>');
 			} else {
 				$("#preview").html(data.error_msg);
 			}
@@ -76,46 +76,27 @@ function upload() {
 	});
 }
 /*
- * add user
+ * add boardroom
  */
 function add() {
-	var user_account = $.trim($("#user_account_add").val());
-	var user_name = $.trim($("#user_name_add").val());
+	// var br_id = $.trim($("#br_id").val());
+	var br_name = $.trim($("#br_name_add").val());
 	var branch = $.trim($("#branch_add").val());
-	// var password = $.trim($("#password_add").val());
-    var max_period = $.trim($("#max_period_add").val());
-	var email = $.trim($("#email_add").val());
-	var phone = $.trim($("#phone_add").val());
-	var position = $.trim($("#position_add").val());
+    var br_config = $.trim($("#br_config_add").val());
+	var br_desc = $.trim($("#br_desc_add").val());
+	var file_path = $.trim($('#br_pic_add').val());
+	if (file_path != '') {
+		var br_pic = file_path.substring(file_path.lastIndexOf('\\')+1 );
+	}
 	var state = $.trim($("#state_add").val());
-	if (user_account == '') {
-		$('#user_account_add').focus();
-		$('#br_cue').html("<font color='red'>用户帐号不能为空</font>");
+	if (br_name == '') {
+		$('#br_name_add').focus();
+		$('#br_cue').html("<font color='red'>会议室名称不能为空</font>");
 		return false;
 	}
-	if (is_str_unsafe(user_account) == true) {
-		$('#user_account_add').focus();
-		$('#br_cue').html("<font color='red'>用户帐号含有非法字符</font>");
-		return false;
-	}
-	if (is_str_toolong(user_account) == true) {
-		$('#user_account_add').focus();
-		$('#br_cue').html("<font color='red'>用户帐号超过最大长度</font>");
-		return false;
-	}
-	if (user_name == '') {
-		$('#user_name_add').focus();
-		$('#br_cue').html("<font color='red'>用户姓名不能为空</font>");
-		return false;
-	}
-	if (is_str_unsafe(user_name) == true) {
-		$('#user_name_add').focus();
-		$('#br_cue').html("<font color='red'>用户姓名含有非法字符</font>");
-		return false;
-	}
-	if (is_str_toolong(user_name) == true) {
-		$('#user_name_add').focus();
-		$('#br_cue').html("<font color='red'>用户姓名超过最大长度</font>");
+	if (is_str_unsafe(br_name) == true) {
+		$('#br_name_add').focus();
+		$('#br_cue').html("<font color='red'>会议室名称含有非法字符</font>");
 		return false;
 	}
 	if (branch == '') {
@@ -123,36 +104,19 @@ function add() {
 		$('#br_cue').html("<font color='red'>用户机构不能为空</font>");
 		return false;
 	}
-    if (max_period == '') {
-        $('#max_period_add').value = 7;
-        max_period = 7;
-    }
-    if (max_period > 30 || max_period < 1) {
-        $('#max_period').focus();
-        $('#br_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
-    }
-	if (email == '') {
-		$('#email_add').focus();
-		$('#br_cue').html("<font color='red'>用户email不能为空</font>");
-		return false;
-	}
-	var emailPat=/^([a-zA-Z0-9_-].*)+@([a-zA-Z0-9_-].*)+(.com)$/;
-	var matchArray=email.match(emailPat);
-	if (matchArray==null) {
-		$.messager.popup('电子邮件地址格式不正确 (样例格式:xxxx@xxx.com)');
-		return false;
+	if (state == '') {
+		state = 1;
 	}
 	$.ajax({
 		type : "POST",
-		url : "/user/add_user",
+		url : "/boardroom/add_boardroom",
 		data : {
-			"user_account" : user_account,
-			"user_name" : user_name,
+			// "br_id" : br_id,
+			"br_name" : br_name,
 			"org_id" : branch,
-            "max_period": max_period,
-			"email" : email,
-			"phone" : phone,
-			"position" : position,
+            "br_config": br_config,
+			"br_desc" : br_desc,
+			"br_pic" : br_pic,
 			"state" : state
 		},
 		error : function() {
@@ -161,7 +125,7 @@ function add() {
 		success : function(data) {
 			if (data.resultFlag == "success") {
 				$("#addModal").modal('hide');
-				$.messager.popup('新增用户成功！密码已发送到该用户邮箱！');
+				$.messager.popup('新增会议室成功！');
 				list(1)
 			} else {
 				$.messager.popup(data.error_msg);
@@ -170,14 +134,14 @@ function add() {
 	})
 }
 /*
- * to update user
+ * to update boardroom
  */
 function to_update() {
 	var idbox = $("input[name='idbox']:checked");
 	if (idbox.length > 0) {
-		var url = "/user/to_update_user";
+		var url = "/boardroom/to_update_boardroom";
 		var data = {
-			"user_id" : idbox.val()
+			"br_id" : idbox.val()
 		};
 		$("#modalWrapper").load(url, data, function(response, status) {
 			if (status == "error") {
@@ -191,51 +155,31 @@ function to_update() {
 	}
 }
 /*
- * update user
+ * update boardroom
  */
 function update() {
-    var user_id = $.trim($("#user_id").val());
-	var user_account = $.trim($("#user_account_add").val());
-	var user_name = $.trim($("#user_name_add").val());
+    var br_id = $.trim($("#br_id").val());
+	var br_name = $.trim($("#br_name_add").val());
 	var branch = $.trim($("#branch_add").val());
-	// var password = $.trim($("#password_add").val());
-    var max_period = $.trim($("#max_period_add").val());
-	var email = $.trim($("#email_add").val());
-	var phone = $.trim($("#phone_add").val());
-	var position = $.trim($("#position_add").val());
+    var br_config = $.trim($("#br_config_add").val());
+	var br_desc = $.trim($("#br_desc_add").val());
+	var file_path = $.trim($('#br_pic_add').val());
+	if (file_path != '') {
+		var br_pic = file_path.substring(file_path.lastIndexOf('\\')+1 );
+	}
 	var state = $.trim($("#state_add").val());
-    if (user_id == '') {
-        $('#br_cue').html("<font color='red'>用户ID为空,请刷新页面重试</font>");
+	if (br_id == '') {
+        $('#user_cue').html("<font color='red'>更新失败,请刷新页面重试</font>");
         return false;
     }
-	if (user_account == '') {
-		$('#user_account_add').focus();
-		$('#br_cue').html("<font color='red'>用户帐号不能为空</font>");
+	if (br_name == '') {
+		$('#br_name_add').focus();
+		$('#br_cue').html("<font color='red'>会议室名称不能为空</font>");
 		return false;
 	}
-	if (is_str_unsafe(user_account) == true) {
-		$('#user_account_add').focus();
-		$('#br_cue').html("<font color='red'>用户帐号含有非法字符</font>");
-		return false;
-	}
-	if (is_str_toolong(user_account) == true) {
-		$('#user_account_add').focus();
-		$('#br_cue').html("<font color='red'>用户帐号超过最大长度</font>");
-		return false;
-	}
-	if (user_name == '') {
-		$('#user_name_add').focus();
-		$('#br_cue').html("<font color='red'>用户姓名不能为空</font>");
-		return false;
-	}
-	if (is_str_unsafe(user_name) == true) {
-		$('#user_name_add').focus();
-		$('#br_cue').html("<font color='red'>用户姓名含有非法字符</font>");
-		return false;
-	}
-	if (is_str_toolong(user_name) == true) {
-		$('#user_name_add').focus();
-		$('#br_cue').html("<font color='red'>用户姓名超过最大长度</font>");
+	if (is_str_unsafe(br_name) == true) {
+		$('#br_name_add').focus();
+		$('#br_cue').html("<font color='red'>会议室名称含有非法字符</font>");
 		return false;
 	}
 	if (branch == '') {
@@ -243,37 +187,16 @@ function update() {
 		$('#br_cue').html("<font color='red'>用户机构不能为空</font>");
 		return false;
 	}
-    if (max_period == '') {
-        $('#max_period_add').value = 7;
-        max_period = 7;
-    }
-    if (max_period > 30 || max_period < 1) {
-        $('#max_period').focus();
-        $('#br_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
-    }
-	if (email == '') {
-		$('#email_add').focus();
-		$('#br_cue').html("<font color='red'>用户email不能为空</font>");
-		return false;
-	}
-	var emailPat=/^([a-zA-Z0-9_-].*)+@([a-zA-Z0-9_-].*)+(.com)$/;
-	var matchArray=email.match(emailPat);
-	if (matchArray==null) {
-		$.messager.popup('电子邮件地址格式不正确 (样例格式:xxxx@xxx.com)');
-		return false;
-	}
 	$.ajax({
 		type : "POST",
-		url : "/user/update_user",
+		url : "/boardroom/update_boardroom",
 		data : {
-            "user_id": user_id,
-			"user_account" : user_account,
-			"user_name" : user_name,
+			"br_id" : br_id,
+			"br_name" : br_name,
 			"org_id" : branch,
-            "max_period": max_period,
-			"email" : email,
-			"phone" : phone,
-			"position" : position,
+            "br_config": br_config,
+			"br_desc" : br_desc,
+			"br_pic" : br_pic,
 			"state" : state
 		},
 		error : function() {
@@ -282,16 +205,16 @@ function update() {
 		success : function(data) {
 			if (data.resultFlag == "success") {
 				$("#addModal").modal('hide');
-				$.messager.popup('更新用户成功！');
+				$.messager.popup('新增会议室成功！');
 				list(1)
 			} else {
-				$.messager.popup('更新用户失败');
+				$.messager.popup(data.error_msg);
 			}
 		}
 	})
 }
 /*
- * delete user
+ * delete boardroom
  */
 function del() {
 	var idbox = $("input[name='idbox']:checked");
@@ -300,25 +223,28 @@ function del() {
 		        ok:{ text: "确定" },
 		        cancel: { text: "取消"}
 		      };
-		$.messager.confirm("提示", "你确定要删除该用户吗？", function() {
+		$.messager.confirm("提示", "你确定要删除该会议室吗？", function() {
 			$.ajax({
 				type : "POST",
-				url : "/user/delete_user",
+				url : "/boardroom/delete_boardroom",
 				data : {
-					"id" : idbox.val()
+					"br_id" : idbox.val()
 				},
 				error : function() {
 					redirect_to("/");
 				},
 				success : function(data) {
-					if (data.success) {
-						$.messager.popup("用户删除成功！");
+					if (data.resultFlag == "success") {
+						$("#addModal").modal('hide');
+						$.messager.popup('删除会议室成功！');
 						list(1)
+					} else {
+						$.messager.popup(data.error_msg);
 					}
 				}
 			});
 		});
 	} else {
-		$.messager.popup("请先选择一个用户！");
+		$.messager.popup("请先选择一个会议室！");
 	}
 }

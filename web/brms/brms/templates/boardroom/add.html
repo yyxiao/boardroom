@@ -18,7 +18,7 @@
                     <label for="input br_name_add" class="col-sm-2 control-label">名称</label>
                     <div class="col-sm-9">
                         {% if boardroom %}
-                            <input name="br_name_add" type="text" class="form-control" value="{{ boardroom.name }}"
+                            <input name="br_name_add" type="text" class="form-control" value="{{ boardroom.br_name }}"
                                id="br_name_add">
                         {% else %}
                             <input name="br_name_add" type="text" class="form-control" placeholder="会议室中文名"
@@ -79,10 +79,10 @@
                 <div class="form-group">
                     <label for="input br_pic_add" class="col-sm-2 control-label">照片</label>
                     <div class="col-sm-9">
-                        <input type="file" name="photoimg" id="photoimg" />
-                        {% if boardroom %}
+                        <input type="file" name="br_pic_add" id="br_pic_add" />
+                        {% if boardroom and boardroom.picture%}
                             <div id='preview'>
-                                <img src="{{ request.static_url('brms:static/img/boardroom/' + boardroom.picture) }}" height="150" width="150"/>
+                                <img src="{{ request.static_url('brms:static/img/boardroom/org/' + boardroom.picture) }}" height="150" width="150"/>
                             </div>
                         {% else %}
                             <div id='preview'>
@@ -95,7 +95,7 @@
                                 data-dismiss="modal">关闭
                         </button>
                         <button type="button" class="btn btn-primary"
-                                onclick="{% if user %}update(){% else %}add(){% endif %}">保存
+                                onclick="{% if boardroom %}update(){% else %}add(){% endif %}">保存
                         </button>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
     </div>
 </div>
 <script>
-    $("#addForm").on('change', '#photoimg', function (e) {
+    $("#addForm").on('change', '#br_pic_add', function (e) {
         if(e.target.files.length==1){
             {#	    $("#preview").html('');#}
             $("#preview").html('<img src="{{ request.static_url('brms:static/img/boardroom/loader.gif') }}" alt="Uploading...."/>');

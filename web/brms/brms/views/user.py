@@ -38,16 +38,19 @@ def list_user(request):
     :param request:
     :return:
     '''
-    dbs = request.dbsession
-    user_account = request.params['user_account']
-    user_name = request.params['user_name']
-    org_id = request.params['org_id']
-    role_name = request.params['role_name']
-    page = int(request.params['page'])
+    if request.method == 'POST':
+        dbs = request.dbsession
+        user_account = request.POST.get('user_account', '')
+        user_name = request.POST.get('user_name', '')
+        org_id = request.POST.get('org_id', '')
+        role_name = request.POST.get('role_name', '')
+        page = int(request.POST.get('page', 1))
 
-    (users, paginator) = find_users(dbs, user_account, user_name, org_id, role_name, page)
+        (users, paginator) = find_users(dbs, user_account, user_name, org_id, role_name, page)
 
-    return render_to_response('user/list.html', locals(), request)
+        return render_to_response('user/list.html', locals(), request)
+
+    return Response('', 404)
 
 
 @view_config(route_name='to_add_user')
@@ -72,28 +75,22 @@ def add_user(request):
         user.email = request.POST.get('email', '')
         user.max_period = request.POST.get('max_period', 7)
         user.user_type = request.POST.get('user_type', 0)
-        user.org_id = request.POST.get('org_id', 0)
+        user.org_id = request.POST.get('org_id', 0)             # TODO org_id 不能为空
         user.position = request.POST.get('position', '')
         user.create_time = datetime.now().strftime(datetime_format)
         user.create_user = request.session['userId']
-        user.state = '1'
+        user.state = request.POST.get('state', 1)
 
         init_pwd = init_password()
         user.user_pwd = get_password(init_pwd)
-        error_msg = add(dbs, user)
-        if error_msg:
-            json = {
-                'resultFlag': 'failed',
-                'error_msg': error_msg
-            }
-        else:
-            # send_email(user.email, init_pwd)
-            json = {
-                'resultFlag': 'success'
-            }
+        msg = add(dbs, user)
+        json = {
+            'resultFlag': 'failed' if msg else 'success',
+            'error_msg': msg
+        }
         return json
-    else:
-        return {}
+
+    return {}
 
 
 @view_config(route_name='to_update_user')
@@ -106,7 +103,7 @@ def to_update_user(request):
     '''
     dbs = request.dbsession
     branches = find_branch(dbs)
-    user_id = request.params['user_id']
+    user_id = request.POST.get('user_id', 0)
     user = find_user(dbs, user_id)
     return render_to_response('user/add.html', locals(), request)
 
@@ -116,8 +113,7 @@ def to_update_user(request):
 def update_user(request):
     if request.method == 'POST':
         dbs = request.dbsession
-        user = SysUser()
-        user.id = request.POST.get('user_id')
+        user = dbs.query(SysUser).filter(SysUser.id == request.POST.get('user_id', 0)).first()
         user.user_account = request.POST.get('user_account', '')
         user.user_name = request.POST.get('user_name', '')
         user.phone = request.POST.get('phone', '')
@@ -128,20 +124,15 @@ def update_user(request):
         user.org_id = request.POST.get('org_id', 0)
         user.position = request.POST.get('position', '')
         user.state = request.POST.get('state', '')
-        print('update1')
-        error_msg = update(dbs, user)
-        if error_msg:
-            json = {
-                'resultFlag': 'failed',
-                'error_msg': error_msg
-            }
-        else:
-            json = {
-                'resultFlag': 'success'
-            }
+        user.update_time = datetime.now().strftime(datetime_format)
+        msg = update(dbs, user)
+        json = {
+            'resultFlag': 'failed' if msg else 'success',
+            'error_msg': msg
+        }
         return json
-    else:
-        return {}
+
+    return {}
 
 
 @view_config(route_name='delete_user', renderer='json')
@@ -150,17 +141,12 @@ def delete_user(request):
     if request.method == 'POST':
         dbs = request.dbsession
         user_id = int(request.POST.get('id', 0))
-        error_msg = delete(dbs, user_id)
-        if error_msg:
-            json = {
-                'success': 'false',
-                'error_msg': error_msg
-            }
-        else:
-            json = {
-                'success': 'true'
-            }
+        msg = delete(dbs, user_id)
+        json = {
+            'resultFlag': 'failed' if msg else 'success',
+            'error_msg': msg
+        }
 
         return json
-    else:
-        return {}
+
+    return {}

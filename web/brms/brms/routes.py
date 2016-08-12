@@ -63,11 +63,11 @@ def boardroom_include(config):
     config.add_route('list_br', '/list')
     config.add_route('to_add_br', '/to_add_boardroom')
     config.add_route('add_br', '/add_boardroom')
-    config.add_route('to_delete_br', '/to_delete_boardroom')
     config.add_route('delete_br', '/delete_boardroom')
+    config.add_route('to_update_br', '/to_update_boardroom')
     config.add_route('update_br', '/update_boardroom')
-    config.add_route('br_booking', '/boardroom_booking')
     config.add_route('br_upload_pic', '/br_upload_pic')
+    config.add_route('br_booking', '/boardroom_booking')
 
 
 def terminal_include(config):

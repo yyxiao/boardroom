@@ -130,18 +130,7 @@ def update(dbs, user):
     '''
     try:
         with transaction.manager:
-            print(user.id)
-            user_old = dbs.query(SysUser).filter(SysUser.id == user.id).first()
-            if user_old:
-                user_old.user_name = user.user_name
-                user_old.phone = user.phone
-                user_old.address = user.address
-                user_old.email = user.email
-                user_old.max_period = user.max_period
-                user_old.user_type = user.user_type
-                user_old.org_id = user.org_id
-                user_old.position = user.position
-                user_old.state = user.state
+            dbs.merge(user)
         return ''
     except Exception as e:
         logger.error(e)

@@ -21,10 +21,10 @@
                     <td>{{ boardroom.br_name }}</td>
                     <td>
                         <a class="image-link"
-                           href="{{ request.static_url('brms:static/img/boardroom/' + (boardroom.picture if boardroom.picture else 'default.jpg')) }}"
+                           href="{{ request.static_url('brms:static/img/boardroom/' + (('org/'+boardroom.picture) if boardroom.picture else 'default.jpg')) }}"
                            data-lightbox="image">
                             <img class="image"
-                                 src="{{ request.static_url('brms:static/img/boardroom/' + (boardroom.picture if boardroom.picture else 'default.jpg')) }}"
+                                 src="{{ request.static_url('brms:static/img/boardroom/' + (('org/'+boardroom.picture) if boardroom.picture else 'default.jpg')) }}"
                                  height="70" width="90" alt=""/>
                         </a>
                     </td>

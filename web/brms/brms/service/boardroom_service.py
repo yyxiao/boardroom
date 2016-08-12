@@ -4,8 +4,16 @@
 __author__ = cuizc
 __mtime__ = 2016-08-10
 """
+import logging
+import transaction
+import os
+import shutil
+from datetime import datetime
 from ..models.model import SysOrg, HasBoardroom
 from ..common.paginator import Paginator
+
+
+logger = logging.getLogger('operator')
 
 
 def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_no=1):
@@ -56,7 +64,7 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
         temp_dict = {
             'br_id': br_id,
             'br_name': br_name,
-            'picture': picture,
+            'picture': (str(org_id) + '/' + picture) if picture else '',
             'config': config,
             'description': description,
             'org_id': org_id,
@@ -79,5 +87,142 @@ def find_boardroom(dbs, br_id):
     if len(brs) >= 1:
         return brs[0]
     return None
+
+
+def add(dbs, boardroom):
+    '''
+    添加会议室到数据库
+    :param dbs:
+    :param boardroom:
+    :return:
+    '''
+    try:
+        with transaction.manager:
+            dbs.add(boardroom)
+            dbs.flush()
+        return ''
+    except Exception as e:
+        logger.error(e)
+        return '添加会议室失败，请核对后重试'
+
+
+def update(dbs, boardroom):
+    '''
+    更新会议室信息到数据库
+    :param dbs:
+    :param boardroom:
+    :return:
+    '''
+    try:
+        with transaction.manager:
+            dbs.merge(boardroom)
+        msg = ''
+    except Exception as e:
+        logger.error(e)
+        msg = '更新会议室信息失败，请核对后重试'
+    return msg
+
+
+def delete(dbs, br_id):
+    '''
+    删除会议室
+    :param dbs:
+    :param br_id:
+    :return:
+    '''
+
+    try:
+        with transaction.manager:
+            br = dbs.query(HasBoardroom).filter(HasBoardroom.id == br_id).first()
+            if br.picture:
+                delete_pic(br.picture, br.org_id)
+            dbs.delete(br)
+
+        return ''
+    except Exception as e:
+        logger.error(e)
+        return '删除用户失败！'
+
+
+def writefile(file, filename, org_id=None):
+    '''
+
+    :param file:
+    :param filename:
+    :param org_id:
+    :return:
+    '''
+
+    file_path = get_pic_path(filename, org_id)
+    try:
+        with open(file_path, 'wb') as fp:
+            fp.write(file.read())
+        msg = ''
+    except IOError:
+        msg = 'file write error'
+    return msg
+
+
+def delete_pic(filename, org_id=None):
+    '''
+    删除会议室图片
+    :param filename:
+    :param org_id:
+    :return:
+    '''
+
+    file_path = get_pic_path(filename, org_id, create_dirs=False)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+
+def get_pic_path(filename, org_id=None, create_dirs=True):
+    '''
+
+    :param filename:
+    :param org_id:
+    :param create_dirs:
+    :return:
+    '''
+    # 若org_id为空，则写入到临时目录
+    if not org_id:
+        org_id = 'tmp'
+    else:
+        org_id = 'org/' + str(org_id)
+
+    path = os.path.join(os.getcwd(), 'brms/static/img/boardroom/', org_id)
+    if create_dirs:
+        os.makedirs(path, exist_ok=True)
+
+    file_path = os.path.join(path, filename)
+    return file_path
+
+
+def get_save_name(filename):
+    '''
+    获取文件扩展名
+    :param filename:
+    :return:
+    '''
+    name = str(int(datetime.now().timestamp() * 1000000))
+    return name + os.path.splitext(filename)[1]
+
+
+def move_pic(br_pic, org_id):
+    '''
+    从临时目录移动图片到对应机构下
+    :param br_pic:
+    :param org_id:
+    :return:
+    '''
+    src_path = get_pic_path(br_pic, create_dirs=False)
+    target_path = get_pic_path(br_pic, org_id)
+
+    try:
+        shutil.move(src_path, target_path)
+    except Exception as e:
+        logger.error(e)
+
+
 
 
