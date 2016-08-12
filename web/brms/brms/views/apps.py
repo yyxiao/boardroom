@@ -10,8 +10,10 @@ from pyramid.view import view_config
 
 from ..models.model import *
 from ..common.jsonutils import serialize
+from ..common.dateutils import date_now
 from ..service.loginutil import UserTools
 from ..service.pad_service import find_pad_by_id, find_meetings
+from ..service.meeting_service import add_by_pad
 from ..service.user_service import user_checking
 
 
@@ -25,7 +27,7 @@ def pad_login(request):
     dbs = request.dbsession
     user_account = request.params['userAccount']
     pad_code = request.params['padCode']
-    password = base64.encodestring(request.params['password'].encode()).decode('utf-8').replace('\n', '')
+    password = base64.encodebytes(request.params['password'].encode()).decode('utf-8').replace('\n', '')
     error_msg = ''
     if not pad_code:
         error_msg = '终端编码不能为空'
@@ -59,14 +61,14 @@ def pad_login(request):
 @view_config(route_name='userCheck', renderer='json')
 def user_check(request):
     """
-    设备初始化登录
+    验证用户是否可以使用该pad申请会议
     :param request:
     :return:
     """
     dbs = request.dbsession
     user_account = request.params['userAccount']
     pad_code = request.params['padCode']
-    password = base64.encodestring(request.params['password'].encode()).decode('utf-8').replace('\n', '')
+    password = base64.encodebytes(request.params['password'].encode()).decode('utf-8').replace('\n', '')
     error_msg = ''
     if not pad_code:
         error_msg = '终端编码不能为空'
@@ -74,17 +76,18 @@ def user_check(request):
         error_msg = '用户账号不能为空'
     else:
         with transaction.manager:
-            users = dbs.query(SysUser).filter(SysUser.user_account == user_account)
-            if not users:
+            user = dbs.query(SysUser).filter(SysUser.user_account == user_account).first()
+            if not user:
                 error_msg = '用户不存在'
+            elif password != user.user_pwd:
+                error_msg = '密码错误'
+                UserTools.count_err(user)
+                dbs.flush()
             else:
-                user = users.filter(SysUser.user_pwd == password).first()
-                if not user:
-                    error_msg = '密码错误'
-                    UserTools.count_err(user)
-                    dbs.flush()
-                else:
-                    pad, error_msg = user_checking(dbs, pad_code, user.id)
+                # 获取该用户最大可申请期限
+                max_period = user.max_period
+                user_id = user.id
+                error_msg = user_checking(dbs, pad_code, user.id)
     if error_msg:
         json_a = {
             'success': 'false',
@@ -93,7 +96,8 @@ def user_check(request):
     else:
         json_a = {
             'success': 'true',
-            'pad': pad
+            'user_id': user_id,
+            'max_period': max_period
         }
     return json_a
 
@@ -125,3 +129,36 @@ def meeting_list(request):
             'meeting': meetings
         }
     return json_a
+
+
+@view_config(route_name='pad_add_meeting', renderer='json')
+def pad_add_meeting(request):
+    dbs = request.dbsession
+    meeting = HasMeeting()
+    user_id = request.POST.get('user_id', '')
+    pad_code = request.POST.get('pad_code', '')
+    if not user_id:
+        error_msg = '用户ID不能为空！'
+    elif not pad_code:
+        error_msg = '终端编码不能为空'
+    else:
+        meeting.name = request.POST.get('name', '')
+        meeting.description = request.POST.get('desc', '')
+        meeting.start_date = request.POST.get('start_date', '')
+        meeting.end_date = request.POST.get('end_date', '')
+        meeting.start_time = request.POST.get('start_time', '')
+        meeting.end_time = request.POST.get('end_time', '')
+        meeting.create_user = user_id
+        meeting.create_time = date_now()
+        error_msg = add_by_pad(dbs, meeting, pad_code)
+    if error_msg:
+        json = {
+            'success': 'false',
+            'error_msg': error_msg,
+        }
+    else:
+        json = {
+            'success': 'true',
+        }
+    return json
+

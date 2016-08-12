@@ -40,7 +40,6 @@ def list_meeting(request):
 @view_config(route_name='to_add_meeting')
 def to_add(request):
     dbs = request.dbsession
-    # meeting_name = find_meeting(dbs)
     return render_to_response('meeting/add.html', locals(), request)
 
 
@@ -48,7 +47,6 @@ def to_add(request):
 def add_meeting(request):
     dbs = request.dbsession
     meeting = HasMeeting()
-    pad_code = request.POST.get('pad_code', '')
     # if pad_code:
     #     # 查找pad对应的会议室
     #     board_room = dbs.query(HasBoardroom.id, HasBoardroom.name).\
@@ -63,7 +61,7 @@ def add_meeting(request):
     meeting.end_time = request.POST.get('end_time', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
-    error_msg = add(dbs, meeting)
+    error_msg = add(dbs, meeting, '')
     if error_msg:
         json = {
             'success': 'false',
@@ -97,7 +95,7 @@ def del_meeting(request):
 def to_update(request):
     dbs = request.dbsession
     meeting_id = request.POST.get('id', '')
-    meeting = find_meeting(dbs, meeting_id)
+    meeting, boardrooms = find_meeting(dbs, meeting_id)
     return render_to_response('meeting/add.html', locals(), request)
 
 
@@ -105,7 +103,7 @@ def to_update(request):
 def update_meeting(request):
     dbs = request.dbsession
     meeting_id = request.POST.get('id', '')
-    meeting = find_meeting(dbs, meeting_id)
+    meeting, boardrooms = find_meeting(dbs, meeting_id)
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
     meeting.start_date = request.POST.get('start_date', '')
@@ -114,7 +112,7 @@ def update_meeting(request):
     meeting.end_time = request.POST.get('end_time', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
-    error_msg = add(dbs, meeting)
+    error_msg = add(dbs, meeting, '')
     if error_msg:
         json = {
             'success': 'false',

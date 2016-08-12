@@ -37,7 +37,7 @@ def find_pad_by_id(dbs, pad_code, create_user):
             dbs.flush()
         except Exception as e:
             logger.error(e)
-            error_msg = '新增设备失败，请稍后后重试'
+            error_msg = '新增设备失败，请稍后后重试!'
     return pad, error_msg
 
 

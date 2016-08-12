@@ -8,6 +8,7 @@ def includeme(config):
     config.add_route('meetingList', '/meetingList')
     config.add_route('reset_pwd', '/reset_pwd')
     config.add_route('my_meeting', '/my_meeting')
+    config.add_route('pad_add_meeting', '/pad_add_meeting')
     config.include(user_include, '/user')
     config.include(org_include, '/org')
     config.include(role_include, '/role')

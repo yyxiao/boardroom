@@ -8,6 +8,7 @@ __mtime__ = 2016/8/8
 from datetime import datetime
 from ..models.model import *
 from ..common.paginator import Paginator
+from ..common.dateutils import date_now
 import transaction
 import logging
 
@@ -36,7 +37,7 @@ def find_meetings(dbs, meeting_name, create_user, page_no):
         meetings = meetings.filter(HasMeeting.name.like('%'+meeting_name+'%'))
     if create_user:
         meetings = meetings.filter(HasMeeting.create_user.like('%' + create_user + '%'))
-    user_list = meetings.order_by(HasMeeting.create_time)
+    user_list = meetings.order_by(HasMeeting.create_time.desc())
     results, paginator = Paginator(user_list, page_no).to_dict()
     lists = []
     for obj in results:
@@ -64,11 +65,53 @@ def find_meetings(dbs, meeting_name, create_user, page_no):
     return lists, paginator
 
 
-def add(dbs, meeting):
+def add(dbs, meeting, broads):
+    """
+    PC添加会议
+    :param dbs:
+    :param meeting:
+    :param broads
+    :return:
+    """
     error_msg = ''
     try:
         with transaction.manager:
             dbs.add(meeting)
+    except Exception as e:
+        logger.error(e)
+        error_msg = '新增会议失败，请核对后重试'
+    return error_msg
+
+
+def add_by_pad(dbs, meeting, pad_code):
+    """
+    PAD添加会议
+    :param dbs:
+    :param meeting:
+    :param pad_code
+    :return:
+    """
+    error_msg = ''
+    try:
+        # 查询padcode对应的boardroom_id
+        board = dbs.query(HasBoardroom.id)\
+            .outerjoin(HasPad, HasBoardroom.pad_id == HasPad.id)\
+            .filter(HasPad.pad_code == pad_code).first()
+        if not board:                                       # 不存在
+            error_msg = '该pad未分配会议室，请联系管理员！'
+        else:
+            # 添加会议
+            dbs.add(meeting)
+            dbs.flush()
+            logger.debug("会议添加完毕，meeting_id:" + str(meeting.id))
+            meeting_id = meeting.id                         # 会议ID
+            meet_bdr = HasMeetBdr()                         # 会议室会议关联信息
+            meet_bdr.meeting_id = meeting_id
+            meet_bdr.boardroom_id = board.id
+            meet_bdr.create_user = meeting.create_user
+            meet_bdr.create_time = date_now()
+            dbs.add(meet_bdr)
+            logger.debug("会议会议室关联添加完毕")
     except Exception as e:
         logger.error(e)
         error_msg = '新增会议失败，请核对后重试'
@@ -80,11 +123,22 @@ def delete_meeting(dbs, meeting_id):
     try:
         with transaction.manager:
             dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id).delete()
-    except Exception:
+            dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting_id).delete()
+    except Exception as e:
+        logger.error(e)
         error_msg = '删除会议失败，请核对后重试'
     return error_msg
 
 
 def find_meeting(dbs, meeting_id):
+    """
+    获取会议以及会议室关联的名称
+    :param dbs:
+    :param meeting_id:
+    :return:
+    """
     meeting = dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id).first()
-    return meeting
+    boardrooms = dbs.query(HasBoardroom)\
+        .outerjoin(HasMeetBdr, HasMeetBdr.boardroom_id == HasBoardroom.id)\
+        .filter(HasMeetBdr.meeting_id == meeting_id).all()
+    return meeting, boardrooms
