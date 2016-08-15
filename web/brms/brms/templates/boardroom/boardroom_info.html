@@ -1,35 +1,68 @@
 {% block content %}
-    <div class="panel panel-success">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                <i class="icon-user" id="icon-user"></i>&nbsp;会议室列表
-            </h3>
+<section style="padding-top:5px;">
+  <ol class="breadcrumb">
+    <li><i class="fa fa-dashboard marginR6"></i><a href="javascript:loadcontent('/mymeeting');">主页</a></li>
+    <li><a href="#">会议室列表</a></li>
+  </ol>
+</section>
+<section class="content-search-area">
+  <div class="user-search">
+    <div class="row form-horizontal" id="search-form">
+        <div style="padding:0 130px 0 30px;">
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">会议室名称</label>
+                    <div class="col-sm-8 paddingR0">
+                        <input type="text" class="form-control"	id="br_name" name="br_name">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">配置</label>
+                    <div class="col-sm-8 paddingR0">
+                        <input type="text" class="form-control"	id="br_config" name="br_config">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">机构</label>
+                    <div class="col-sm-8 paddingR0">
+                        <select class="form-control" id="org_id" name="org_id">
+                            <option></option>
+                            {% for branch in branches %}
+                                <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">状态</label>
+                    <div class="col-sm-8 paddingR0">
+                        <input type="text" class="form-control"	id="br_statue" name="br_statue">
+                    </div>
+                </div>
+            </div>
+            <button type="button" style="margin-left: 40px;" class="btn btn-primary" onclick="list(1)">
+                <i class="fa fa-search marginR6" ></i>查询
+            </button>
         </div>
-
-        <div class="panel-body">
-            <div class="form-inline">
-                <label>会议室名称:</label><input type="text" class="form-control" id="br_name" name="br_name">
-                <label>配置:</label><input type="text" class="form-control" id="br_config" name="br_config">
-                <label for="org_id">机构:</label>
-                <select class="form-control" id="org_id" name="org_id">
-                    <option></option>
-                    {% for branch in branches %}
-                        <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
-                    {% endfor %}
-                </select>
-                <label>状态:</label><input type="text" class="form-control" id="br_statue" name="br_statue">
-                <button type="button" class="btn btn-primary" onclick="list(1)">
-                    <i class="icon-search" id="icon_search"></i>&nbsp;查询&nbsp;
-                </button>
-            </div>
-            <div class="panel-body">
-                <input id="flag" name="flag" class="hidden" value="if">
-                <div id="listWrapper"></div>
-            </div>
         </div>
     </div>
+</section>
+<section class="main-bootstrap-table">
+    <div class="in-table">
+        <div class="panel-body">
+            <input id="flag" name="flag" class="hidden" value="if">
+            <div id="listWrapper"></div>
+        </div>
+	</div>
 
-    <div id="modalWrapper"></div>
+<div id="modalWrapper"></div>
+</section>
 
     <script src="{{ request.static_url('brms:static/js/boardroom/boardroom.js') }}"></script>
     <script src="{{ request.static_url('brms:static/js/lightbox.js')}}"></script>
