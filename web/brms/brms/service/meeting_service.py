@@ -118,6 +118,33 @@ def add_by_pad(dbs, meeting, pad_code):
     return error_msg
 
 
+def update_by_pad(dbs, meeting, pad_code):
+    """
+    PAD更新会议
+    :param dbs:
+    :param meeting:
+    :param pad_code
+    :return:
+    """
+    error_msg = ''
+    try:
+        # 查询padcode对应的boardroom_id
+        board = dbs.query(HasBoardroom.id)\
+            .outerjoin(HasPad, HasBoardroom.pad_id == HasPad.id)\
+            .filter(HasPad.pad_code == pad_code).first()
+        if not board:                                       # 不存在
+            error_msg = '该pad未分配会议室，请联系管理员！'
+        else:
+            # 更新会议
+            dbs.add(meeting)
+            dbs.flush()
+            logger.debug("会议更新完毕，meeting_id:" + str(meeting.id))
+    except Exception as e:
+        logger.error(e)
+        error_msg = '更新会议失败，请核对后重试'
+    return error_msg
+
+
 def delete_meeting(dbs, meeting_id, user_id):
     """
     删除会议，先判断会议创建者是不是当前用户

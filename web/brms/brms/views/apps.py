@@ -13,7 +13,7 @@ from ..common.jsonutils import serialize
 from ..common.dateutils import date_now
 from ..service.loginutil import UserTools
 from ..service.pad_service import find_pad_by_id, find_meetings
-from ..service.meeting_service import add_by_pad, delete_meeting
+from ..service.meeting_service import add_by_pad, delete_meeting, update_by_pad
 from ..service.user_service import user_checking
 
 
@@ -196,3 +196,40 @@ def del_meeting(request):
         }
     return json
 
+
+@view_config(route_name='pad_update_meeting', renderer='json')
+def pad_update_meeting(request):
+    dbs = request.dbsession
+    user_id = request.POST.get('user_id', '')
+    meeting_id = request.POST.get('meeting_id', '')
+    pad_code = request.POST.get('pad_code', '')
+    if not user_id:
+        error_msg = '用户ID不能为空！'
+    elif not pad_code:
+        error_msg = '终端编码不能为空！'
+    elif not meeting_id:
+        error_msg = '会议ID不能为空！'
+    else:
+        meeting = dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id)\
+            .filter(HasMeeting.create_user == user_id).first()
+        if not meeting:
+            error_msg = '未查找到该会议记录，请查看会议ID、用户ID是否正确！'
+        else:
+            meeting.name = request.POST.get('meeting_name', '')
+            meeting.description = request.POST.get('description', '')
+            meeting.start_date = request.POST.get('start_date', '')
+            meeting.end_date = request.POST.get('end_date', '')
+            meeting.start_time = request.POST.get('start_time', '')
+            meeting.end_time = request.POST.get('end_time', '')
+            meeting.create_time = date_now()
+            error_msg = update_by_pad(dbs, meeting, pad_code)
+    if error_msg:
+        json = {
+            'success': 'false',
+            'error_msg': error_msg,
+        }
+    else:
+        json = {
+            'success': 'true',
+        }
+    return json
