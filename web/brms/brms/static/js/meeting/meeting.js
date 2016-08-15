@@ -110,8 +110,7 @@ function add() {
 				$("#addModal").modal('hide');
 				$.messager.popup("新增会议成功！");
 				list(1)
-			}
-			else{
+			}else{
 				$.messager.popup("新增会议失败，请检查相关信息后重试！");
 			}
 		},
@@ -201,6 +200,8 @@ function update() {
 				$("#addModal").modal('hide');
 				$.messager.popup("更新会议成功！");
 				list(1)
+			}else {
+				$.messager.popup("更新会议失败");
 			}
 		},
 	})
@@ -229,6 +230,8 @@ function del() {
 					if (data.success) {
 						$.messager.popup("删除会议成功！");
 						list(1)
+					}else {
+						$.messager.popup(data.error_msg);
 					}
 				},
 			})

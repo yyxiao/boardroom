@@ -1,37 +1,53 @@
 {% block content %}
-<div class="panel panel-success">
-	<div class="panel-heading">
-		<h3 class="panel-title">
-			<i></i>&nbsp;终端列表
-		</h3>
-	</div>
+<section style="padding-top:5px;">
+  <ol class="breadcrumb">
+    <li><i class="fa fa-dashboard marginR6"></i><a href="#">主页</a></li>
+    <li><a href="#">终端列表</a></li>
+  </ol>
+</section>
+<section class="content-search-area">
+  <div class="user-search">
+    <div class="row form-horizontal" id="search-form">
+        <div style="padding:0 130px 0 30px;">
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">终端编号</label>
+                    <div class="col-sm-8 paddingR0">
+                        <input type="text" class="form-control"	id="search_code" name="search_code">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 paddingLR0">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">会议室名称</label>
+                    <div class="col-sm-8 paddingR0">
+                        <input type="text" class="form-control" id="search_meeting_name" name="search_meeting_name">
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <button type="button" style="margin-left: 40px;" class="btn btn-primary" onclick="list(1)">
+            <i class="fa fa-search marginR6" ></i>查询
+        </button>
+        </div>
+    </div>
+</section>
+<section class="main-bootstrap-table">
 	<div class="panel-body">
 		<div class="form-inline">
-            <label>终端编号:</label>
-            <input type="text" class="form-control"	id="search_code" name="search_code">
-			<label>会议室名称:</label>
-            <input type="text" class="form-control" id="search_meeting_name" name="search_meeting_name">
-			<label>
-			    <button type="button" class="btn btn-primary" onclick="list(1)">
-					<i class="icon-search" id="icon_search"></i>&nbsp;查询&nbsp;
-			    </button>
-			</label>
-            <button type="button" class="btn btn-default" onclick="to_add()">新增</button>
-			<button type="button" class="btn btn-default" onclick="to_update()">修改</button>
-			<button type="button" class="btn btn-default" onclick="del()">删除</button>
+            <button type="button" class="btn btn-primary btn-style" onclick="to_add()"><i class="fa fa-edit marginR6"></i>新增</button>
+			<button type="button" class="btn btn-default btn-style" onclick="to_update()"><i class="fa  fa-pencil marginR6"></i>修改</button>
+			<button type="button" class="btn btn-warning btn-style" onclick="del()"><i class="fa  fa-times marginR6"></i>删除</button>
 		</div>
-		<div class="panel-body">
-			<div id="listWrapper">
-            </div>
-		</div>
+        <div id="listWrapper">
+        </div>
 	</div>
-</div>
 
 
 
 <div id="modalWrapper"></div>
-
+</section>
 <script src="{{ request.static_url('brms:static/js/terminal/terminal.js') }}"></script>
 {% endblock %}
 

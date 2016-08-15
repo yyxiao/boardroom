@@ -118,12 +118,23 @@ def add_by_pad(dbs, meeting, pad_code):
     return error_msg
 
 
-def delete_meeting(dbs, meeting_id):
+def delete_meeting(dbs, meeting_id, user_id):
+    """
+    删除会议，先判断会议创建者是不是当前用户
+    :param dbs:
+    :param meeting_id:
+    :param user_id:
+    :return:
+    """
     error_msg = ''
     try:
         with transaction.manager:
-            dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id).delete()
-            dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting_id).delete()
+            meeting = dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id).filter(HasMeeting.create_user == user_id).first()
+            if not meeting:
+                error_msg = '该会议不是该用户创建，请查询后操作。'
+            else:
+                dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id).delete()
+                dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting_id).delete()
     except Exception as e:
         logger.error(e)
         error_msg = '删除会议失败，请核对后重试'

@@ -64,12 +64,12 @@ def add_meeting(request):
     error_msg = add(dbs, meeting, '')
     if error_msg:
         json = {
-            'success': 'false',
+            'success': False,
             'error_msg': error_msg,
         }
     else:
         json = {
-            'success': 'true',
+            'success': True,
         }
     return json
 
@@ -78,15 +78,16 @@ def add_meeting(request):
 def del_meeting(request):
     dbs = request.dbsession
     meeting_id = request.POST.get('id', '')
-    error_msg = delete_meeting(dbs, meeting_id)
+    user_id = request.session['userId']
+    error_msg = delete_meeting(dbs, meeting_id, user_id)
     if error_msg:
         json = {
-            'success': 'false',
+            'success': False,
             'error_msg': error_msg,
         }
     else:
         json = {
-            'success': 'true',
+            'success': True,
         }
     return json
 
@@ -115,11 +116,11 @@ def update_meeting(request):
     error_msg = add(dbs, meeting, '')
     if error_msg:
         json = {
-            'success': 'false',
+            'success': False,
             'error_msg': error_msg,
         }
     else:
         json = {
-            'success': 'true',
+            'success': True,
         }
     return json

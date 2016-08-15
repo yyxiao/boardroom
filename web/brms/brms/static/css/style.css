@@ -1,0 +1,230 @@
+/*8.10后台版本样式*/
+/*头部区域开始*/
+body{
+	font-family: "微软雅黑"!important;
+}
+.skin-blue .main-header .logo{
+	background: #383b51;
+}
+.skin-blue .main-header .logo:hover{
+	background: #383b51;
+}
+.skin-blue .main-header .navbar{
+	background: #fff;
+	border:1px solid #eee;
+	/*box-shadow: 0px -1px 8px 1px #bbb;*/
+}
+.skin-blue .main-header .navbar .sidebar-toggle{
+	color:#484848;
+	border-right:1px solid #eee;
+}
+.skin-blue .main-header .navbar .sidebar-toggle:hover{
+	color:#484848;
+	background: #f4f4f4;
+}
+.skin-blue .main-header .navbar .nav>li>a{
+	color:#484848;
+}
+.navbar-custom-menu>.navbar-nav>li{
+	border-left:1px solid #eee;
+}
+.nav>li>a{
+/*	padding:15px 25px;*/
+}
+.nav>li>a:hover{
+	color:#484848!important;
+	background: #F4F4F4!important;
+}
+/*头部区域结束*/
+/*主内容区域开始*/
+.content-wrapper{
+	background: #f1f4f6;
+}
+.content-header>.breadcrumb{
+	float:left;
+}
+a{
+	color:#555;
+}
+a:hover{
+	color:#454545;
+}
+.breadcrumb{
+	margin-bottom:0px;
+	background: transparent;
+}
+.breadcrumb li{
+	font-size: 12px;
+}
+.marginR6{
+	margin-right: 6px;;
+}
+.breadcrumb .active .act-style{
+	color:#fff;
+	padding:0;
+	border-radius: 3px;;
+	display: inline-block;
+	background: #5db5fb;
+	padding:2px 5px;
+}
+.content-search-area{
+	padding:0 15px;
+}
+.content-search-area .user-search{
+	border-radius: 3px 3px 0 0;
+	background: #e3eaec;
+}
+#search-form{
+	position: relative;
+	padding:15px 15px 0;
+	box-sizing: border-box;
+}
+#search-form .paddingLR0{
+	padding-left:0;
+	padding-right:0;
+}
+.form-horizontal .form-group{
+	margin-left: 0;
+	margin-right:0;
+}
+.form-horizontal .paddingLR15{
+	padding:0 15px;
+}
+.form-group .paddingR0{
+	padding-right:0;
+}
+.form-group .paddingL0{
+	/*padding-left: 0;*/
+}
+.form-control{
+	border:0;
+	border-radius: 4px;
+}
+.search-btn-wrap{
+	padding-right:15px;
+	text-align: right;
+	padding-bottom: 13px;
+	box-sizing: border-box;
+}
+#searchBtn{
+	top:15px;
+	right:30px;
+	height: 34px;
+	position: absolute;
+	line-height: 16px;
+	border-radius: 5px;
+	background: #2487d4;
+	border-bottom:3px solid #1070b7;
+}
+.more-search{
+	padding:0 15px;
+	box-sizing: border-box;
+}
+.more-search .arrowGuide{
+	text-align: center;
+	font-size: 18px;
+	margin:0 auto;
+	border-top:1px solid #d4e0e3;
+}
+.arrowGuide .arrow-icon{
+	width:20px;
+	height:20px;
+	color:#a0a7b4;
+	font-size:22px;
+	cursor:pointer;
+	display: inline-block;
+}
+.content{
+	padding-top: 0;
+}
+.more-search-in{
+	display: none;
+}
+/*表格*/
+.main-bootstrap-table{
+	padding:0 15px;
+	background: transparent;
+	box-sizing: border-box;
+}
+.main-bootstrap-table .in-table{
+	padding:0 15px 42px;
+	background: #fff;
+	position: relative;
+}
+.fixed-table-container thead th .th-inner{
+	font-size:14px;
+	color:#6a7180;
+	background: #e3eaec;
+}
+.fixed-table-toolbar .search{
+	border:1px solid #dddddd;
+	border-radius: 3px;
+}
+.in-table .btns{
+	top:15px;
+	left:15px;
+	position: absolute;
+}
+.in-table .btns .btn-style{
+	height: 34px;
+	margin-right:5px;
+	line-height: 16px;
+	border-radius: 5px;
+	background: #2487d4;
+	border-bottom:3px solid #1070b7;
+}
+.in-table .btns .btn-style1{
+	height:34px;
+	color:#9ea5b3;
+	border-radius: 5px;
+	line-height: 16px;
+	background: #ececec;
+	borde:0;
+	border-bottom: 3px solid #dfdfdf;
+}
+/*主内容区域结束*/
+/*侧边导航*/
+.skin-blue .sidebar-menu>li.header{
+	color:#fff;
+}
+/*组件样式*/
+.datepicker.dropdown-menu{
+  z-index: 9999!important;
+}
+.select2-container--default .select2-selection--single{
+  height: 34px;
+  border-radius:4px;
+  border-color:#d2d6de;
+  border:none!important;
+}
+.width175 .select2-container--default .select2-selection--single{
+  width:175px!important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered{
+  line-height: 32px;
+}
+.nav-tabs-custom{
+  margin-bottom: 0;
+}
+.select2-search--dropdown{
+	border-top:1px solid #aaa;
+}
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs>li>a:hover{
+	background: rgb(24,31,35)!important;
+	color:#fff!important;
+}
+label{
+	color:#333;
+	font-size:14px;
+	font-weight: 400;
+	font-family: "微软雅黑";
+}
+
+
+
+
+
+
+
+
+

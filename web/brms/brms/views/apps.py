@@ -13,7 +13,7 @@ from ..common.jsonutils import serialize
 from ..common.dateutils import date_now
 from ..service.loginutil import UserTools
 from ..service.pad_service import find_pad_by_id, find_meetings
-from ..service.meeting_service import add_by_pad
+from ..service.meeting_service import add_by_pad, delete_meeting
 from ..service.user_service import user_checking
 
 
@@ -162,6 +162,29 @@ def pad_add_meeting(request):
         meeting.create_user = user_id
         meeting.create_time = date_now()
         error_msg = add_by_pad(dbs, meeting, pad_code)
+    if error_msg:
+        json = {
+            'success': 'false',
+            'error_msg': error_msg,
+        }
+    else:
+        json = {
+            'success': 'true',
+        }
+    return json
+
+
+@view_config(route_name='pad_del_meeting', renderer='json')
+def del_meeting(request):
+    dbs = request.dbsession
+    user_id = request.POST.get('user_id', '')
+    meeting_id = request.POST.get('meeting_id', '')
+    if not user_id:
+        error_msg = '用户id不能为空'
+    elif not meeting_id:
+        error_msg = '会议id不能为空'
+    else:
+        error_msg = delete_meeting(dbs, meeting_id, user_id)
     if error_msg:
         json = {
             'success': 'false',

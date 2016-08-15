@@ -21,6 +21,8 @@ def app_include(config):
     config.add_route('meetingList', '/meetingList')
     config.add_route('app_index', '/index')
     config.add_route('pad_add_meeting', '/pad_add_meeting')
+    config.add_route('pad_del_meeting', '/delMeeting')
+    config.add_route('pad_update_meeting', '/updateMeeting')
 
 
 def user_include(config):
