@@ -1,0 +1,57 @@
+{% block content %}
+<section style="padding-top:5px;">
+  <ol class="breadcrumb">
+    <li><i class="fa fa-dashboard marginR6"></i><a href="javascript:loadcontent('/mymeeting');">主页</a></li>
+    <li><a href="#">机构列表</a></li>
+  </ol>
+</section>
+<section class="content-search-area">
+    <div class="user-search">
+        <div class="row form-horizontal" id="search-form">
+            <div style="padding:0 130px 0 30px;">
+                <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label form-label paddingR0 paddingL0">机构名称</label>
+                        <div class="col-sm-8 paddingR0">
+                            <input type="text" class="form-control" id="org_name" name="org_name">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 paddingLR0">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label form-label paddingR0 paddingL0">上级机构</label>
+                        <div class="col-sm-8 paddingR0">
+                            <select class="form-control" id="parent_id" name="parent_id">
+                                <option></option>
+                                {% for branch in branches %}
+                                    <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" style="margin-left: 40px;" class="btn btn-primary" onclick="list(1)">
+                    <i class="fa fa-search marginR6" ></i>查询
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="main-bootstrap-table">
+    <div class="in-table">
+        <div class="toolbar">
+            <div class="btns pull-left">
+                <button type="button" class="btn btn-primary" onclick="to_add()"><i class="fa fa-edit marginR6"></i>新增</button>
+                <button type="button" class="btn btn-default" onclick="to_update()"><i class="fa  fa-pencil marginR6"></i>修改</button>
+                <button type="button" class="btn btn-warning" onclick="del()"><i class="fa  fa-times marginR6"></i>删除</button>
+            </div>
+        </div>
+        <div id="listWrapper">
+        </div>
+    </div>
+    <div id="modalWrapper"></div>
+</section>
+<script src="{{ request.static_url('brms:static/js/org/org.js') }}"></script>
+{% endblock %}
+
+

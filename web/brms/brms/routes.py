@@ -41,9 +41,11 @@ def user_include(config):
 def org_include(config):
     config.add_route('to_org', '/to_org')
     config.add_route('list_org', '/list')
+    config.add_route('to_add_org', '/to_add_org')
     config.add_route('add_org', '/add_org')
-    config.add_route('delete_org', '/delete_org')
+    config.add_route('to_update_org', '/to_update_org')
     config.add_route('update_org', '/update_org')
+    config.add_route('delete_org', '/delete_org')
 
 
 def role_include(config):

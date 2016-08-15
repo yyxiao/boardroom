@@ -1,0 +1,116 @@
+<div class="modal" id="addModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                {% if org %}
+                    <h4 class="modal-title">修改机构</h4>
+                {% else %}
+                    <h4 class="modal-title">新增机构</h4>
+                {% endif %}
+            </div>
+            <p id="org_cue"></p>
+            <form id="addForm" action="{% if org %}/org/update_org{% else %}/org/add_org{% endif %}" method="post"
+                  class="form-horizontal" enctype="multipart/form-data">
+                {% if org %}
+                    <input id="org_id" name="org_id" class="hidden" value="{{ org.org_id }}">
+                {% endif %}
+                <div class="form-group">
+                    <label for="input org_name_add" class="col-sm-2 control-label">机构名称</label>
+                    <div class="col-sm-9">
+                        {% if org %}
+                            <input name="org_name_add" type="text" class="form-control" value="{{ org.org_name }}"
+                               id="org_name_add">
+                        {% else %}
+                            <input name="org_name_add" type="text" class="form-control" placeholder="机构中文名"
+                               id="org_name_add">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input parent_id_add" class="col-sm-2 control-label">上级机构</label>
+                    <div class="col-sm-9">
+                        <select class="form-control" id="parent_id_add" name="parent_id_add">
+                            {% if org %}
+                                <option value="{{ org.parent_id }}" selected="selected">{{ org.parent_name }}</option>
+                            {% endif %}
+                            <option value=""></option>
+                            {% for branch in branches %}
+                                <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input org_seq_add" class="col-sm-2 control-label">排序</label>
+                    <div class="col-sm-9">
+                        {% if org %}
+                            <input name="org_seq_add" type="text" class="form-control" value="{{ org.org_seq }}"
+                               id="org_seq_add">
+                        {% else %}
+                            <input name="org_seq_add" type="text" class="form-control" placeholder="数字越大排序越靠后"
+                               id="org_seq_add">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input org_manager_add" class="col-sm-2 control-label">法人</label>
+                    <div class="col-sm-9">
+                        {% if org %}
+                            <input name="org_manager_add" type="text" class="form-control" value="{{ org.org_manager }}"
+                               id="org_manager_add">
+                        {% else %}
+                            <input name="org_manager_add" type="text" class="form-control" placeholder=""
+                               id="org_manager_add">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input phone_add" class="col-sm-2 control-label">电话</label>
+                    <div class="col-sm-9">
+                        {% if org %}
+                            <input name="phone_add" type="text" class="form-control" value="{{ org.phone }}"
+                               id="phone_add">
+                        {% else %}
+                            <input name="phone_add" type="text" class="form-control" placeholder=""
+                               id="phone_add">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input address_add" class="col-sm-2 control-label">地址</label>
+                    <div class="col-sm-9">
+                        {% if org %}
+                            <input name="address_add" type="text" class="form-control" value="{{ org.address }}"
+                               id="address_add">
+                        {% else %}
+                            <input name="address_add" type="text" class="form-control" placeholder=""
+                               id="address_add">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input state_add" class="col-sm-2 control-label">状态</label>
+                    <div class="col-sm-9">
+                        {% if org %}
+                            <input name="state_add" type="text" class="form-control" value="{{ org.state }}"
+                               id="state_add">
+                        {% else %}
+                            <input name="state_add" type="text" class="form-control" placeholder="1"
+                               id="state_add">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary"
+                                onclick="{% if org %}update(){% else %}add(){% endif %}">保存
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
