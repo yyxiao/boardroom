@@ -92,7 +92,7 @@ def find_users(dbs, user_account=None, user_name=None, org_id=None, role_name=No
 
 def find_user(dbs, user_id):
     '''
-    根据用户id查找用户
+    根据用户id查找用户, 返回用户信息字典对象
     :param dbs:
     :param user_id:
     :return:
@@ -101,6 +101,19 @@ def find_user(dbs, user_id):
 
     if len(users) >= 1:
         return users[0]
+    return None
+
+
+def find_user_by_id(dbs, user_id):
+    '''
+    根据用户id查找用户，返回用户模型对象
+    :param dbs:
+    :param user_id:
+    :return:
+    '''
+    user = dbs.query(SysUser).filter(SysUser.id == user_id).first()
+    if user:
+        return user
     return None
 
 

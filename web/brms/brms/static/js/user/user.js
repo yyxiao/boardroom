@@ -300,3 +300,95 @@ function del() {
 		$.messager.popup("请先选择一个用户！");
 	}
 }
+
+/*
+检查新密码
+ */
+function check_pwd() {
+	var pwd1 = $.trim($("#passwd_new1").val());
+	var pwd2 = $.trim($("#passwd_new2").val());
+
+	if(pwd1 != pwd2){
+		$("#user_cue").html("<font color='red'>新密码不一致</font>");
+		return false;
+	}else{
+		$("#user_cue").html("");
+		return true;
+	}
+
+}
+
+
+/*
+用户设置
+ */
+function user_setting() {
+	if (! check_pwd()){
+		return false;
+	}
+	var user_id = $.trim($("#user_id").val());
+	var user_name = $.trim($("#user_name").val());
+	var phone = $.trim($("#phone").val());
+	var pwd_old = $.trim($("#passwd_old").val());
+	var pwd_new1 = $.trim($("#passwd_new1").val());
+	var pwd_new2 = $.trim($("#passwd_new2").val());
+
+	if (user_id == '') {
+        $.messager.popup('更新用户失败,请刷新页面后重试');
+        return false;
+    }
+	if (user_name == '') {
+		$('#user_name').focus();
+		$('#user_cue').html("<font color='red'>用户姓名不能为空</font>");
+		return false;
+	}
+	if (is_str_unsafe(user_name) == true) {
+		$('#user_name').focus();
+		$('#user_cue').html("<font color='red'>用户姓名含有非法字符</font>");
+		return false;
+	}
+	if (is_str_toolong(user_name) == true) {
+		$('#user_name').focus();
+		$('#user_cue').html("<font color='red'>用户姓名超过最大长度</font>");
+		return false;
+	}
+	if (pwd_old == '') {
+		$("#passwd_old").focus();
+		$("#user_cue").html("<font color='red'>原密码不能为空</font>")
+		return false;
+	}
+	if (pwd_new1 == '' ) {
+		$("#passwd_new1").focus();
+		$("#user_cue").html("<font color='red'>新密码不能为空</font>")
+		return false;
+	}
+	if (pwd_new2 == '' ) {
+		$("#passwd_new2").focus();
+		$("#user_cue").html("<font color='red'>新密码不能为空</font>")
+		return false;
+	}
+
+	$.ajax({
+		type : "POST",
+		url : "/user/user_setting",
+		data : {
+            "user_id": user_id,
+			"user_name" : user_name,
+			"phone" : phone,
+			"passwd_old" : pwd_old,
+			"passwd_new" : pwd_new1
+		},
+		error : function() {
+			redirect_to("/");
+		},
+		success : function(data) {
+			if (data.resultFlag == "success") {
+				$.messager.popup('更新用户信息成功！');
+				return true;
+			} else {
+				$.messager.popup(data.error_msg);
+				return false;
+			}
+		}
+	})
+}
