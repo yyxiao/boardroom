@@ -1,6 +1,6 @@
-<div class="panel panel-success">
-    <div class="panel-body">
-        <table class="table">
+<div class="table-responsive full-width">
+    <table class="table table-bordered table-hover">
+        <thead>
             <tr>
                 {% if flag == 'mg' %}
                     <th></th>
@@ -12,6 +12,8 @@
                 <th>所属机构</th>
                 <th>状态</th>
             </tr>
+        </thead>
+        <tbody>
             {% for boardroom in boardrooms %}
                 <tr>
                     {% if flag == 'mg' %}
@@ -34,8 +36,8 @@
                     <td>{{ boardroom.state }}</td>
                 </tr>
             {% endfor %}
-        </table>
-    </div>
+        </tbody>
+    </table>
 </div>
 
 <nav>

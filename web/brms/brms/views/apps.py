@@ -44,7 +44,6 @@ def pad_login(request):
                 dbs.flush()
             else:
                 pad, error_msg = find_pad_by_id(dbs, pad_code, user.id)
-            pad_d = serialize(pad)
     if error_msg:
         json_a = {
             'success': 'false',
@@ -53,7 +52,7 @@ def pad_login(request):
     else:
         json_a = {
             'success': 'true',
-            'pad': pad_d
+            'pad': pad
         }
     return json_a
 
@@ -116,8 +115,6 @@ def meeting_list(request):
         error_msg = '终端编码不能为空'
     else:
         meetings, error_msg = find_meetings(dbs, pad_code)
-        if not meetings:
-            error_msg = '无会议信息'
     if error_msg:
         json_a = {
             'success': 'false',

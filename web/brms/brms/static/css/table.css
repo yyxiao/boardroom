@@ -1,0 +1,97 @@
+body{
+	font-family: "微软雅黑"!important;
+}
+.main-bootstrap-table{
+	padding:0 15px;
+	background: transparent;
+	box-sizing: border-box;
+}
+.main-bootstrap-table .in-table{
+	padding:0 15px 42px;
+	background: #fff;
+	position: relative;
+}
+.in-table .btns{
+	top:15px;
+	left:15px;
+	position: absolute;
+}
+.in-table .btns .btn-style{
+	height: 34px;
+	margin-right:5px;
+	line-height: 16px;
+	border-radius: 5px;
+	background: #2487d4;
+	border-bottom:3px solid #1070b7;
+}
+.in-table .btns .btn-style1{
+	height:34px;
+	color:#9ea5b3;
+	border-radius: 5px;
+	line-height: 16px;
+	background: #ececec;
+	border:0;
+	border-bottom: 3px solid #dfdfdf;
+}
+.marginR6 {
+    margin-right: 6px;
+}
+
+	.table thead>tr>th{
+		height:40px;
+		color:#6a7180;
+		font-weight: 600;
+		font-size: 14px;
+		line-height: 40px;
+		padding-left: 7px;
+		background: #e3eaec;
+		border-bottom: 1px solid #ddd;
+	}
+	.table tbody>tr>td{
+		font-weight: 400!important;
+	}
+	.full-width{
+		width:100%;
+	}
+	.in-table .toolbar{
+		width:100%;
+		height: 60px;
+		padding-top:13px;
+	}
+	.select2-container--default .select2-selection--single{
+		height:30px;
+		line-height: 30px;
+	}
+	.select2-container--default .select2-selection--single .select2-selection__rendered{
+  line-height: 30px;
+}
+	.select2-container--default .select2-selection--single .select2-selection__rendered{
+		line-height: 26px;
+	}
+	.select2-container--default .select2-selection--single{
+		border-color: transparent!important;
+	}
+	.select2{
+		width:55%!important;
+		border-radius: 4px;
+		border:2px solid #dedede!important;
+	}
+	.in-table .btns{
+		position: static;
+	}
+	.btn-pre{
+		height: 34px;
+		border:0;
+	line-height: 16px;
+	border-radius: 5px;
+	background: #2487d4;
+	border-bottom:3px solid #1070b7;
+	}
+	.btn-next{
+		height: 34px;
+		border:0;
+	line-height: 16px;
+	border-radius: 5px;
+	background: #2487d4;
+	border-bottom:3px solid #1070b7;
+	}

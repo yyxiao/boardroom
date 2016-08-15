@@ -1,6 +1,6 @@
-<div class="panel panel-success">
-	<div class="panel-body">
-		<table class="table">
+<div class="table-responsive full-width">
+    <table class="table table-bordered table-hover">
+        <thead>
 			<tr>
 				<th></th>
 				<th>用户账号</th>
@@ -15,6 +15,8 @@
                 <th>状态</th>
                 <th>创建时间</th>
             </tr>
+            </thead>
+            <tbody>
 			{% for user in users %}
 			<tr>
 				<td><input type="checkbox" name="idbox" value="{{user.user_id}}" onclick="checkuser(this)"></td>
@@ -31,6 +33,7 @@
                 <td>{{user.create_time}}</td>
 			</tr>
 			{% endfor %}
+            </tbody>
 		</table>
 	</div>
 </div>

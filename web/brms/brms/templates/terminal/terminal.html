@@ -1,7 +1,7 @@
 {% block content %}
 <section style="padding-top:5px;">
   <ol class="breadcrumb">
-    <li><i class="fa fa-dashboard marginR6"></i><a href="#">主页</a></li>
+    <li><i class="fa fa-dashboard marginR6"></i><a href="javascript:loadcontent('/mymeeting');">主页</a></li>
     <li><a href="#">终端列表</a></li>
   </ol>
 </section>
@@ -34,17 +34,17 @@
     </div>
 </section>
 <section class="main-bootstrap-table">
-	<div class="panel-body">
-		<div class="form-inline">
-            <button type="button" class="btn btn-primary btn-style" onclick="to_add()"><i class="fa fa-edit marginR6"></i>新增</button>
-			<button type="button" class="btn btn-default btn-style" onclick="to_update()"><i class="fa  fa-pencil marginR6"></i>修改</button>
-			<button type="button" class="btn btn-warning btn-style" onclick="del()"><i class="fa  fa-times marginR6"></i>删除</button>
-		</div>
+	<div class="in-table">
+        <div class="toolbar">
+            <div class="btns pull-left">
+                <button type="button" class="btn btn-primary" onclick="to_add()"><i class="fa fa-edit marginR6"></i>新增</button>
+                <button type="button" class="btn btn-default" onclick="to_update()"><i class="fa  fa-pencil marginR6"></i>修改</button>
+                <button type="button" class="btn btn-warning" onclick="del()"><i class="fa  fa-times marginR6"></i>删除</button>
+            </div>
+        </div>
         <div id="listWrapper">
         </div>
 	</div>
-
-
 
 <div id="modalWrapper"></div>
 </section>

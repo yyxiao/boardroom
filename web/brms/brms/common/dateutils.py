@@ -7,6 +7,7 @@ Created on 2016年3月2日
 import datetime
 
 date_pattern = '%Y%m%d'  # 日期格式
+date_pattern1 = '%Y-%m-%d'  # 日期格式
 time_pattern = '%H%M%S'  # 时间模式
 datetime_pattern = '%Y%m%d %H%M%S'  # 日期时间模式
 datetime_format = '%Y-%m-%d %H:%M:%S' # 标准时间格式

@@ -1,6 +1,6 @@
-<div class="panel panel-success">
-	<div class="panel-body">
-		<table class="table">
+<div class="table-responsive full-width">
+    <table class="table table-bordered table-hover">
+        <thead>
 			<tr>
 				<th></th>
 				<th>角色代码</th>
@@ -9,6 +9,8 @@
                 <th>创建人</th>
                 <th>创建时间</th>
 			</tr>
+        </thead>
+        <tbody>
 			{% for role in roles %}
 			<tr>
 				<td><input type="checkbox" name="idbox"
@@ -20,8 +22,8 @@
                 <td>{{role.create_time}}</td>
 			</tr>
 			{% endfor %}
-		</table>
-	</div>
+        </tbody>
+    </table>
 </div>
 
 <nav>
