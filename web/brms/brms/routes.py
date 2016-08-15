@@ -32,6 +32,7 @@ def user_include(config):
     config.add_route('delete_user', '/delete_user')
     config.add_route('to_update_user', '/to_update_user')
     config.add_route('update_user', '/update_user')
+    config.add_route('to_user_setting', '/to_user_setting')
     config.add_route('user_setting', '/user_setting')
 
 

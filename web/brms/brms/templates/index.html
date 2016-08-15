@@ -32,7 +32,7 @@
             <a>{{ welcome }}：{{ request.session.user_name_db }}</a>
           </li>
           <li class="row-xs-4 text-center">
-            <a href="/usersetting">用户设置</a>
+            <a href="javascript:loadcontent('user/to_user_setting');">用户设置</a>
           </li>
           <li class="row-xs-4 text-center">
             <a href="/logout">退出</a>
@@ -95,9 +95,7 @@
 </div>
 {% endblock %}
 {% block mainjs %}
-<script>
-  $.widget.bridge('uibutton', $.ui.button);
-</script>
+
 {#<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>#}
 {#<script src="{{request.static_url('brms:static/plugins/morris/morris.min.js')}}"></script>#}
 {#<script src="{{request.static_url('brms:static/plugins/sparkline/jquery.sparkline.min.js')}}"></script>#}

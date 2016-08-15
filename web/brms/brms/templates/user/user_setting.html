@@ -1,0 +1,60 @@
+<div class="panel panel-success">
+    <div class="panel-body">
+        <form id="addForm" action="/user/user_setting" method="post"
+              class="form-horizontal">
+            <input id="user_id" name="user_id" class="hidden" value="{{ user.id }}">
+            <div class="form-group">
+                <label for="p user_cue" class="col-sm-3 control-label"></label>
+                <div class="col-sm-5">
+                    <p id="user_cue"></p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input user_name" class="col-sm-3 control-label">用户姓名</label>
+                <div class="col-sm-5">
+                    <input name="user_name" type="text" class="form-control" value="{{ user.user_name }}"
+                           id="user_name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input phone" class="col-sm-3 control-label">联系电话</label>
+                <div class="col-sm-5">
+                    {% if user.phone %}
+                        <input name="phone" type="text" class="form-control" value="{{ user.phone }}"
+                               id="phone">
+                    {% else %}
+                        <input name="phone" type="text" class="form-control" placeholder="手机/固话"
+                               id="phone">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input passwd_old" class="col-sm-3 control-label">原密码</label>
+                <div class="col-sm-5">
+                    <input name="passwd_old" type="password" class="form-control" placeholder=""
+                           id="passwd_old">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input passwd_new1" class="col-sm-3 control-label">新密码</label>
+                <div class="col-sm-5">
+                    <input name="passwd_new1" type="password" class="form-control" placeholder="数字/字母/下划线,长度大于6"
+                           id="passwd_new1" onchange="check_pwd();">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input passwd_new2" class="col-sm-3 control-label">重复新密码</label>
+                <div class="col-sm-5">
+                    <input name="passwd_new2" type="password" class="form-control" placeholder="数字/字母/下划线,长度大于6"
+                           id="passwd_new2" onchange="check_pwd();">
+                </div>
+            </div>
+            <div class="col-sm-offset-5">
+                <button type="button" class="btn btn-primary btn-sm"
+                        onclick="user_setting();">保存
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="{{ request.static_url('brms:static/js/user/user.js') }}"></script>
