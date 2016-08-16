@@ -67,14 +67,14 @@ def add_org(request):
     if request.method == 'POST':
         dbs = request.dbsession
         org = SysOrg()
-        org.org_name = request.POST.get('org_name')
-        # org.org_type = request.POST.get('org_type')
-        org.parent_id = request.POST.get('parent_id')
-        org.org_seq = request.POST.get('org_seq')
-        org.org_manager = request.POST.get('org_manager')
-        org.phone = request.POST.get('phone')
-        org.address = request.POST.get('address')
-        org.state = request.POSt.get('state')
+        org.org_name = request.POST.get('org_name', '')
+        # org.org_type = request.POST.get('org_type', '')
+        org.parent_id = request.POST.get('parent_id', 0)
+        org.org_seq = request.POST.get('org_seq', 0)
+        org.org_manager = request.POST.get('org_manager', '')
+        org.phone = request.POST.get('phone', '')
+        org.address = request.POST.get('address', '')
+        org.state = request.POST.get('state', 1)
         org.create_time = datetime.now().strftime(datetime_format)
         org.create_user = request.session['userId']
         msg = add(dbs, org)
@@ -97,7 +97,7 @@ def to_update_org(request):
     '''
     dbs = request.dbsession
     branches = find_branch(dbs)
-    org_id = request.POST.get('org_id')
+    org_id = request.POST.get('org_id', 0)
     org = find_org(dbs, org_id)
     return render_to_response('org/add.html', locals(), request)
 
@@ -117,14 +117,14 @@ def update_org(request):
         if not org_id:
             msg = '更新失败，请刷新页面后重试'
         else:
-            org.org_name = request.POST.get('org_name')
+            org.org_name = request.POST.get('org_name', '')
             # org.org_type = request.POST.get('org_type')
-            org.org_seq = request.POST.get('org_seq')
-            org.parent_id = request.POST.get('parent_id')
-            org.org_manager = request.POST.get('org_manager')
-            org.phone = request.POST.get('phone')
-            org.address = request.POST.get('address')
-            org.state = request.POSt.get('state')
+            org.org_seq = request.POST.get('org_seq', 0)
+            org.parent_id = request.POST.get('parent_id', 0)
+            org.org_manager = request.POST.get('org_manager', '')
+            org.phone = request.POST.get('phone', '')
+            org.address = request.POST.get('address', '')
+            org.state = request.POSt.get('state', 1)
             org.update_time = datetime.now().strftime(datetime_format)
             msg = update(dbs, org)
         json = {
@@ -145,7 +145,7 @@ def delete_org(request):
     '''
     if request.method == 'POST':
         dbs = request.dbsession
-        org_id = request.POST.get('org_id')
+        org_id = request.POST.get('org_id', 0)
         msg = delete(dbs, org_id)
         json = {
             'resultFlag': 'failed' if msg else 'success',

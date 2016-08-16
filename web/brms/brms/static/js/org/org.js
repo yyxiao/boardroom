@@ -78,9 +78,10 @@ function add() {
 		return false;
 	}
 	if (parent_id == '') {
-		$('#parent_id_add').focus();
-		$('#org_cue').html("<font color='red'>上级机构不能为空</font>");
-		return false;
+		// $('#parent_id_add').focus();
+		// $('#org_cue').html("<font color='red'>上级机构不能为空</font>");
+		// return false;
+		parent_id = 0;
 	}
     if (org_seq == '') {
         org_seq = 1000;
