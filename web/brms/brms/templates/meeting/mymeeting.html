@@ -2,7 +2,7 @@
 <section style="padding-top:5px;">
   <ol class="breadcrumb">
     <li><i class="fa fa-dashboard marginR6"></i><a href="javascript:loadcontent('/mymeeting');">主页</a></li>
-    <li><a href="#">会议列表</a></li>
+    <li><a href="#">我的会议</a></li>
   </ol>
 </section>
 <section class="content-search-area">
@@ -38,7 +38,7 @@
                     <label class="col-sm-4 control-label form-label paddingR0 paddingL0">结束时间</label>
                     <div class="col-sm-8 paddingR0">
                         <input type="text" class="form-control pull-right"	id="search_end" name="search_end">
-                        <input id="flag" name="flag" class="hidden" value="all">
+                        <input id="flag" name="flag" class="hidden" value="my">
                     </div>
                 </div>
             </div>
@@ -53,7 +53,6 @@
 	<div class="in-table">
         <div class="toolbar">
             <div class="btns pull-left">
-                <button type="button" class="btn btn-success" onclick="to_add()"><i class="fa fa-edit marginR6"></i>新增</button>
                 <button type="button" class="btn btn-default" onclick="to_update()"><i class="fa  fa-pencil marginR6"></i>修改</button>
                 <button type="button" class="btn btn-warning" onclick="del()"><i class="fa  fa-times marginR6"></i>删除</button>
             </div>
@@ -61,7 +60,8 @@
         <div id="listWrapper">
         </div>
 	</div>
-    <div id="modalWrapper"></div>
+
+<div id="modalWrapper"></div>
 </section>
 
 <link rel="stylesheet" href="{{request.static_url('brms:static/css/bootstrap-datetimepicker.min.css')}}">

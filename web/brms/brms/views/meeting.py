@@ -34,7 +34,12 @@ def list_meeting(request):
     room_name = request.POST.get('room_name', '')
     start_date = request.POST.get('start_date', '')
     end_date = request.POST.get('end_date', '')
-    create_user = request.POST.get('create_user', '')
+    # flag判断是我的预定还是会议管理
+    flag = request.POST.get('flag', '')
+    if flag == 'my':
+        create_user = request.session['userId']
+    else:
+        create_user = request.POST.get('create_user', '')
     page_no = int(request.POST.get('page', '1'))
     (meetings, paginator) = find_meetings(dbs, meeting_name, create_user, room_name, start_date, end_date, page_no)
     return render_to_response('meeting/list.html', locals(), request)
@@ -129,3 +134,9 @@ def update_meeting(request):
             'success': True,
         }
     return json
+
+
+@view_config(route_name='my_meeting')
+def my_meeting(request):
+    dbs = request.dbsession
+    return render_to_response('meeting/mymeeting.html', locals(), request)

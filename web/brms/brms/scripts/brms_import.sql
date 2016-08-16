@@ -19,3 +19,12 @@ INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat
 -- 会议室初始化
 INSERT INTO "brms"."has_boardroom" ("id", "name", "description", "config", "picture", "pad_id", "org_id", "type", "create_time", "create_user", "state") VALUES ('1', '会议室1', '会议室1', NULL, NULL, '1', '1', NULL, NULL, '3', '1');
 INSERT INTO "brms"."has_boardroom" ("id", "name", "description", "config", "picture", "pad_id", "org_id", "type", "create_time", "create_user", "state") VALUES ('2', '会议室2', '会议室2', NULL, NULL, '2', '1', NULL, NULL, '3', '1');
+
+-- 菜单初始化
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('1', '用户管理', NULL, NULL, '/user/to_user', 'fa fa-user', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('2', '机构管理', NULL, NULL, '/org/to_org', 'fa fa-sitemap', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('3', '角色管理', NULL, NULL, '/role/to_role', 'fa fa-ship', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('4', '授权管理', NULL, NULL, '/auth/to_auth', 'fa fa-unlock-alt', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('5', '会议室管理', NULL, NULL, '/boardroom/to_boardroom', 'fa fa-gg', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('6', '终端管理', NULL, NULL, '/terminal/to_terminal', 'fa fa-apple', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('7', '会议管理', NULL, NULL, '/meeting/to_meeting', 'fa fa-tree', NULL, NULL, NULL);

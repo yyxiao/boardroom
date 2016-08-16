@@ -9,6 +9,25 @@ function list(page) {
 		"room_name" : $("#room_name").val(),
 		"start_date" : $("#search_start").val(),
 		"end_date" : $("#search_end").val(),
+		"flag" : $("#flag").val(),
+		"page" : page,
+	}
+	$("#listWrapper").load(url, data, function(response, status) {
+		if (status == 'error') {
+			redirect_to("/");
+		}
+	});
+}
+/*
+ * list meeting
+ */
+function myList(page) {
+	var url = "/my_meeting";
+	var data = {
+		"name" : $("#search").val(),
+		"room_name" : $("#room_name").val(),
+		"start_date" : $("#search_start").val(),
+		"end_date" : $("#search_end").val(),
 		"page" : page,
 	}
 	$("#listWrapper").load(url, data, function(response, status) {

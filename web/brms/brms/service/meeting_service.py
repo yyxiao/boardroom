@@ -47,7 +47,7 @@ def find_meetings(dbs, meeting_name, create_user, room_name, start_date, end_dat
     if meeting_name:
         meetings = meetings.filter(HasMeeting.name.like('%'+meeting_name+'%'))
     if create_user:
-        meetings = meetings.filter(HasMeeting.create_user.like('%' + create_user + '%'))
+        meetings = meetings.filter(HasMeeting.create_user == create_user)
     if start_date:
         meetings = meetings.filter(HasMeeting.start_date >= start_date)
     if end_date:
