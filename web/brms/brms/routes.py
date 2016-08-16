@@ -13,6 +13,7 @@ def includeme(config):
     config.include(boardroom_include, '/boardroom')
     config.include(terminal_include, '/terminal')
     config.include(meeting_include, '/meeting')
+    config.include(booking_include, '/booking')
 
 
 def app_include(config):
@@ -93,3 +94,11 @@ def meeting_include(config):
     config.add_route('add_meeting', '/add')
     config.add_route('to_update_meeting', '/to_update')
     config.add_route('update_meeting', '/update')
+
+
+def booking_include(config):
+    config.add_route('list_my_meeting', '/list_my')
+    config.add_route('list_booking', '/list')
+    config.add_route('delete_booking', '/delete_booking')
+    config.add_route('check_available', '/check_available')
+    config.add_route('meetingbooking', '/meetingbooking')

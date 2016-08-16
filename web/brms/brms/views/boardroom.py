@@ -57,7 +57,7 @@ def boardroom_list(request):
         config = request.POST.get('br_config', '')
         org_id = request.POST.get('org_id', '')
         flag = request.POST.get('flag', '')
-        page_no = request.POST.get('page', '')
+        page_no = int(request.POST.get('page', ''))
         (boardrooms, paginator) = find_boardrooms(dbs, name=name, config=config, org_id=org_id, page_no=page_no)
         return render_to_response('boardroom/list.html', locals(), request)
 

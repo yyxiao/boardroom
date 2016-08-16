@@ -38,7 +38,7 @@ def list_org(request):
         org_name = request.POST.get('org_name', '')
         parent_id = request.POST.get('parent_id', 0)
         address = request.POST.get('address', '')
-        page_no = request.POST.get('page', 1)
+        page_no = int(request.POST.get('page', 1))
         (orgs, paginator) = find_orgs(dbs, org_name, parent_id, address, page_no=page_no)
         return render_to_response('org/list.html', locals(), request)
 
