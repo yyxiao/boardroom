@@ -11,37 +11,33 @@ import base64
 import transaction
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render_to_response
-from pyramid.response import Response
 from pyramid.view import view_config
 
 from brms.service.loginutil import request_login, UserTools
 from ..models.model import SysUser
 from ..common.dateutils import get_welcome
+from ..service.menu_service import get_user_menu
 
 
 @view_config(route_name='home')
 @request_login
 def index(request):
     welcome = get_welcome()
-    # user_name = request.session['userName']
-    # dbs = request.dbsession
-    sys_menu_list = [{'url': '/user/to_user', 'icon': 'fa fa-user', 'name': '用户管理'},
-                     {'url': '/org/to_org', 'icon': 'fa fa-sitemap', 'name': '机构管理'},
-                     {'url': '/role/to_role', 'icon': 'fa  fa-ship', 'name': '角色管理'},
-                     {'url': '/auth/to_auth', 'icon': 'fa fa-unlock-alt', 'name': '授权管理'},
-                     {'url': '/boardroom/to_boardroom', 'icon': 'fa fa-gg', 'name': '会议室管理'},
-                     {'url': '/terminal/to_terminal', 'icon': 'fa fa-apple', 'name': '终端管理'},
-                     {'url': '/meeting/to_meeting', 'icon': 'fa fa-tree', 'name': '会议管理'}]
-    login_user_session = {
-        'sys_menu': True,
-        'sysMenuList': sys_menu_list,
-    }
-    request.session['loginUserSession'] = login_user_session
+    if 'loginUserSession' not in request.session:
+        print('not in')
+        user_id = request.session['userId']
+        dbs = request.dbsession
+        sys_menu_list = get_user_menu(dbs, user_id)
+        login_user_session = {
+            'sys_menu': True if len(sys_menu_list) > 0 else False,
+            'sysMenuList': sys_menu_list,
+        }
+        request.session['loginUserSession'] = login_user_session
     return render_to_response('index.html', locals(), request)
 
 
 @view_config(route_name='reset_pwd')
-def restpwd(request):
+def reset_pwd(request):
     # TODO
     return render_to_response('reset_pwd.html', locals(), request)
 

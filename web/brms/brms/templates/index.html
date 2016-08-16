@@ -71,7 +71,7 @@
             </a>
             <ul class="treeview-menu">
               {% for menu in request.session.loginUserSession.sysMenuList %}
-                  <li><a href="javascript:loadcontent('{{ menu.url }}');"><i class="{{ menu.icon }}"></i>{{ menu.name }}</a></li>
+                  <li><a href="javascript:loadcontent('{{ menu.url }}');"><i class="{{ menu.icon_name }}"></i>{{ menu.name }}</a></li>
               {% endfor %}
             </ul>
           </li>
