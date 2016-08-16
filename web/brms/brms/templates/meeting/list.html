@@ -4,6 +4,7 @@
 			<tr>
 				<th></th>
 				<th>会议名称</th>
+                <th>会议室</th>
                 <th>会议描述</th>
                 <th>开始时间</th>
                 <th>结束时间</th>
@@ -17,6 +18,7 @@
 				<td><input type="checkbox" name="idbox"
 					value="{{meeting.id}}" onclick="checkmeeting(this)"></td>
 				<td>{{meeting.name}}</td>
+                <td>{{meeting.room_name}}</td>
                 <td>{{meeting.description}}</td>
                 <td>{{meeting.start_date}}&nbsp;{{meeting.start_time}}</td>
                 <td>{{meeting.end_date}}&nbsp;{{meeting.end_time}}</td>

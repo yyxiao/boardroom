@@ -9,7 +9,7 @@ __mtime__ = 2016/8/8
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
-from ..service.meeting_service import find_meetings, add, delete_meeting, find_meeting
+from ..service.meeting_service import find_meetings, add, delete_meeting, find_meeting, find_rooms
 from ..models.model import *
 from ..common.dateutils import datetime_format
 from datetime import datetime
@@ -31,15 +31,19 @@ def to_meeting(request):
 def list_meeting(request):
     dbs = request.dbsession
     meeting_name = request.POST.get('name', '')
+    room_name = request.POST.get('room_name', '')
+    start_date = request.POST.get('start_date', '')
+    end_date = request.POST.get('end_date', '')
     create_user = request.POST.get('create_user', '')
     page_no = int(request.POST.get('page', '1'))
-    (meetings, paginator) = find_meetings(dbs, meeting_name, create_user, page_no)
+    (meetings, paginator) = find_meetings(dbs, meeting_name, create_user, room_name, start_date, end_date, page_no)
     return render_to_response('meeting/list.html', locals(), request)
 
 
 @view_config(route_name='to_add_meeting')
 def to_add(request):
     dbs = request.dbsession
+    rooms = find_rooms(dbs)
     return render_to_response('meeting/add.html', locals(), request)
 
 
@@ -96,7 +100,8 @@ def del_meeting(request):
 def to_update(request):
     dbs = request.dbsession
     meeting_id = request.POST.get('id', '')
-    meeting, boardrooms = find_meeting(dbs, meeting_id)
+    meeting = find_meeting(dbs, meeting_id)
+    rooms = find_rooms(dbs)
     return render_to_response('meeting/add.html', locals(), request)
 
 

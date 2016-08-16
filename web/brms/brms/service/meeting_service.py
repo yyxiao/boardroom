@@ -15,11 +15,16 @@ import logging
 
 logger = logging.getLogger('operator')
 
-def find_meetings(dbs, meeting_name, create_user, page_no):
+
+def find_meetings(dbs, meeting_name, create_user, room_name, start_date, end_date, page_no):
     """
     会议列表
     :param dbs:
     :param meeting_name:
+    :param create_user:
+    :param room_name:
+    :param start_date:
+    :param end_date:
     :param page_no:
     :return:
     """
@@ -31,12 +36,24 @@ def find_meetings(dbs, meeting_name, create_user, page_no):
                          HasMeeting.start_time,
                          HasMeeting.end_time,
                          SysUser.user_name,
-                         HasMeeting.create_time)\
-        .outerjoin(SysUser, SysUser.id == HasMeeting.create_user)
+                         HasMeeting.create_time,
+                         HasBoardroom.name)\
+        .outerjoin(SysUser, SysUser.id == HasMeeting.create_user)\
+        .outerjoin(SysOrg, SysUser.org_id == SysOrg.id)\
+        .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id)\
+        .outerjoin(HasBoardroom, HasBoardroom.id == HasMeetBdr.boardroom_id)\
+        .outerjoin(HasPad, HasPad.id == HasBoardroom.pad_id)
+        # .filter(HasMeeting.start_date < n_days).filter(HasMeeting.start_date >= now_day)
     if meeting_name:
         meetings = meetings.filter(HasMeeting.name.like('%'+meeting_name+'%'))
     if create_user:
         meetings = meetings.filter(HasMeeting.create_user.like('%' + create_user + '%'))
+    if start_date:
+        meetings = meetings.filter(HasMeeting.start_date >= start_date)
+    if end_date:
+        meetings = meetings.filter(HasMeeting.end_date <= end_date)
+    if room_name:
+        meetings = meetings.filter(HasBoardroom.name.like('%' + room_name + '%'))
     user_list = meetings.order_by(HasMeeting.create_time.desc())
     results, paginator = Paginator(user_list, page_no).to_dict()
     lists = []
@@ -50,6 +67,7 @@ def find_meetings(dbs, meeting_name, create_user, page_no):
         end_time = obj[6] if obj[6] else ''
         create_user = obj[7] if obj[7] else ''
         create_time = obj[8] if obj[8] else ''
+        room_name = obj[9] if obj[9] else ''
         temp_dict = {
             'id': id,
             'name': name,
@@ -60,6 +78,7 @@ def find_meetings(dbs, meeting_name, create_user, page_no):
             'end_time': end_time,
             'create_user': create_user,
             'create_time': create_time,
+            'room_name': room_name
         }
         lists.append(temp_dict)
     return lists, paginator
@@ -175,8 +194,18 @@ def find_meeting(dbs, meeting_id):
     :param meeting_id:
     :return:
     """
-    meeting = dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id).first()
-    boardrooms = dbs.query(HasBoardroom)\
-        .outerjoin(HasMeetBdr, HasMeetBdr.boardroom_id == HasBoardroom.id)\
-        .filter(HasMeetBdr.meeting_id == meeting_id).all()
-    return meeting, boardrooms
+    meeting = dbs.query(HasMeeting, HasMeetBdr.boardroom_id)\
+        .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id)\
+        .outerjoin(HasBoardroom, HasBoardroom.id == HasMeetBdr.boardroom_id)\
+        .filter(HasMeeting.id == meeting_id).first()
+    return meeting
+
+
+def find_rooms(dbs):
+    """
+    当前用户可以申请的会议室（机构权限过滤）
+    :param dbs:
+    :return:
+    """
+    rooms = dbs.query(HasBoardroom).all()
+    return rooms

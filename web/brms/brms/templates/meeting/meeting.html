@@ -17,10 +17,34 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">会议室</label>
+                    <div class="col-sm-8 paddingR0">
+                        <input type="text" class="form-control"	id="room_name" name="room_name">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">开始时间</label>
+                    <div class="col-sm-8 paddingR0">
+                        <input type="text" class="form-control"	id="search_start" name="search_start">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">结束时间</label>
+                    <div class="col-sm-8 paddingR0">
+                        <input type="text" class="form-control pull-right"	id="search_end" name="search_end">
+                    </div>
+                </div>
+            </div>
+            <button type="button" style="margin-left: 40px;" class="btn btn-success" onclick="list(1)">
+                <i class="fa fa-search marginR6" ></i>查询
+            </button>
         </div>
-        <button type="button" style="margin-left: 40px;" class="btn btn-success" onclick="list(1)">
-            <i class="fa fa-search marginR6" ></i>查询
-        </button>
         </div>
     </div>
 </section>
@@ -44,5 +68,22 @@
 <script src="{{ request.static_url('brms:static/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
 <script src="{{ request.static_url('brms:static/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js') }}"></script>
 <script src="{{ request.static_url('brms:static/js/meeting/meeting.js') }}"></script>
+<script>
+    $("#search_start").datetimepicker({
+        language: 'zh-CN',
+        autoclose: true,
+        todayHighlight: true,
+        format: 'yyyy-mm-dd',
+        minView: 2,
+        maxView: 3
+    });
+    $("#search_end").datetimepicker({
+        language: 'zh-CN',
+        autoclose: true,
+        todayHighlight: true,
+        format: 'yyyy-mm-dd',
+        minView: 2,
+        maxView: 3
+    });
+</script>
 {% endblock %}
-

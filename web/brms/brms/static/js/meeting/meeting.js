@@ -6,6 +6,9 @@ function list(page) {
 	var url = "/meeting/list";
 	var data = {
 		"name" : $("#search").val(),
+		"room_name" : $("#room_name").val(),
+		"start_date" : $("#search_start").val(),
+		"end_date" : $("#search_end").val(),
 		"page" : page,
 	}
 	$("#listWrapper").load(url, data, function(response, status) {
