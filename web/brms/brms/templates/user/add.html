@@ -43,6 +43,9 @@
 
                     <div class="col-sm-9">
                         <select class="form-control" id="branch_add" name="branch_add">
+                            {% if not user %}
+                                <option value="">请选择</option>
+                            {% endif %}
                             {% for branch in branches %}
                                 {% if user %}
                                     <option value="{{ user.org_id }}" selected="selected">{{ user.org_name }}</option>

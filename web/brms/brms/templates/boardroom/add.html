@@ -30,6 +30,9 @@
                     <label for="input branch_add" class="col-sm-2 control-label">所属机构</label>
                     <div class="col-sm-9">
                         <select class="form-control" id="branch_add" name="branch_add">
+                            {% if not boardroom %}
+                                <option value="">请选择</option>
+                            {% endif %}
                             {% for branch in branches %}
                                 {% if boardroom %}
                                     <option value="{{ boardroom.org_id }}" selected="selected">{{ boardroom.org_name }}</option>
