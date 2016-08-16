@@ -34,8 +34,8 @@
                                 <option value="">请选择</option>
                             {% endif %}
                             {% for branch in branches %}
-                                {% if boardroom %}
-                                    <option value="{{ boardroom.org_id }}" selected="selected">{{ boardroom.org_name }}</option>
+                                {% if boardroom.org_id == branch.org_id %}
+                                    <option value="{{ branch.org_id }}" selected="selected">{{ branch.org_name }}</option>
                                 {% else %}
                                     <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
                                 {% endif %}
