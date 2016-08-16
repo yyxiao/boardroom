@@ -97,7 +97,7 @@ a:hover{
 	/*padding-left: 0;*/
 }
 .form-control{
-	border:0;
+	/*border:0;*/
 	border-radius: 4px;
 }
 .search-btn-wrap{
@@ -179,7 +179,7 @@ a:hover{
 	border-radius: 5px;
 	line-height: 16px;
 	background: #ececec;
-	borde:0;
+	border:0;
 	border-bottom: 3px solid #dfdfdf;
 }
 /*主内容区域结束*/
@@ -194,8 +194,9 @@ a:hover{
 .select2-container--default .select2-selection--single{
   height: 34px;
   border-radius:4px;
-  border-color:#d2d6de;
-  border:none!important;
+  /*border-color:#d2d6de;*/
+  border-color:transparent!important;
+  /*border:none!important;*/
 }
 .width175 .select2-container--default .select2-selection--single{
   width:175px!important;
@@ -219,6 +220,117 @@ label{
 	font-weight: 400;
 	font-family: "微软雅黑";
 }
+strong{
+	font-weight: 400!important;
+}
+/*8.14loginPage*/
+.gray-bg{
+	width:100%;
+	height:100%;
+	font-family: "微软雅黑";
+	background: #f1f4f6;
+}
+.gray-bg .loginPage{
+	max-width: 300px;
+	margin:175px auto 0;
+}
+.form-control{
+	background-color: #FFF;
+    background-image: none;
+    border: 1px solid #e5e6e7;
+    border-radius: 4px;
+    color: inherit;
+    display: block;
+    padding: 6px 12px;
+    -webkit-transition: border-color .15s ease-in-out 0s,box-shadow .15s ease-in-out 0s;
+    transition: border-color .15s ease-in-out 0s,box-shadow .15s ease-in-out 0s;
+    width: 100%;
+    font-size: 14px;
+}
+.loginPage .title0{
+	text-align: center;
+}
+.loginPage .m-t{
+	margin-top: 15px;
+}
+.m-b{
+	margin-bottom: 15px;
+}
+.full-width{
+	    width: 100%!important;
+}
+.block{
+	display: block;
+}
+.btn-primary{
+	background-color: #1ab394;
+    border-color: #1ab394;
+    color: #FFF;
+}
+.btn-primary.focus {
+  color: #fff;
+  background-color: #449d44;
+  border-color: #255625;
+}
+.btn-primary:hover {
+  color: #fff;
+  background-color: #449d44;
+  border-color: #398439;
+}
+a.a0{
+	color:#337ab7;
+}
+.loginPage .error-tips11{
+	display: none;
+    width:100%!important;
+    height: 30px;
+    overflow: hidden;
+    padding: 0 10px 0 36px;
+    border: 1px solid #e5debc;
+    border-radius: 2px;
+    background: #fff7d1;
+    /*background: #fff7d1 url(../images/login.png) no-repeat -324px -150px;*/
+    line-height: 30px;
+    color: #999;
+}
+.icon{
+	float: left;
+    margin: 9px 0 0;
+    display: inline-block;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    background-image: url("../img/icon.65b455a9.png");
+}
+.minusCircleIcon{
+    height: 13px;
+    width: 13px;
+	background-position: -60px -161px;
+}
+.errorContent{
+	margin-left: 20px;
+}
+/*8.15*/
+/*当屏幕小于770px是应用此样式*/
+@media screen and (max-width: 770px) { /*当屏幕尺寸小于600px时，应用下面的CSS样式*/
+  .in-table .btns{
+  	text-align: right;
+  	position: static;
+  }
+}
+.marginL{
+	margin-left:20px!important;
+}
+/*当是单选时thead里的第一个th的样式*/
+.bootstrap-table table thead tr th:first-child .th-inner{
+	display: none!important;
+}
+.bootstrap-table table thead tr th:first-child{
+	background: #e3eaec!important;
+}
+.marginT25{
+	margin-top: 25px;
+}
+
 
 
 
