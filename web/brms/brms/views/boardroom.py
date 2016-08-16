@@ -53,11 +53,12 @@ def boardroom_list(request):
     """
     if request.method == 'POST':
         dbs = request.dbsession
-        name = request.params['br_name']
-        config = request.params['br_config']
-        org_id = request.params['org_id']
-        flag = request.params['flag']
-        (boardrooms, paginator) = find_boardrooms(dbs, name=name, config=config, org_id=org_id)
+        name = request.POST.get('br_name', '')
+        config = request.POST.get('br_config', '')
+        org_id = request.POST.get('org_id', '')
+        flag = request.POST.get('flag', '')
+        page_no = request.POST.get('page', '')
+        (boardrooms, paginator) = find_boardrooms(dbs, name=name, config=config, org_id=org_id, page_no=page_no)
         return render_to_response('boardroom/list.html', locals(), request)
 
     return Response('', 404)
