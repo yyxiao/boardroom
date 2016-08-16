@@ -267,16 +267,6 @@ strong{
     border-color: #1ab394;
     color: #FFF;
 }
-.btn-primary.focus {
-  color: #fff;
-  background-color: #449d44;
-  border-color: #255625;
-}
-.btn-primary:hover {
-  color: #fff;
-  background-color: #449d44;
-  border-color: #398439;
-}
 a.a0{
 	color:#337ab7;
 }

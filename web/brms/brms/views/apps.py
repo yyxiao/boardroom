@@ -9,10 +9,9 @@ import transaction
 from pyramid.view import view_config
 
 from ..models.model import *
-from ..common.jsonutils import serialize
 from ..common.dateutils import date_now
 from ..service.loginutil import UserTools
-from ..service.pad_service import find_pad_by_id, find_meetings
+from ..service.pad_service import find_pad_by_id, find_meetings, update_last_time
 from ..service.meeting_service import add_by_pad, delete_meeting, update_by_pad
 from ..service.user_service import user_checking
 
@@ -44,6 +43,7 @@ def pad_login(request):
                 dbs.flush()
             else:
                 pad, error_msg = find_pad_by_id(dbs, pad_code, user.id)
+    update_last_time(dbs, pad_code, 'padLogin')
     if error_msg:
         json_a = {
             'success': 'false',
@@ -87,6 +87,7 @@ def user_check(request):
                 max_period = user.max_period
                 user_id = user.id
                 error_msg = user_checking(dbs, pad_code, user.id)
+    update_last_time(dbs, pad_code, 'userCheck')
     if error_msg:
         json_a = {
             'success': 'false',
@@ -115,6 +116,7 @@ def meeting_list(request):
         error_msg = '终端编码不能为空'
     else:
         meetings, error_msg = find_meetings(dbs, pad_code)
+    update_last_time(dbs, pad_code, 'meetingList')
     if error_msg:
         json_a = {
             'success': 'false',
@@ -159,6 +161,7 @@ def pad_add_meeting(request):
         meeting.create_user = user_id
         meeting.create_time = date_now()
         error_msg = add_by_pad(dbs, meeting, pad_code)
+    update_last_time(dbs, pad_code, 'addMeeting')
     if error_msg:
         json = {
             'success': 'false',
@@ -175,13 +178,17 @@ def pad_add_meeting(request):
 def del_meeting(request):
     dbs = request.dbsession
     user_id = request.POST.get('user_id', '')
+    pad_code = request.POST.get('pad_code', '')
     meeting_id = request.POST.get('meeting_id', '')
     if not user_id:
         error_msg = '用户id不能为空'
     elif not meeting_id:
         error_msg = '会议id不能为空'
+    elif not pad_code:
+        error_msg = '终端编码不能为空'
     else:
         error_msg = delete_meeting(dbs, meeting_id, user_id)
+    update_last_time(dbs, pad_code, 'delMeeting')
     if error_msg:
         json = {
             'success': 'false',
@@ -220,6 +227,7 @@ def pad_update_meeting(request):
             meeting.end_time = request.POST.get('end_time', '')
             meeting.create_time = date_now()
             error_msg = update_by_pad(dbs, meeting, pad_code)
+    update_last_time(dbs, pad_code, 'updateMeeting')
     if error_msg:
         json = {
             'success': 'false',

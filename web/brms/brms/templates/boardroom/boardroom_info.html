@@ -30,7 +30,6 @@
                     <label class="col-sm-4 control-label form-label paddingR0 paddingL0">机构</label>
                     <div class="col-sm-8 paddingR0">
                         <select class="form-control" id="org_id" name="org_id">
-                            <option></option>
                             {% for branch in branches %}
                                 <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
                             {% endfor %}

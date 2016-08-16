@@ -53,6 +53,13 @@ def find_pad_by_id(dbs, pad_code, create_user):
 
 
 def update_last_time(dbs, pad_code, last_funct):
+    """
+    更新最后通信时间
+    :param dbs:
+    :param pad_code: 设备编码
+    :param last_funct: 设备最后调用方法
+    :return:
+    """
     pad = dbs.query(HasPad).filter(HasPad.pad_code == pad_code).first()
     try:
         pad.last_time = date_now()
@@ -61,8 +68,6 @@ def update_last_time(dbs, pad_code, last_funct):
         dbs.flush()
     except Exception as e:
         logger.error(e)
-        error_msg = '新增设备失败，请稍后后重试!'
-    return pad, error_msg
 
 
 def find_meetings(dbs, pad_code):

@@ -43,12 +43,12 @@
 
                     <div class="col-sm-9">
                         <select class="form-control" id="branch_add" name="branch_add">
-                            {% if user %}
-                                <option value="{{ user.org_id }}" selected="selected">{{ user.org_name }}</option>
-                            {% endif %}
-                            <option value=""></option>
                             {% for branch in branches %}
-                                <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
+                                {% if user %}
+                                    <option value="{{ user.org_id }}" selected="selected">{{ user.org_name }}</option>
+                                {% else %}
+                                    <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
