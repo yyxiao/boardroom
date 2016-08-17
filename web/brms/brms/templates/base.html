@@ -13,6 +13,7 @@
 
   <link rel="stylesheet" href="{{request.static_url('brms:static/css/style.css')}}">
   <link rel="stylesheet" href="{{request.static_url('brms:static/css/table.css')}}">
+  <link rel="stylesheet" href="{{request.static_url('brms:static/ztree/zTreeStyle.css')}}">
   {% block link %}{% endblock %}
   <!--[if lt IE 9]>
   <script src="{{request.static_url('brms:static/tml5shiv/3.7.3/html5shiv.min.js')}}"></script>
@@ -25,6 +26,7 @@
     <script src="{{request.static_url('brms:static/bootstrap/js/bootstrap-table.js')}}"></script>
     <script src="{{request.static_url('brms:static/js/jquery.bootstrap.min.js')}}"></script>
     <script src="{{request.static_url('brms:static/js/base.js')}}"></script>
+    <script src="{{ request.static_url('brms:static/ztree/jquery.ztree.all.min.js') }}"></script>
     {% block body %}{% endblock %}
     {% block mainjs %}{% endblock %}
   </body>

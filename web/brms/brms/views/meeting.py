@@ -10,12 +10,14 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
 from ..service.meeting_service import find_meetings, add, delete_meeting, find_meeting, find_rooms
+from ..service.loginutil import request_login
 from ..models.model import *
 from ..common.dateutils import datetime_format
 from datetime import datetime
 
 
 @view_config(route_name='to_meeting')
+@request_login
 def to_meeting(request):
     """
     会议管理
@@ -28,6 +30,7 @@ def to_meeting(request):
 
 
 @view_config(route_name='list_meeting')
+@request_login
 def list_meeting(request):
     dbs = request.dbsession
     meeting_name = request.POST.get('name', '')
@@ -46,6 +49,7 @@ def list_meeting(request):
 
 
 @view_config(route_name='to_add_meeting')
+@request_login
 def to_add(request):
     dbs = request.dbsession
     rooms = find_rooms(dbs)
@@ -53,6 +57,7 @@ def to_add(request):
 
 
 @view_config(route_name='add_meeting', renderer='json')
+@request_login
 def add_meeting(request):
     dbs = request.dbsession
     meeting = HasMeeting()
@@ -84,6 +89,7 @@ def add_meeting(request):
 
 
 @view_config(route_name='delete_meeting', renderer='json')
+@request_login
 def del_meeting(request):
     dbs = request.dbsession
     meeting_id = request.POST.get('id', '')
@@ -111,6 +117,7 @@ def to_update(request):
 
 
 @view_config(route_name='update_meeting', renderer='json')
+@request_login
 def update_meeting(request):
     dbs = request.dbsession
     meeting_id = request.POST.get('id', '')
@@ -137,6 +144,7 @@ def update_meeting(request):
 
 
 @view_config(route_name='my_meeting')
+@request_login
 def my_meeting(request):
     dbs = request.dbsession
     return render_to_response('meeting/mymeeting.html', locals(), request)

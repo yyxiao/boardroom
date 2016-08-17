@@ -24,6 +24,18 @@ def find_branch(dbs):
     return branches
 
 
+def find_branch_json(dbs):
+    branches = []
+    curs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id).all()
+    for rec in curs:
+        branch = {}
+        branch['id'] = rec[0]
+        branch['name'] = rec[1]
+        branch['pId'] = rec[2]
+        branches.append(branch)
+    return branches
+
+
 def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, page_no=1):
     '''
 

@@ -8,14 +8,15 @@ __mtime__ = 2016/8/8
 
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
-from pyramid.response import Response
 from ..service.role_service import find_roles, add, delete_role, find_role
+from ..service.loginutil import request_login
 from ..models.model import SysRole
 from ..common.dateutils import datetime_format
 from datetime import datetime
 
 
 @view_config(route_name='to_role')
+@request_login
 def to_role(request):
     """
     角色管理
@@ -28,6 +29,7 @@ def to_role(request):
 
 
 @view_config(route_name='list_role')
+@request_login
 def list_role(request):
     dbs = request.dbsession
     role_name = request.POST.get('name', '')
@@ -37,6 +39,7 @@ def list_role(request):
 
 
 @view_config(route_name='to_add_role')
+@request_login
 def to_add(request):
     dbs = request.dbsession
     # role_name = find_role(dbs)
@@ -44,6 +47,7 @@ def to_add(request):
 
 
 @view_config(route_name='add_role', renderer='json')
+@request_login
 def add_role(request):
     dbs = request.dbsession
     role = SysRole()
@@ -65,6 +69,7 @@ def add_role(request):
 
 
 @view_config(route_name='delete_role', renderer='json')
+@request_login
 def del_role(request):
     dbs = request.dbsession
     role_id = request.POST.get('id', '')
@@ -82,6 +87,7 @@ def del_role(request):
 
 
 @view_config(route_name='to_update_role')
+@request_login
 def to_update(request):
     dbs = request.dbsession
     role_id = request.POST.get('id', '')
@@ -90,6 +96,7 @@ def to_update(request):
 
 
 @view_config(route_name='update_role', renderer='json')
+@request_login
 def update_role(request):
     dbs = request.dbsession
     role_id = request.POST.get('id', '')

@@ -4,13 +4,13 @@
 __author__ = cuizc
 __mtime__ = 2016-08-09
 """
-
+import json
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
 from ..common.password import get_password, init_password
 from ..service.user_service import *
-from ..service.org_service import find_branch
+from ..service.org_service import find_branch, find_branch_json
 from ..service.loginutil import request_login
 from ..common.dateutils import datetime_format
 
@@ -24,7 +24,7 @@ def user_index(request):
     :return:
     '''
     dbs = request.dbsession
-    branches = find_branch(dbs)
+    branch_json = json.dumps(find_branch_json(dbs))
     return render_to_response('user/user.html', locals(), request)
 
 

@@ -9,11 +9,13 @@ __mtime__ = 2016/8/8
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from ..service.terminal_service import find_terminals, add, delete_terminal, find_terminal
+from ..service.loginutil import request_login
 from ..models.model import HasPad
 from ..common.dateutils import date_now
 
 
 @view_config(route_name='to_terminal')
+@request_login
 def to_terminal(request):
     """
     终端管理
@@ -26,6 +28,7 @@ def to_terminal(request):
 
 
 @view_config(route_name='list_terminal')
+@request_login
 def list_terminal(request):
     dbs = request.dbsession
     pad_code = request.POST.get('search_code', '')
@@ -36,6 +39,7 @@ def list_terminal(request):
 
 
 @view_config(route_name='to_add_terminal')
+@request_login
 def to_add(request):
     dbs = request.dbsession
     # terminal_name = find_terminal(dbs)
@@ -43,6 +47,7 @@ def to_add(request):
 
 
 @view_config(route_name='add_terminal', renderer='json')
+@request_login
 def add_terminal(request):
     dbs = request.dbsession
     terminal = HasPad()
@@ -63,6 +68,7 @@ def add_terminal(request):
 
 
 @view_config(route_name='delete_terminal', renderer='json')
+@request_login
 def del_terminal(request):
     dbs = request.dbsession
     terminal_id = request.POST.get('id', '')
@@ -80,6 +86,7 @@ def del_terminal(request):
 
 
 @view_config(route_name='to_update_terminal')
+@request_login
 def to_update(request):
     dbs = request.dbsession
     terminal_id = request.POST.get('id', '')
@@ -88,6 +95,7 @@ def to_update(request):
 
 
 @view_config(route_name='update_terminal', renderer='json')
+@request_login
 def update_terminal(request):
     dbs = request.dbsession
     terminal_id = request.POST.get('id', '')
