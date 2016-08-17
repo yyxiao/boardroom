@@ -9,7 +9,7 @@ __mtime__ = 2016/8/8
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
-from ..service.meeting_service import find_meetings, add, delete_meeting, find_meeting, find_rooms
+from ..service.meeting_service import *
 from ..service.loginutil import request_login
 from ..models.model import *
 from ..common.dateutils import datetime_format
@@ -67,6 +67,7 @@ def add_meeting(request):
     #         outerjoin(HasPad, HasPad.id == HasBoardroom.pad_id).\
     #         filter(HasPad.pad_code == pad_code)
     #     if board_room:
+    room_id = request.POST.get('room_id', '')
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
     meeting.start_date = request.POST.get('start_date', '')
@@ -75,7 +76,7 @@ def add_meeting(request):
     meeting.end_time = request.POST.get('end_time', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
-    error_msg = add(dbs, meeting, '')
+    error_msg = add(dbs, meeting, room_id)
     if error_msg:
         json = {
             'success': False,
@@ -111,8 +112,8 @@ def del_meeting(request):
 def to_update(request):
     dbs = request.dbsession
     meeting_id = request.POST.get('id', '')
-    meeting = find_meeting(dbs, meeting_id)
     rooms = find_rooms(dbs)
+    meeting = find_meeting_bdr(dbs, meeting_id)
     return render_to_response('meeting/add.html', locals(), request)
 
 
@@ -121,7 +122,8 @@ def to_update(request):
 def update_meeting(request):
     dbs = request.dbsession
     meeting_id = request.POST.get('id', '')
-    meeting, boardrooms = find_meeting(dbs, meeting_id)
+    room_id = request.POST.get('room_id', '')
+    meeting = find_meeting(dbs, meeting_id)
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
     meeting.start_date = request.POST.get('start_date', '')
@@ -130,7 +132,7 @@ def update_meeting(request):
     meeting.end_time = request.POST.get('end_time', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
-    error_msg = add(dbs, meeting, '')
+    error_msg = update(dbs, meeting, room_id)
     if error_msg:
         json = {
             'success': False,

@@ -84,21 +84,63 @@ def find_meetings(dbs, meeting_name, create_user, room_name, start_date, end_dat
     return lists, paginator
 
 
-def add(dbs, meeting, broads):
+def add(dbs, meeting, room_id):
     """
     PC添加会议
     :param dbs:
     :param meeting:
-    :param broads
+    :param room_id
     :return:
     """
     error_msg = ''
     try:
-        with transaction.manager:
-            dbs.add(meeting)
+        # 添加会议
+        dbs.add(meeting)
+        dbs.flush()
+        logger.debug("会议添加完毕，meeting_id:" + str(meeting.id))
+        meeting_id = meeting.id  # 会议ID
+        meet_bdr = HasMeetBdr()  # 会议室会议关联信息
+        meet_bdr.meeting_id = meeting_id
+        meet_bdr.boardroom_id = room_id
+        meet_bdr.create_user = meeting.create_user
+        meet_bdr.create_time = date_now()
+        dbs.add(meet_bdr)
+        logger.debug("会议会议室关联添加完毕")
     except Exception as e:
         logger.error(e)
         error_msg = '新增会议失败，请核对后重试'
+    return error_msg
+
+
+def update(dbs, meeting, room_id):
+    """
+    PAD更新会议
+    :param dbs:
+    :param meeting:
+    :param pad_code
+    :return:
+    """
+    error_msg = ''
+    try:
+        # 查询padcode对应的boardroom_id
+        meet_bdr = dbs.query(HasMeetBdr)\
+            .filter(HasMeetBdr.meeting_id == meeting.id).first()
+        if not meet_bdr:                                       # 不存在
+            meet_bdr = HasMeetBdr()  # 会议室会议关联信息
+            meet_bdr.meeting_id = meeting.id
+            meet_bdr.boardroom_id = room_id
+            meet_bdr.create_user = meeting.create_user
+            meet_bdr.create_time = date_now()
+        else:
+            # 更新会议
+            dbs.add(meeting)
+            dbs.flush()
+            meet_bdr.board_id = room_id
+            dbs.add(meet_bdr)
+            logger.debug("会议更新完毕，meeting_id:" + str(meeting.id))
+    except Exception as e:
+        logger.error(e)
+        error_msg = '更新会议失败，请核对后重试'
     return error_msg
 
 
@@ -187,6 +229,31 @@ def delete_meeting(dbs, meeting_id, user_id):
     return error_msg
 
 
+def find_meeting_bdr(dbs, meeting_id):
+    """
+    获取会议以及会议室关联的名称
+    :param dbs:
+    :param meeting_id:
+    :return:
+    """
+    meet_bdr = {}
+    meeting = dbs.query(HasMeeting, HasMeetBdr.boardroom_id)\
+        .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id)\
+        .outerjoin(HasBoardroom, HasBoardroom.id == HasMeetBdr.boardroom_id)\
+        .filter(HasMeeting.id == meeting_id).first()
+    if meeting:
+        meet_bdr = {
+            'id': meeting.HasMeeting.id,
+            'name': meeting.HasMeeting.name,
+            'description': meeting.HasMeeting.description,
+            'start_date': meeting.HasMeeting.start_date,
+            'end_date': meeting.HasMeeting.end_date,
+            'start_time': meeting.HasMeeting.start_time,
+            'end_time': meeting.HasMeeting.end_time
+        }
+    return meet_bdr
+
+
 def find_meeting(dbs, meeting_id):
     """
     获取会议以及会议室关联的名称
@@ -194,9 +261,7 @@ def find_meeting(dbs, meeting_id):
     :param meeting_id:
     :return:
     """
-    meeting = dbs.query(HasMeeting, HasMeetBdr.boardroom_id)\
-        .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id)\
-        .outerjoin(HasBoardroom, HasBoardroom.id == HasMeetBdr.boardroom_id)\
+    meeting = dbs.query(HasMeeting)\
         .filter(HasMeeting.id == meeting_id).first()
     return meeting
 
