@@ -131,6 +131,7 @@ def update(dbs, meeting, room_id):
             meet_bdr.boardroom_id = room_id
             meet_bdr.create_user = meeting.create_user
             meet_bdr.create_time = date_now()
+            dbs.add(meet_bdr)
         else:
             # 更新会议
             dbs.add(meeting)
