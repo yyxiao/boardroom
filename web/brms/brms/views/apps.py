@@ -242,3 +242,29 @@ def pad_update_meeting(request):
             'meeting': meeting_dict
         }
     return json
+
+
+@view_config(route_name='pad_org_list', renderer='json')
+def pad_org_list(request):
+    error_msg = ''
+    dbs = request.dbsession
+    user_id = request.POST.get('user_id', '')
+    pad_code = request.POST.get('pad_code', '')
+    if not user_id:
+        error_msg = '用户ID不能为空！'
+    elif not pad_code:
+        error_msg = '终端编码不能为空！'
+    else:
+        orgs = pad_find_orgs(dbs, user_id)
+    update_last_time(dbs, pad_code, 'pad_org_list')
+    if error_msg:
+        json = {
+            'success': 'false',
+            'error_msg': error_msg,
+        }
+    else:
+        json = {
+            'success': 'true',
+            'orgs': orgs
+        }
+    return json

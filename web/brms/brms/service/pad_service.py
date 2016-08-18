@@ -232,3 +232,42 @@ def pad_find_meeting(dbs, meeting_id):
             'org_name': org_name,
         }
     return meeting_dict
+
+
+def pad_find_orgs(dbs, user_id):
+    """
+    pad获取可分配的机构
+    :param dbs:
+    :param user_id:
+    :return:
+    """
+    orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id)\
+        .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id) | (SysUserOrg.org_id == SysOrg.parent_id))\
+        .filter(SysUserOrg.user_id == user_id).all()
+    rooms = dbs.query(HasBoardroom.id, HasBoardroom.name, HasBoardroom.org_id) \
+        .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id)\
+        .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id) | (SysUserOrg.org_id == SysOrg.parent_id)) \
+        .filter(SysUserOrg.user_id == user_id).all()
+    lists = []
+    for org in orgs:
+        org_id = org.id
+        org_name = org.org_name
+        parent_id = org.parent_id
+        room_list = []
+        for room in rooms:
+            # 将会议室拼入公司机构list
+            if org_id == room.org_id:
+                room_dict = {
+                    'room_id': room.id,
+                    'room_name': room.name,
+                    'org_id': org_id
+                }
+                room_list.append(room_dict)
+        temp_dict = {
+            'org_id': org_id,
+            'org_name': org_name,
+            'parent_id': parent_id,
+            'rooms': room_list
+        }
+        lists.append(temp_dict)
+    return lists
