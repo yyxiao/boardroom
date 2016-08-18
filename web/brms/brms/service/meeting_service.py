@@ -16,7 +16,7 @@ import logging
 logger = logging.getLogger('operator')
 
 
-def find_meetings(dbs, meeting_name, create_user, room_name, start_date, end_date, page_no):
+def find_meetings(dbs, meeting_name=None, create_user=None, room_name=None, start_date=None, end_date=None, page_no=1, room_id=None):
     """
     会议列表
     :param dbs:
@@ -54,6 +54,8 @@ def find_meetings(dbs, meeting_name, create_user, room_name, start_date, end_dat
         meetings = meetings.filter(HasMeeting.end_date <= end_date)
     if room_name:
         meetings = meetings.filter(HasBoardroom.name.like('%' + room_name + '%'))
+    if room_id:
+        meetings = meetings.filter(HasMeetBdr.boardroom_id == room_id)
     user_list = meetings.order_by(HasMeeting.create_time.desc())
     results, paginator = Paginator(user_list, page_no).to_dict()
     lists = []
