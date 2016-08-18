@@ -13178,9 +13178,9 @@ fcViews.agenda = {
 		allDaySlot: true,
 		allDayText: 'all-day',
 		slotDuration: '00:30:00',
-		minTime: '06:00:00',
+		minTime: '07:00:00',
 		maxTime: '21:00:00',
-		slotEventOverlap: true // a bad name. confused with overlap/constraint system
+		slotEventOverlap: false // a bad name. confused with overlap/constraint system
 	}
 };
 
