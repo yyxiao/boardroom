@@ -124,3 +124,111 @@ def find_meetings(dbs, pad_code):
         }
         lists.append(temp_dict)
     return lists, error_msg
+
+
+def add_by_pad(dbs, meeting, pad_code):
+    """
+    PAD添加会议
+    :param dbs:
+    :param meeting:
+    :param pad_code
+    :return:
+    """
+    error_msg = ''
+    meeting_id = 0
+    try:
+        # 查询padcode对应的boardroom_id
+        board = dbs.query(HasBoardroom.id)\
+            .outerjoin(HasPad, HasBoardroom.pad_id == HasPad.id)\
+            .filter(HasPad.pad_code == pad_code).first()
+        if not board:                                       # 不存在
+            error_msg = '该pad未分配会议室，请联系管理员！'
+        else:
+            # 添加会议
+            dbs.add(meeting)
+            dbs.flush()
+            logger.debug("会议添加完毕，meeting_id:" + str(meeting.id))
+            meeting_id = meeting.id                         # 会议ID
+            meet_bdr = HasMeetBdr()                         # 会议室会议关联信息
+            meet_bdr.meeting_id = meeting_id
+            meet_bdr.boardroom_id = board.id
+            meet_bdr.create_user = meeting.create_user
+            meet_bdr.create_time = date_now()
+            dbs.add(meet_bdr)
+            logger.debug("会议会议室关联添加完毕")
+    except Exception as e:
+        logger.error(e)
+        error_msg = '新增会议失败，请核对后重试'
+    return error_msg, meeting_id
+
+
+def update_by_pad(dbs, meeting, pad_code):
+    """
+    PAD更新会议
+    :param dbs:
+    :param meeting:
+    :param pad_code
+    :return:
+    """
+    error_msg = ''
+    try:
+        # 查询padcode对应的boardroom_id
+        board = dbs.query(HasBoardroom.id)\
+            .outerjoin(HasPad, HasBoardroom.pad_id == HasPad.id)\
+            .filter(HasPad.pad_code == pad_code).first()
+        if not board:                                       # 不存在
+            error_msg = '该pad未分配会议室，请联系管理员！'
+        else:
+            # 更新会议
+            dbs.add(meeting)
+            dbs.flush()
+            logger.debug("会议更新完毕，meeting_id:" + str(meeting.id))
+    except Exception as e:
+        logger.error(e)
+        error_msg = '更新会议失败，请核对后重试'
+    return error_msg, meeting.id
+
+
+def pad_find_meeting(dbs, meeting_id):
+    """
+    获取会议以及会议室关联的名称
+    :param dbs:
+    :param meeting_id:
+    :return:
+    """
+    meeting_dict = {}
+    meeting = dbs.query(HasMeeting.id, HasMeeting.name, HasMeeting.description,
+                         HasMeeting.start_date, HasMeeting.end_date, HasMeeting.start_time,
+                         HasMeeting.end_time, HasMeeting.create_user, HasMeeting.create_time,
+                         SysUser.user_name, SysUser.phone, SysOrg.org_name)\
+        .outerjoin(SysUser, HasMeeting.create_user == SysUser.id)\
+        .outerjoin(SysOrg, SysUser.org_id == SysOrg.id)\
+        .filter(HasMeeting.id == meeting_id).first()
+    if meeting:
+        id = meeting.id
+        name = meeting.name
+        description = meeting.description
+        start_date = meeting.start_date
+        end_date = meeting.end_date
+        start_time = meeting.start_time
+        end_time = meeting.end_time
+        create_user = meeting.create_user
+        create_time = meeting.create_time
+        user_name = meeting.user_name
+        phone = meeting.phone
+        org_name = meeting.org_name
+        meeting_dict = {
+            'meeting_id': id,
+            'meeting_name': name,
+            'description': description,
+            'start_date': start_date,
+            'end_date': end_date,
+            'start_time': start_time,
+            'end_time': end_time,
+            'create_user': create_user,
+            'create_time': create_time,
+            'user_name': user_name,
+            'user_phone': phone,
+            'org_name': org_name,
+        }
+    return meeting_dict

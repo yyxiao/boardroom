@@ -11,8 +11,8 @@ from pyramid.view import view_config
 from ..models.model import *
 from ..common.dateutils import date_now
 from ..service.loginutil import UserTools
-from ..service.pad_service import find_pad_by_id, find_meetings, update_last_time
-from ..service.meeting_service import add_by_pad, delete_meeting, update_by_pad
+from ..service.pad_service import *
+from ..service.meeting_service import delete_meeting
 from ..service.user_service import user_checking
 
 
@@ -160,7 +160,8 @@ def pad_add_meeting(request):
         meeting.end_time = request.POST.get('end_time', '')
         meeting.create_user = user_id
         meeting.create_time = date_now()
-        error_msg = add_by_pad(dbs, meeting, pad_code)
+        error_msg, meeting_id = add_by_pad(dbs, meeting, pad_code)
+        meeting_dict = pad_find_meeting(dbs, meeting_id)
     update_last_time(dbs, pad_code, 'addMeeting')
     if error_msg:
         json = {
@@ -170,6 +171,7 @@ def pad_add_meeting(request):
     else:
         json = {
             'success': 'true',
+            'meeting': meeting_dict
         }
     return json
 
@@ -226,7 +228,8 @@ def pad_update_meeting(request):
             meeting.start_time = request.POST.get('start_time', '')
             meeting.end_time = request.POST.get('end_time', '')
             meeting.create_time = date_now()
-            error_msg = update_by_pad(dbs, meeting, pad_code)
+            error_msg, meeting_id = update_by_pad(dbs, meeting, pad_code)
+            meeting_dict = pad_find_meeting(dbs, meeting_id)
     update_last_time(dbs, pad_code, 'updateMeeting')
     if error_msg:
         json = {
@@ -236,5 +239,6 @@ def pad_update_meeting(request):
     else:
         json = {
             'success': 'true',
+            'meeting': meeting_dict
         }
     return json
