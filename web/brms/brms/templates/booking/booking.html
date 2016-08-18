@@ -1,0 +1,62 @@
+{% block content %}
+<section style="padding-top:5px;">
+  <ol class="breadcrumb">
+    <li><i class="fa fa-dashboard marginR6"></i><a href="javascript:loadcontent('/my_meeting');">主页</a></li>
+    <li><a href="#">会议预订</a></li>
+  </ol>
+</section>
+<section>
+<div class="user-search">
+    <div class="row form-horizontal" id="search-form">
+        <div style="padding:0 130px 0 30px;">
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">机构</label>
+                    <div class="col-sm-8 paddingR0">
+                        <select class="form-control" id="org_id" name="org_id" onchange="load_br();">
+                        <option value="0">--请选择机构--</option>
+                        {% for branch in branches %}
+                        <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">会议室</label>
+                    <div class="col-sm-8 paddingR0">
+                        <select class="form-control" id="br_id" name="br_id" onchange="load_meeting();">
+                        <option value="">--请选择会议室--</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+<section class="content-search-area">
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="space"></div>
+
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<link rel="stylesheet" href="{{request.static_url('brms:static/fullcalendar-2.9.1/fullcalendar.css')}}">
+<script src="{{request.static_url('brms:static/fullcalendar-2.9.1/moment.min.js')}}"></script>
+<script src="{{request.static_url('brms:static/fullcalendar-2.9.1/fullcalendar.js')}}"></script>
+<script src="{{request.static_url('brms:static/fullcalendar-2.9.1/lang/zh-cn.js')}}"></script>
+<script src="{{request.static_url('brms:static/js/bootbox.js')}}"></script>
+<script src="{{request.static_url('brms:static/js/booking/booking.js')}}"></script>
+
+
+{% endblock %}

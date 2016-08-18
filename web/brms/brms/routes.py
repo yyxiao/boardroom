@@ -101,4 +101,6 @@ def booking_include(config):
     config.add_route('list_booking', '/list')
     config.add_route('delete_booking', '/delete_booking')
     config.add_route('check_available', '/check_available')
-    config.add_route('meetingbooking', '/meetingbooking')
+    config.add_route('meeting_booking', '/meeting_booking')
+    config.add_route('list_by_org', '/list_by_org')
+    config.add_route('list_by_br', '/list_by_br')
