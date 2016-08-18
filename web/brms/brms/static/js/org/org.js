@@ -8,9 +8,9 @@ list(1);
 function list(page) {
 	var url = "/org/list";
 	var data = {
-		"org_name" : $("#br_name").val(),
-		"parent_id" : $("#br_config").val(),
-		"address" : $("#org_id").val(),
+		"org_name" : $("#org_name").val(),
+		"parent_id" : $("#search_org_id").val(),
+		"address" : $("#address").val(),
 		"page" : page
 	};
 	$("#listWrapper").load(url, data, function(response, status) {

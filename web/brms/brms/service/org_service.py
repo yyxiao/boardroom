@@ -7,6 +7,7 @@ __mtime__ = 2016-08-09
 
 import transaction
 import logging
+from sqlalchemy.orm import aliased
 from ..models.model import SysOrg, SysUser
 from ..common.paginator import Paginator
 
@@ -37,36 +38,38 @@ def find_branch_json(dbs):
 
 
 def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, page_no=1):
-    '''
-
+    """
+    查询org列表
     :param dbs:
-    :param org_id:
     :param org_name:
     :param parent_id:
     :param address:
+    :param org_id:
     :param page_no:
     :return:
-    '''
+    """
+    sysorg1 = aliased(SysOrg)
     orgs = dbs.query(SysOrg.id,
                      SysOrg.org_name,
                      SysOrg.org_type,
-                     SysOrg.parent_id,
+                     sysorg1.org_name,
                      SysOrg.org_manager,
                      SysOrg.phone,
                      SysOrg.address,
                      SysOrg.state,
                      SysUser.user_name,
                      SysOrg.create_time)\
-        .outerjoin(SysUser, SysUser.id == SysOrg.create_user)
+        .outerjoin(SysUser, SysUser.id == SysOrg.create_user)\
+        .outerjoin(sysorg1, SysOrg.parent_id == sysorg1.id)
 
     if org_name:
-        orgs.filter(SysOrg.org_name.like('%' + org_name + '%'))
+        orgs = orgs.filter(SysOrg.org_name.like('%' + org_name + '%'))
     if parent_id:
-        orgs.filter(SysOrg.parent_id == parent_id)
+        orgs = orgs.filter(SysOrg.parent_id == parent_id)
     if address:
-        orgs.filter(SysOrg.address.like('%' + address + '%'))
+        orgs = orgs.filter(SysOrg.address.like('%' + address + '%'))
     if org_id:
-        orgs.filter(SysOrg.id == org_id)
+        orgs = orgs.filter(SysOrg.id == org_id)
 
     orgs = orgs.order_by(SysOrg.create_time)
     results, paginator = Paginator(orgs, page_no).to_dict()
@@ -75,7 +78,7 @@ def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, pag
         id = obj[0] if obj[0] else ''
         org_name = obj[1] if obj[1] else ''
         org_type = obj[2] if obj[2] else ''
-        parent_id = obj[3] if obj[3] else ''
+        parent_name = obj[3] if obj[3] else ''
         org_manager = obj[4] if obj[4] else ''
         phone = obj[5] if obj[5] else ''
         address = obj[6] if obj[6] else ''
@@ -86,8 +89,7 @@ def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, pag
             'org_id': id,
             'org_name': org_name,
             'org_type': org_type,
-            'parent_id': parent_id,
-            'parent_name': get_org_name(dbs, parent_id) if parent_id else '',
+            'parent_name': parent_name,
             'org_manager': org_manager,
             'phone': phone,
             'address': address,
@@ -124,20 +126,6 @@ def find_org_by_id(dbs, org_id):
         return user
     else:
         return None
-
-
-def get_org_name(dbs, org_id):
-    '''
-
-    :param dbs:
-    :param org_id:
-    :return:
-    '''
-    org = find_org_by_id(dbs, int(org_id))
-    if org:
-        return org.org_name
-    else:
-        return ''
 
 
 def add(dbs, org):

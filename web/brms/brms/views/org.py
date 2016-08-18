@@ -4,6 +4,7 @@
 __author__ = cuizc
 __mtime__ = 2016-08-15
 """
+import json
 from datetime import datetime
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
@@ -22,6 +23,7 @@ def to_org(request):
     '''
     dbs = request.dbsession
     branches = find_branch(dbs)
+    branch_json = json.dumps(find_branch_json(dbs))
     return render_to_response('org/org.html', locals(), request)
 
 
