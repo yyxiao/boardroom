@@ -271,3 +271,21 @@ def pad_find_orgs(dbs, user_id):
         }
         lists.append(temp_dict)
     return lists
+
+
+def set_room(dbs, user_id, pad_code, room_id):
+    error_msg = ''
+    pad = dbs.query(HasPad)\
+        .filter(HasPad.pad_code == pad_code).first()
+    room = dbs.query(HasBoardroom)\
+        .filter(HasBoardroom.id == room_id).first()
+    try:
+        room.pad_id = pad.id
+        room.create_user = user_id
+        room.create_time = date_now()
+        dbs.add(room)
+        dbs.flush()
+    except Exception as e:
+        logger.error(e)
+        error_msg = '更新会议室失败，请核对后重试'
+    return room, error_msg

@@ -10,6 +10,7 @@ from pyramid.view import view_config
 
 from ..models.model import *
 from ..common.dateutils import date_now
+from ..common.jsonutils import serialize
 from ..service.loginutil import UserTools
 from ..service.pad_service import *
 from ..service.meeting_service import delete_meeting
@@ -256,7 +257,7 @@ def pad_org_list(request):
         error_msg = '终端编码不能为空！'
     else:
         orgs = pad_find_orgs(dbs, user_id)
-    update_last_time(dbs, pad_code, 'pad_org_list')
+    update_last_time(dbs, pad_code, 'orgList')
     if error_msg:
         json = {
             'success': 'false',
@@ -266,5 +267,35 @@ def pad_org_list(request):
         json = {
             'success': 'true',
             'orgs': orgs
+        }
+    return json
+
+
+@view_config(route_name='pad_set_room', renderer='json')
+def pad_set_room(request):
+    error_msg = ''
+    dbs = request.dbsession
+    user_id = request.POST.get('user_id', '')
+    room_id = request.POST.get('room_id', '')
+    pad_code = request.POST.get('pad_code', '')
+    if not user_id:
+        error_msg = '用户ID不能为空！'
+    elif not pad_code:
+        error_msg = '终端编码不能为空！'
+    elif not room_id:
+        error_msg = '会议室ID不能为空！'
+    else:
+        room, error_msg = set_room(dbs, user_id, pad_code, room_id)
+        room = serialize(room)
+    update_last_time(dbs, pad_code, 'setRoom')
+    if error_msg:
+        json = {
+            'success': 'false',
+            'error_msg': error_msg,
+        }
+    else:
+        json = {
+            'success': 'true',
+            'room': room
         }
     return json
