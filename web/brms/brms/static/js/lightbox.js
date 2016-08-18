@@ -62,7 +62,7 @@
     Lightbox.prototype.build = function() {
       var self = this;
       // $("<div id='lightboxOverlay' class='lightboxOverlay'></div><div id='lightbox' class='lightbox'><div class='lb-outerContainer'><div class='lb-container'><img class='lb-image' src='' /><div class='lb-nav'><a class='lb-prev' href='' ></a><a class='lb-next' href='' ></a></div><div class='lb-loader'><a class='lb-cancel'></a></div></div></div><div class='lb-dataContainer'><div class='lb-data'><div class='lb-details'><span class='lb-caption'></span><span class='lb-number'></span></div><div class='lb-closeContainer'><a class='lb-close'></a></div></div></div></div>").appendTo($('body'));
-      $("<div id='lightboxOverlay' class='lightboxOverlay'></div><div id='lightbox' class='lightbox'><div class='lb-outerContainer'><div class='lb-container'><img class='lb-image' src='' /></div></div><div class='lb-dataContainer'><div class='lb-data'><div class='lb-details'><span class='lb-caption'></span><span class='lb-number'></span></div><div class='lb-closeContainer'><a class='lb-close'></a></div></div></div></div>").appendTo($('body'));
+      $("<div id='lightboxOverlay' class='lightboxOverlay'></div><div id='lightbox' class='lightbox'><div class='lb-outerContainer'><div class='lb-container'><img class='lb-image' src='' /></div></div><div class='lb-dataContainer'></div></div>").appendTo($('#mainContent'));
       // Cache jQuery objects
       this.$lightbox       = $('#lightbox');
       this.$overlay        = $('#lightboxOverlay');
@@ -113,10 +113,10 @@
         return false;
       });
 
-      this.$lightbox.find('.lb-loader, .lb-close').on('click', function() {
-        self.end();
-        return false;
-      });
+      // this.$lightbox.find('.lb-loader, .lb-close').on('click', function() {
+      //   self.end();
+      //   return false;
+      // });
     };
 
     // Show overlay and lightbox. If the image is part of a set, add siblings to album array.
@@ -190,7 +190,7 @@
 
       this.$overlay.fadeIn(this.options.fadeDuration);
 
-      $('.lb-loader').fadeIn('slow');
+      // $('.lb-loader').fadeIn('slow');
       this.$lightbox.find('.lb-image, .lb-nav, .lb-prev, .lb-next, .lb-dataContainer, .lb-numbers, .lb-caption').hide();
 
       this.$outerContainer.addClass('animating');
@@ -274,7 +274,7 @@
 
     // Display the image and it's details and begin preload neighboring images.
     Lightbox.prototype.showImage = function() {
-      this.$lightbox.find('.lb-loader').hide();
+      // this.$lightbox.find('.lb-loader').hide();
       this.$lightbox.find('.lb-image').fadeIn('slow');
 
       this.updateNav();
