@@ -56,6 +56,7 @@ function to_add() {
  */
 function add() {
     var pad_code = $.trim($("#pad_code").val());
+	var room_id = $.trim($("#room_id").val());
 	if (pad_code == '') {
 		$('#pad_code').focus();
 		$('#terminal_cue').html("<font color='red'>终端编码不能为空</font>");
@@ -75,7 +76,8 @@ function add() {
 		type : "POST",
 		url : "/terminal/add",
 		data : {
-			"pad_code" : pad_code
+			"pad_code" : pad_code,
+			"room_id" : room_id
 		},
 		error : function() {
 			$.messager.popup("新增终端失败");
@@ -119,6 +121,7 @@ function to_update() {
 function update() {
 	var id = $("#terminal_id").val()
 	var pad_code = $.trim($("#pad_code").val());
+	var room_id = $.trim($("#room_id").val());
 	if (pad_code == '') {
 		$('#pad_code').focus();
 		$('#terminal_cue').html("<font color='red'>终端编码不能为空</font>");
@@ -139,7 +142,8 @@ function update() {
 		url : "/terminal/update",
 		data : {
 			"id" : id,
-			"pad_code" : pad_code
+			"pad_code" : pad_code,
+			"room_id" : room_id
 		},
 		error : function() {
 			$.messager.popup("更新终端失败");

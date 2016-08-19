@@ -8,7 +8,7 @@ __mtime__ = 2016/8/8
 
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
-from ..service.terminal_service import find_terminals, add, delete_terminal, find_terminal
+from ..service.terminal_service import *
 from ..service.loginutil import request_login
 from ..models.model import HasPad
 from ..common.dateutils import date_now
@@ -41,7 +41,9 @@ def list_terminal(request):
 @view_config(route_name='to_add_terminal')
 @request_login
 def to_add(request):
+    user_id = request.session['userId']
     dbs = request.dbsession
+    rooms = find_rooms(dbs, user_id)
     # terminal_name = find_terminal(dbs)
     return render_to_response('terminal/add.html', locals(), request)
 
@@ -50,11 +52,12 @@ def to_add(request):
 @request_login
 def add_terminal(request):
     dbs = request.dbsession
+    room_id = request.POST.get('room_id', '')
     terminal = HasPad()
     terminal.pad_code = request.POST.get('pad_code', '')
     terminal.create_user = request.session['userId']
     terminal.create_time = date_now()
-    error_msg = add(dbs, terminal)
+    error_msg = add(dbs, terminal, room_id)
     if error_msg:
         json = {
             'success': 'false',
@@ -89,8 +92,10 @@ def del_terminal(request):
 @request_login
 def to_update(request):
     dbs = request.dbsession
+    user_id = request.session['userId']
     terminal_id = request.POST.get('id', '')
     terminal = find_terminal(dbs, terminal_id)
+    rooms = find_rooms(dbs, user_id)
     return render_to_response('terminal/add.html', locals(), request)
 
 
@@ -98,12 +103,13 @@ def to_update(request):
 @request_login
 def update_terminal(request):
     dbs = request.dbsession
+    room_id = request.POST.get('room_id', '')
     terminal_id = request.POST.get('id', '')
-    terminal = find_terminal(dbs, terminal_id)
+    terminal = dbs.query(HasPad).filter(HasPad.id == terminal_id).first()
     terminal.pad_code = request.POST.get('pad_code', '')
     terminal.create_user = request.session['userId']
     terminal.create_time = date_now()
-    error_msg = add(dbs, terminal)
+    error_msg = add(dbs, terminal, room_id)
     if error_msg:
         json = {
             'success': 'false',

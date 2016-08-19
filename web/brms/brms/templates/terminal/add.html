@@ -11,13 +11,13 @@
             <p id="terminal_cue"></p>
 			<div class="form-horizontal">
                 {% if terminal %}
-				    <div class="form-group">
-                      <label class="col-sm-2 control-label">设备代码</label>
-                      <div class="col-sm-9">
-                        <input name="terminal_id" type="text" class="form-control" readonly="readonly"
-                               id="terminal_id" value="{{terminal.id}}">
-                      </div>
-                    </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">设备代码</label>
+                  <div class="col-sm-9">
+                    <input name="terminal_id" type="text" class="form-control" readonly="readonly"
+                           id="terminal_id" value="{{terminal.id}}">
+                  </div>
+                </div>
                 {% endif %}
                 <div class="form-group">
                   <label class="col-sm-2 control-label">设备编码</label>
@@ -28,6 +28,21 @@
                         <input name="pad_code" type="text" class="form-control" id="pad_code">
                     {% endif %}
                   </div>
+                </div>
+                <div class="form-group">
+                    <label for="input parent_id_add" class="col-sm-2 control-label">会议室</label>
+                    <div class="col-sm-9">
+                        <select class="form-control" id="room_id" name="room_id">
+                            <option value="">请选择</option>
+                            {% for room in rooms %}
+                                {% if terminal and terminal.room_id == room.id %}
+                                    <option value="{{ room.id }}" selected="selected">{{ room.name }}</option>
+                                {% else %}
+                                    <option value="{{ room.id }}">{{ room.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
