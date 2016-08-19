@@ -36,16 +36,6 @@ def check_available(request):
     '''
 
 
-@view_config(route_name='delete_booking')
-@request_login
-def delete_booking(request):
-    '''
-    取消预订
-    :param request:
-    :return:
-    '''
-
-
 @view_config(route_name='list_by_org', renderer='json')
 @request_login
 def list_by_org(request):
@@ -56,7 +46,7 @@ def list_by_org(request):
     '''
     if request.method == 'POST':
         dbs = request.dbsession
-        org_id = request.POST.get('org_id', 0)
+        org_id = int(request.POST.get('org_id', 0))
         (boardrooms, paginator) = find_boardrooms(dbs, org_id=org_id)
         json = {
             'resultFlag': 'success',
@@ -78,10 +68,11 @@ def list_by_br(request):
 
     if request.method == 'POST':
         dbs = request.dbsession
-        org_id = request.POST.get('org_id', 0)
-        br_id = request.POST.get('br_id', 0)
+        org_id = int(request.POST.get('org_id', 0))
+        br_id = int(request.POST.get('br_id', 0))
 
-        (meetings, paginator) = find_meetings(dbs, room_id=br_id)
+        (meetings, paginator) = find_meetings(dbs, org_id=org_id, room_id=br_id)
+        # TODO 不需要分页
         json = {
             'resultFlag': 'success',
             'meetings': meetings
