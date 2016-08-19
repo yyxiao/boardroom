@@ -5,9 +5,6 @@ function init_calendar() {
 	var d = date.getDate();
 	var m = date.getMonth();
 	var y = date.getFullYear();
-	var h = date.getHours();
-	var mm = date.getMinutes();
-	debugger;
 
 	var calendar = $('#calendar').fullCalendar({
 		//isRTL: true,
@@ -44,99 +41,200 @@ function init_calendar() {
 		],
 		timeFormat: 'H:mm',
 		editable: false,
-		droppable: false, // this allows things to be dropped onto the calendar !!!
-		drop: function (date) { // this function is called when something is dropped
+		droppable: false,
+		drop: function (date) {
 
-			// retrieve the dropped element's stored Event Object
 			var originalEventObject = $(this).data('eventObject');
 			var $extraEventClass = $(this).attr('data-class');
-
-
-			// we need to copy it, so that multiple events don't have a reference to the same object
 			var copiedEventObject = $.extend({}, originalEventObject);
 
-			// assign it the date that was reported
 			copiedEventObject.start = date;
 			copiedEventObject.allDay = false;
 			if ($extraEventClass) copiedEventObject['className'] = [$extraEventClass];
 
-			// render the event on the calendar
-			// the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
 			$('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-
-			// is the "remove after drop" checkbox checked?
 			if ($('#drop-remove').is(':checked')) {
-				// if so, remove the element from the "Draggable Events" list
 				$(this).remove();
 			}
-
-		}
-		,
+		},
 		selectable: true,
 		selectHelper: true,
 		select: function (start, end, allDay) {
-
-			bootbox.prompt("会议名称:", function (title) {
-				if (title !== null) {
-					calendar.fullCalendar('renderEvent',
-							{
-								title: title,
-								start: start,
-								end: end,
-								allDay: false,
-								className: 'label-info'
-							},
-							true // make the event "stick"
-					);
+			var start_date = new Date(start);
+			var end_date = new Date(end);
+			var org_id = $.trim($("#org_id").val());
+			var br_id = $.trim($("#br_id").val());
+			if (br_id == ''){
+				$.messager.popup('请先选择机构和会议室！');
+				calendar.fullCalendar('unselect');
+				return false;
+			}
+			bootbox.dialog({
+					title: "会议信息",
+					locale: 'zh_CN',
+					message: '<p id="meeting_cue"></p>\
+						<div class="form-horizontal">\
+							<div class="form-group">\
+								<label class="col-sm-2 control-label">会议主题</label>\
+								<div class="col-sm-9">\
+									<input name="name" type="text" class="form-control" id="name">\
+								</div>\
+							</div>\
+							<div class="form-group">\
+								<label class="col-sm-2 control-label">滚动文字</label>\
+								<div class="col-sm-9">\
+									<input name="desc" type="text" class="form-control" id="desc">\
+								</div>\
+							</div>\
+							<div class="form-group">\
+								<label class="col-sm-2 control-label">开始日期</label>\
+								<div class="col-sm-9">\
+									<input name="start_date" type="text" class="form-control" id="start_date" value="'+start_date.getUTCHours()+':'+start_date.getUTCMinutes()+'">\
+								</div>\
+							</div>\
+							<div class="form-group">\
+								<label class="col-sm-2 control-label">结束日期</label>\
+								<div class="col-sm-9">\
+									<input name="end_date" type="text" class="form-control" id="end_date" value="'+end_date.getUTCHours()+':'+end_date.getUTCMinutes()+'">\
+								</div>\
+							</div>\
+						</div>\
+						<script>\
+							var nowdate = new Date('+start+');\
+							$("#start_date").datetimepicker({\
+								language: "zh-CN",\
+								autoclose: true,\
+								todayHighlight: true,\
+								format: "hh:mm",\
+								startDate: nowdate,\
+								startView: 1,\
+								minView: 0,\
+								maxView: 1,\
+								minuteStep: 30\
+							});\
+							$("#end_date").datetimepicker({\
+								language: "zh-CN",\
+								autoclose: true,\
+								todayHighlight: true,\
+								format: "hh:mm",\
+								startDate: nowdate,\
+								startView: 1,\
+								minView: 0,\
+								maxView: 1,\
+								minuteStep: 30\
+							});\
+						</script>',
+					buttons: {
+						success: {
+							label: "保存",
+							className: "btn-success",
+							callback: function () {
+								var name = $.trim($('#name').val());
+								var desc = $('#desc').val();
+								var view = $('#calendar').fullCalendar('getView');
+								calendar.fullCalendar('renderEvent',
+									{
+										title: name+desc,
+										start: start,
+										end: end,
+										className: 'label-info'
+									},
+									true // make the event "stick"
+								);
+							}
+						}
+					}
 				}
-
-			});
+			);
 
 			calendar.fullCalendar('unselect');
-		}
-		,
+		},
 		eventClick: function (calEvent, jsEvent, view) {
-
-			//display a modal
-			var modal =
-					'<div class="modal fade">\
-					  <div class="modal-dialog">\
-					   <div class="modal-content">\
-						 <div class="modal-body">\
-						   <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
-						   <form class="no-margin">\
-							  <label>Change event name &nbsp;</label>\
-							  <input class="middle" autocomplete="off" type="text" value="' + calEvent.title + '" />\
-							 <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button>\
-						   </form>\
-						 </div>\
-						 <div class="modal-footer">\
-							<button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
-						 </div>\
-					  </div>\
-					 </div>\
-					</div>';
-
-
-			modal = $(modal).appendTo('body');
-			modal.find('form').on('submit', function (ev) {
-				ev.preventDefault();
-
-				calEvent.title = $(this).find("input[type=text]").val();
-				calendar.fullCalendar('updateEvent', calEvent);
-				modal.modal("hide");
-			});
-			modal.find('button[data-action=delete]').on('click', function () {
-				calendar.fullCalendar('removeEvents', function (ev) {
-					return (ev._id == calEvent._id);
-				});
-				modal.modal("hide");
-			});
-
-			modal.modal('show').on('hidden', function () {
-				modal.remove();
-			});
+			var start = new Date(calEvent.start);
+			var end = new Date(calEvent.end);
+			bootbox.dialog({
+					title: "会议信息",
+					locale: 'zh_CN',
+					message: '<p id="meeting_cue"></p>\
+						<div class="form-horizontal">\
+							<div class="form-group">\
+								<label class="col-sm-2 control-label">会议主题</label>\
+								<div class="col-sm-9">\
+									<input name="name" type="text" class="form-control" id="name">\
+								</div>\
+							</div>\
+							<div class="form-group">\
+								<label class="col-sm-2 control-label">滚动文字</label>\
+								<div class="col-sm-9">\
+									<input name="desc" type="text" class="form-control" id="desc">\
+								</div>\
+							</div>\
+							<div class="form-group">\
+								<label class="col-sm-2 control-label">开始日期</label>\
+								<div class="col-sm-9">\
+									<input name="start_date" type="text" class="form-control" id="start_date" value="'+start.getUTCHours()+':'+start.getUTCMinutes()+'">\
+								</div>\
+							</div>\
+							<div class="form-group">\
+								<label class="col-sm-2 control-label">结束日期</label>\
+								<div class="col-sm-9">\
+									<input name="end_date" type="text" class="form-control" id="end_date" value="'+end.getUTCHours()+':'+end.getUTCMinutes()+'">\
+								</div>\
+							</div>\
+						</div>\
+						<script>\
+							var nowdate = new Date('+calEvent.start+');\
+							$("#start_date").datetimepicker({\
+								language: "zh-CN",\
+								autoclose: true,\
+								todayHighlight: true,\
+								format: "hh:mm",\
+								startDate: nowdate,\
+								startView: 1,\
+								minView: 0,\
+								maxView: 1,\
+								minuteStep: 30\
+							});\
+							$("#end_date").datetimepicker({\
+								language: "zh-CN",\
+								autoclose: true,\
+								todayHighlight: true,\
+								format: "hh:mm",\
+								startDate: nowdate,\
+								startView: 1,\
+								minView: 0,\
+								maxView: 1,\
+								minuteStep: 30\
+							});\
+						</script>',
+					buttons: {
+						success: {
+							label: '保存',
+							className: 'btn-success',
+							callback: function () {
+								calEvent.title = $.trim($('#name').val()) + '\n' + $('#desc').val();
+								//TODO 时间修改
+								calendar.fullCalendar('updateEvent', calEvent);
+							}
+						},
+						delete: {
+							lable: '删除',
+							className: 'btn-danger',
+							callback: function () {
+								calendar.fullCalendar('removeEvents', function (ev) {
+									return (ev._id == calEvent._id);
+								});
+							}
+						},
+						cancel: {
+							label: '取消',
+							className: 'btn-sm',
+							callback: ''
+						}
+					}
+				}
+			);
+			calendar.fullCalendar('unselect');
 		}
 	});
 }
@@ -201,8 +299,8 @@ function load_meeting (){
 					$("#calendar").fullCalendar('renderEvent',
 						{
 							title: data.meetings[index]['name'],
-							start: new Date(parseInt(s_datetime[0]), parseInt(s_datetime[1])-1, parseInt(s_datetime[2]), parseInt(s_datetime[3]), parseInt(s_datetime[4])),
-							end: new Date(parseInt(e_datetime[0]), parseInt(e_datetime[1])-1, parseInt(e_datetime[2]), parseInt(e_datetime[3]), parseInt(e_datetime[5])),
+							start: new Date(parseInt(s_datetime[0]), parseInt(s_datetime[1])-1, parseInt(s_datetime[2]), parseInt(s_datetime[3]), parseInt(s_datetime[4])-8),
+							end: new Date(parseInt(e_datetime[0]), parseInt(e_datetime[1])-1, parseInt(e_datetime[2]), parseInt(e_datetime[3]), parseInt(e_datetime[5])-8),
 							allDay: false,
 							className: 'label-info'
 						},
@@ -222,5 +320,8 @@ function get_data_int(date_str, time_str){
 	date_list = date_list.concat(time_list);
 	return date_list;
 }
+
+
+
 
 
