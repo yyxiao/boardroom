@@ -170,6 +170,15 @@ class SysUserRole(Base):
     create_user = Column(INT)                   # 创建人
 
 
+class HasRoomOccupy(Base):
+    __tablename__ = 'sys_room_occupy'           # 会议室占用情况表
+    id = Column(INT, Sequence('sys_room_occupy_id_seq', schema=BRMS_SCHEMA), primary_key=True)
+    room_id = Column(INT)                       # 会议室ID
+    date = Column(VARCHAR(10))                  # 日期
+    code = Column(INT)                          # 占用情况
+
+
+
 # class SysPerBrtype(Base):
 #     __tablename__ = 'sys_per_brtype'            # 权限会议室类型关系表
 #     per_id = Column(INT, primary_key=True)                                 # 权限ID
