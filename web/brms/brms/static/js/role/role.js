@@ -1,8 +1,8 @@
-list(1)
+listRole(1)
 /*
  * list role
  */
-function list(page) {
+function listRole(page) {
 	var url = "/role/list";
 	var data = {
 		"name" : $("#search").val(),
@@ -17,13 +17,13 @@ function list(page) {
 /*
  * find a page
  */
-function page() {
-	var pageNo = $("#pageNo").val()
+function pageRole() {
+	var pageNo = $("#pageRoleNo").val()
 	if (isNaN(pageNo)){
 		$.messager.popup('错误的页码，请重新输入')
 		return false
 	}
-	list(pageNo)
+	listRole(pageNo)
 }
 /*
  * uncheck other role
@@ -100,7 +100,7 @@ function add() {
 			if (data.success == "true") {
 				$("#addModal").modal('hide');
 				$.messager.popup("新增角色成功！");
-				list(1)
+				listRole(1)
 			}
 			else{
 				$.messager.popup("新增角色失败，请检查相关信息后重试！");
@@ -181,7 +181,7 @@ function update() {
 			if (data.success) {
 				$("#addModal").modal('hide');
 				$.messager.popup("更新角色成功！");
-				list(1)
+				listRole(1)
 			}
 		},
 	})
@@ -209,7 +209,7 @@ function del() {
 				success : function(data) {
 					if (data.success) {
 						$.messager.popup("删除角色成功！");
-						list(1)
+						listRole(1)
 					}
 				},
 			})

@@ -44,25 +44,25 @@
 		<li class="disabled"><a>首页</a></li>
 		<li class="disabled"><a>上一页</a></li>
 		{% else %}
-		<li><a href="javascript:list(1)">首页</a></li>
-		<li><a	href="javascript:list({{ paginator.previous_page }})">上一页</a></li>
+		<li><a href="javascript:listUser(1)">首页</a></li>
+		<li><a	href="javascript:listUser({{ paginator.previous_page }})">上一页</a></li>
 		{% endif %}
 
 		{% for page in paginator.page_list %}
-		<li><a href="javascript:list({{ page }})">{{ page }}</a></li>
+		<li><a href="javascript:listUser({{ page }})">{{ page }}</a></li>
 		{% endfor %}
 
 		{% if paginator.page_no == paginator.pages %}
 		<li class="disabled"><a>下一页</a></li>
 		<li class="disabled"><a>末页</a></li>
 		{% else %}
-		<li><a href="javascript:list({{ paginator.next_page }})">下一页</a></li>
-		<li><a href="javascript:list({{ paginator.pages }})">末页</a></li>
+		<li><a href="javascript:listUser({{ paginator.next_page }})">下一页</a></li>
+		<li><a href="javascript:listUser({{ paginator.pages }})">末页</a></li>
 		{% endif %}
 		<li class="disabled"><a>共{{ paginator.pages }}页&nbsp; 到第&nbsp;<input
 				id="pageNo" style="width: 30px; height: 17px;" type="text"
 				value="{{ paginator.next_page }}">&nbsp;页
 		</a></li>
-		<li><a href="javascript:page()">确定</a></li>
+		<li><a href="javascript:pageUser()">确定</a></li>
 	</ul>
 </nav>

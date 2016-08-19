@@ -1,8 +1,8 @@
-list(1);
+listUser(1);
 /*
  * list user
  */
-function list(page) {
+function listUser(page) {
 	var url = "/user/list";
 	var data = {
 		"user_account" : $("#user_account").val(),
@@ -21,13 +21,13 @@ function list(page) {
 /*
  * find a page
  */
-function page() {
+function pageUser() {
 	var pageNo = $("#pageNo").val();
 	if (isNaN(pageNo)){
 		$.messager.popup('错误的页码，请重新输入');
 		return false
 	}
-	list(pageNo);
+	listUser(pageNo);
 }
 /*
  * uncheck other role
@@ -140,7 +140,7 @@ function add() {
 			if (data.resultFlag == "success") {
 				$("#addModal").modal('hide');
 				$.messager.popup('新增用户成功！密码已发送到该用户邮箱！');
-				list(1)
+				listUser(1)
 			} else {
 				$.messager.popup(data.error_msg);
 			}
@@ -261,7 +261,7 @@ function update() {
 			if (data.resultFlag == "success") {
 				$("#addModal").modal('hide');
 				$.messager.popup('更新用户成功！');
-				list(1)
+				listUser(1)
 			} else {
 				$.messager.popup('更新用户失败');
 			}
@@ -291,7 +291,7 @@ function del() {
 				success : function(data) {
 					if (data.success) {
 						$.messager.popup("用户删除成功！");
-						list(1)
+						listUser(1)
 					}
 				}
 			});

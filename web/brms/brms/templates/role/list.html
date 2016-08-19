@@ -28,29 +28,29 @@
 
 <nav>
 	<ul class="pagination">
-		{% if paginator.page_no == 1 %}
+		{% if paginator_role.page_no == 1 %}
 		<li class="disabled"><a>首页</a></li>
 		<li class="disabled"><a>上一页</a></li>
 		{% else %}
-		<li><a href="javascript:list(1)">首页</a></li>
-		<li><a	href="javascript:list({{ previous_page }})">上一页</a></li>
+		<li><a href="javascript:listRole(1)">首页</a></li>
+		<li><a	href="javascript:listRole({{ previous_page }})">上一页</a></li>
 		{% endif %}
 
-		{% for page in paginator.page_list %}
-		<li><a href="javascript:list({{ page }})">{{ page }}</a></li>
+		{% for page in paginator_role.page_list %}
+		<li><a href="javascript:listRole({{ page }})">{{ page }}</a></li>
 		{% endfor %}
 
-		{% if paginator.page_no == paginator.pagess %}
+		{% if paginator_role.page_no == paginator_role.pagess %}
 		<li class="disabled"><a>下一页</a></li>
 		<li class="disabled"><a>末页</a></li>
 		{% else %}
-		<li><a href="javascript:list({{ paginator.next_page }})">下一页</a></li>
-		<li><a href="javascript:list({{ paginator.pages }})">末页</a></li>
+		<li><a href="javascript:listRole({{ paginator_role.next_page }})">下一页</a></li>
+		<li><a href="javascript:listRole({{ paginator_role.pages }})">末页</a></li>
 		{% endif %}
-		<li class="disabled"><a>共{{ paginator.pages }}页&nbsp; 到第&nbsp;<input
-				id="pageNo" style="width: 30px; height: 17px;" type="text"
-				value="{{ nextPage }}">&nbsp;页
+		<li class="disabled"><a>共{{ paginator_role.pages }}页&nbsp; 到第&nbsp;<input
+				id="pageRoleNo" style="width: 30px; height: 17px;" type="text"
+				value="{{ paginator_role.next_page }}">&nbsp;页
 		</a></li>
-		<li><a href="javascript:page()">确定</a></li>
+		<li><a href="javascript:pageRole()">确定</a></li>
 	</ul>
 </nav>

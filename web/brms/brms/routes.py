@@ -9,7 +9,7 @@ def includeme(config):
     config.include(user_include, '/user')
     config.include(org_include, '/org')
     config.include(role_include, '/role')
-    config.include(auth_include, '/authorization')
+    config.include(auth_include, '/auth')
     config.include(boardroom_include, '/boardroom')
     config.include(terminal_include, '/terminal')
     config.include(meeting_include, '/meeting')
@@ -63,6 +63,7 @@ def role_include(config):
 
 def auth_include(config):
     config.add_route('to_auth', '/to_auth')
+    config.add_route('to_auth_user', '/to_auth_user')
 
 
 def boardroom_include(config):

@@ -1,0 +1,134 @@
+{% block content %}
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#tab_1" data-toggle="tab">用户授权</a></li>
+    <li><a href="#tab_2" data-toggle="tab">角色授权</a></li>
+</ul>
+<section style="padding-top:5px;">
+    <ol class="breadcrumb">
+        <li><i class="fa fa-dashboard marginR6"></i><a href="javascript:loadcontent('/my_meeting');">主页</a></li>
+        <li><a href="#">授权管理</a></li>
+    </ol>
+</section>
+<div class="tab-content">
+    <div class="tab-pane active" id="tab_1">
+        <section class="content-search-area">
+            <div class="user-search">
+                <div class=" row form-horizontal" id="search-form">
+                    <div style="padding:0 130px 0 30px;">
+                        <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label form-label paddingR0 paddingL0">用户帐号</label>
+                                <div class="col-sm-8 paddingR0">
+                                    <input type="text" class="form-control"	id="user_account" name="user_account" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label form-label paddingR0 paddingL0">用户名称</label>
+                                <div class="col-sm-8 paddingR0">
+                                    <input type="text" class="form-control"	id="user_name" name="user_name" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label form-label paddingR0 paddingL0">机构</label>
+                                <div class="col-sm-8 paddingR0">
+                                    <input type="text" class="form-control"	id="search_org_name" name="search_org_name" readonly="readonly"
+                                           onclick="org_show();" placeholder="请选择">
+                                    <input type="text" class="hidden" id="search_org_id" name="search_org_id">
+                                    <div class="form-control" style="background-color:white;
+                                    height:300px;overflow: auto;display:none;position: absolute;z-index: 8" id="orgTree">
+                                        <ul id="treeDemo" class="ztree"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label form-label paddingR0 paddingL0">角色</label>
+                                <div class="col-sm-8 paddingR0">
+                                    <input type="text" class="form-control" id="role_name" name="role_name" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" style="margin-left: 40px;" class="btn btn-success" onclick="listUser(1)">
+                            <i class="fa fa-search marginR6" ></i>查询
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="main-bootstrap-table">
+            <div class="in-table">
+                <div class="toolbar">
+                    <div class="btns pull-left">
+                        <button type="button" class="btn btn-warning" onclick="to_auth_user()"><i class="fa  fa-pencil marginR6"></i>授权</button>
+                    </div>
+                </div>
+                <div id="listWrapperUser">
+                </div>
+            </div>
+
+            <div id="modalWrapper"></div>
+        </section>
+    </div>
+    <div class="tab-pane" id="tab_2">
+        <section class="content-search-area">
+            <div class="user-search">
+            <div class="row form-horizontal" id="search-form">
+                <div style="padding:0 130px 0 30px;">
+                    <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label form-label paddingR0 paddingL0">角色名称</label>
+                            <div class="col-sm-8 paddingR0">
+                                <input type="text" class="form-control"	id="search" name="search">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" style="margin-left: 40px;" class="btn btn-success" onclick="listRole(1)">
+                    <i class="fa fa-search marginR6" ></i>查询
+                </button>
+                </div>
+            </div>
+        </section>
+        <section class="main-bootstrap-table">
+            <div class="in-table">
+                <div class="toolbar">
+                    <div class="btns pull-left">
+                        <button type="button" class="btn btn-warning" onclick="del()"><i class="fa  fa-times marginR6"></i>删除</button>
+                    </div>
+                </div>
+                <div id="listWrapperRole">
+                </div>
+            </div>
+
+            <div id="modalWrapper"></div>
+        </section>
+    </div>
+</div>
+<script src="{{ request.static_url('brms:static/js/auth/auth.js') }}"></script>
+<script src="{{ request.static_url('brms:static/js/org/org_tree.js') }}"></script>
+<script type="text/javascript">
+    var setting = {
+        check: {
+            enable: true,
+            chkStyle: "radio",
+            radioType: "all"
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            onCheck: zTreeOnCheck
+        }
+    };
+    var zNodes ={{ branch_json|safe }};
+    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+</script>
+{% endblock %}
+

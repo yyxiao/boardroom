@@ -46,8 +46,8 @@ def find_pad_by_id(dbs, pad_code, create_user):
             error_msg = '新增设备失败，请稍后后重试!'
     else:
         json_dict = {'pad_id': pad[0],
-                     'room_id': pad[1],
-                     'room_name': pad[2]
+                     'id': pad[1],
+                     'name': pad[2]
                      }
     return json_dict, error_msg
 
@@ -258,8 +258,8 @@ def pad_find_orgs(dbs, user_id):
             # 将会议室拼入公司机构list
             if org_id == room.org_id:
                 room_dict = {
-                    'room_id': room.id,
-                    'room_name': room.name,
+                    'id': room.id,
+                    'name': room.name,
                     'org_id': org_id
                 }
                 room_list.append(room_dict)
