@@ -67,13 +67,14 @@ def add_meeting(request):
     #         outerjoin(HasPad, HasPad.id == HasBoardroom.pad_id).\
     #         filter(HasPad.pad_code == pad_code)
     #     if board_room:
-    room_id = request.POST.get('room_id', '')
+    room_id = int(request.POST.get('room_id', ''))
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
     meeting.start_date = request.POST.get('start_date', '')
     meeting.end_date = request.POST.get('end_date', '')
     meeting.start_time = request.POST.get('start_time', '')
     meeting.end_time = request.POST.get('end_time', '')
+    meeting.org_id = int(request.POST.get('org_id', 0))
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
     error_msg = add(dbs, meeting, room_id)
@@ -93,7 +94,7 @@ def add_meeting(request):
 @request_login
 def del_meeting(request):
     dbs = request.dbsession
-    meeting_id = request.POST.get('id', '')
+    meeting_id = int(request.POST.get('id', 0))
     user_id = request.session['userId']
     error_msg = delete_meeting(dbs, meeting_id, user_id)
     if error_msg:
@@ -111,7 +112,7 @@ def del_meeting(request):
 @view_config(route_name='to_update_meeting')
 def to_update(request):
     dbs = request.dbsession
-    meeting_id = request.POST.get('id', '')
+    meeting_id = int(request.POST.get('id', 0))
     rooms = find_rooms(dbs)
     meeting = find_meeting_bdr(dbs, meeting_id)
     return render_to_response('meeting/add.html', locals(), request)
@@ -121,8 +122,8 @@ def to_update(request):
 @request_login
 def update_meeting(request):
     dbs = request.dbsession
-    meeting_id = request.POST.get('id', '')
-    room_id = request.POST.get('room_id', '')
+    meeting_id = int(request.POST.get('id', 0))
+    room_id = int(request.POST.get('room_id', 0))
     meeting = find_meeting(dbs, meeting_id)
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
