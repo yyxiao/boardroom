@@ -13,8 +13,9 @@ PAGINATORSIZE = 5          # 分页插件最多显示页数
 
 class Paginator(object):
 
-    def __init__(self, dbquery, page_no):
+    def __init__(self, dbquery, page_no, page_size=PAGESIZE):
         self.page_no = page_no
+        self.page_size = page_size
         self.lst, self.page_list, self.pages, self.previous_page, self.next_page = self.paginator(dbquery, page_no)
 
     def paginator(self, dbquery, page_no):
@@ -59,14 +60,14 @@ class Paginator(object):
         :return:tuple(查询结果集, 总页数)
         """
         total_num = dbquery.count()
-        pages = math.ceil(total_num / PAGESIZE)  # 分页数，向上取整
+        pages = math.ceil(total_num / self.page_size)  # 分页数，向上取整
         pages = 1 if pages == 0 else pages
         if page_no > pages:
             page_no = pages
         elif page_no <= 0:
             page_no = 1
-        limit = PAGESIZE
-        offset = (page_no - 1) * PAGESIZE
+        limit = self.page_size
+        offset = (page_no - 1) * self.page_size
         lst = dbquery.limit(limit).offset(offset).all()
         return lst, pages
 
