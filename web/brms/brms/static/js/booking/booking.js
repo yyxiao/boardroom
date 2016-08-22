@@ -83,7 +83,7 @@ function init_calendar() {
 		selectable: true,
 		selectHelper: true,
 		select: function (start, end, allDay) {
-			var org_id = $.trim($("#org_id").val());
+			var org_id = $.trim($("#search_org_id").val());
 			var br_id = $.trim($("#br_id").val());
 			if (br_id == '' || br_id == 0){
 				$.messager.popup('请先选择会议室！');
@@ -188,7 +188,7 @@ function init_calendar() {
 			calendar.fullCalendar('unselect');
 		},
 		eventClick: function (calEvent, jsEvent, view) {
-			var org_id = $.trim($("#org_id").val());
+			var org_id = $.trim($("#search_org_id").val());
 			var br_id = $.trim($("#br_id").val());
 			if (br_id == '' || br_id == 0){
 				$.messager.popup('请先选择会议室！');
@@ -330,7 +330,16 @@ function init_calendar() {
 }
 
 function load_br() {
-	var org_id = $.trim($("#org_id").val());
+	var org_id = $.trim($("#search_org_id").val());
+	if (org_id == '') {
+		document.getElementById("br_id").innerHTML = "";
+		var opt=document.createElement("option");
+		opt.innerText="--请选择会议室--";
+		opt.value="";
+		opt.selected="selected";
+		$("#br_id").append(opt);
+		return
+	}
 	$.ajax({
 		type : "POST",
 		url : "/booking/list_by_org",
@@ -366,8 +375,19 @@ function load_br() {
 	})
 }
 
+function zTreeOnCheck4MB(event, treeId, treeNode) {
+	if($("#search_org_id").val()==treeNode.id){
+		$("#search_org_id").val('');
+		$("#search_org_name").val('')
+	}else {
+		$("#search_org_id").val(treeNode.id);
+		$("#search_org_name").val(treeNode.name);
+	}
+	load_br();
+}
+
 function load_meeting (){
-	var org_id = $.trim($("#org_id").val());
+	var org_id = $.trim($("#search_org_id").val());
 	var br_id = $.trim($("#br_id").val());
 	if (br_id == ''){
 		$("#calendar").fullCalendar('removeEvents');

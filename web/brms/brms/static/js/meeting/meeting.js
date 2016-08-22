@@ -99,6 +99,9 @@ function add() {
 		$('#meeting_cue').html("<font color='red'>会议主题超过最大长度</font>");
 		return false;
 	}
+	if (room_id == '') {
+		room_id = 0;
+	}
 	if (desc == '') {
 		$('#desc').focus();
 		$('#meeting_cue').html("<font color='red'>滚动文字不能为空</font>");

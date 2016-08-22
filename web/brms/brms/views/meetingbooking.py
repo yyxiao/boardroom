@@ -5,10 +5,11 @@ __author__ = cuizc
 __mtime__ = 2016-08-16
 """
 
+import json
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from ..service.loginutil import request_login
-from ..service.org_service import find_branch
+from ..service.org_service import find_branch_json
 from ..service.boardroom_service import *
 from ..service.meeting_service import *
 
@@ -22,7 +23,7 @@ def meeting_booking(request):
     :return:
     '''
     dbs = request.dbsession
-    branches = find_branch(dbs)
+    branch_json = json.dumps(find_branch_json(dbs))
     return render_to_response('booking/booking.html', locals(), request)
 
 

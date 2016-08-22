@@ -7,7 +7,7 @@ function list(page) {
 	var data = {
 		"br_name" : $("#br_name").val(),
 		"br_config" : $("#br_config").val(),
-		"org_id" : $("#org_id").val(),
+		"org_id" : $("#search_org_id").val(),
 		"flag" : $("#flag").val(),
 		"page" : page
 	};
