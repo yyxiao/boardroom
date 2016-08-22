@@ -12,6 +12,7 @@ from ..service.loginutil import UserTools
 from ..service.pad_service import *
 from ..service.meeting_service import delete_meeting
 from ..service.user_service import user_checking
+import transaction
 
 
 @view_config(route_name='padLogin', renderer='json')
@@ -147,12 +148,14 @@ def pad_add_meeting(request):
     elif not pad_code:
         error_msg = '终端编码不能为空'
     else:
+        user = dbs.query(SysUser).filter(SysUser.id == user_id).first()
         meeting.name = request.POST.get('meeting_name', '')
         meeting.description = request.POST.get('description', '')
         meeting.start_date = request.POST.get('start_date', '')
         meeting.end_date = request.POST.get('end_date', '')
         meeting.start_time = request.POST.get('start_time', '')
         meeting.end_time = request.POST.get('end_time', '')
+        meeting.org_id = user.org_id
         meeting.create_user = user_id
         meeting.create_time = date_now()
         error_msg, meeting_id = add_by_pad(dbs, meeting, pad_code)
@@ -216,26 +219,28 @@ def pad_update_meeting(request):
     elif not meeting_id:
         error_msg = '会议ID不能为空！'
     else:
-        meeting = dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id)\
-            .filter(HasMeeting.create_user == user_id).first()
+        meeting = dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id).first()
         if not meeting:
             error_msg = '未查找到该会议记录，请查看会议ID、用户ID是否正确！'
         else:
-            # 临时保存历史会议
-            old_meeting = HasMeeting()
-            old_meeting.start_date = meeting.start_date
-            old_meeting.start_time = meeting.start_time
-            old_meeting.end_date = meeting.end_date
-            old_meeting.end_time = meeting.end_time
+            if str(meeting.create_user) != user_id:
+                error_msg = '该会议不是该用户创建，请查询后操作。'
+            else:
+                # 临时保存历史会议
+                old_meeting = HasMeeting()
+                old_meeting.start_date = meeting.start_date
+                old_meeting.start_time = meeting.start_time
+                old_meeting.end_date = meeting.end_date
+                old_meeting.end_time = meeting.end_time
 
-            meeting.name = request.POST.get('meeting_name', '')
-            meeting.description = request.POST.get('description', '')
-            meeting.start_date = request.POST.get('start_date', '')
-            meeting.end_date = request.POST.get('end_date', '')
-            meeting.start_time = request.POST.get('start_time', '')
-            meeting.end_time = request.POST.get('end_time', '')
-            meeting.create_time = date_now()
-            error_msg, meeting_id = update_by_pad(dbs, meeting, pad_code, old_meeting=old_meeting)
+                meeting.name = request.POST.get('meeting_name', '')
+                meeting.description = request.POST.get('description', '')
+                meeting.start_date = request.POST.get('start_date', '')
+                meeting.end_date = request.POST.get('end_date', '')
+                meeting.start_time = request.POST.get('start_time', '')
+                meeting.end_time = request.POST.get('end_time', '')
+                meeting.create_time = date_now()
+                error_msg, meeting_id = update_by_pad(dbs, meeting, pad_code, old_meeting=old_meeting)
     update_last_time(dbs, pad_code, 'updateMeeting')
     if error_msg:
         json = {
