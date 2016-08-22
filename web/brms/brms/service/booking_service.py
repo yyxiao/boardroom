@@ -101,6 +101,8 @@ def update_booking(dbs, old_room_id, new_room_id, old_meeting, new_meeting):
                 br_bin = occupy.code
             else:
                 occupy = HasRoomOccupy()
+                occupy.room_id = new_room_id
+                occupy.date = new_meeting.start_date
                 br_bin = 0
 
         result, flag = compare_bin(m_bin, br_bin)

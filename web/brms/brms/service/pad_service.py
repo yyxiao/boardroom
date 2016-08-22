@@ -185,6 +185,8 @@ def update_by_pad(dbs, meeting, pad_code, old_meeting=None):
             meet_bdr = dbs.query(HasMeetBdr) \
                 .filter(HasMeetBdr.meeting_id == meeting.id).first()
             if not meet_bdr:  # 不存在
+                room_id = board.id
+                start_date = meeting.start_date
                 meet_bdr = HasMeetBdr()  # 会议室会议关联信息
                 meet_bdr.meeting_id = meeting.id
                 meet_bdr.boardroom_id = board.id
@@ -192,7 +194,7 @@ def update_by_pad(dbs, meeting, pad_code, old_meeting=None):
                 create_time = date_now()
                 meet_bdr.create_time = create_time
                 dbs.add(meet_bdr)
-                error_msg = add_booking(dbs, board.id, meeting.start_date, meeting.start_time, meeting.end_time)
+                error_msg = add_booking(dbs, room_id, start_date, meeting.start_time, meeting.end_time)
                 if error_msg:
                     dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting.id,
                                                  HasMeetBdr.boardroom_id == board.id,
@@ -202,7 +204,7 @@ def update_by_pad(dbs, meeting, pad_code, old_meeting=None):
                 dbs.add(meeting)
                 dbs.flush()
                 old_room_id = board.id
-                error_msg = update_booking(dbs, old_room_id, board.id, old_meeting, meeting)
+                error_msg = update_booking(dbs, old_room_id, old_room_id, old_meeting, meeting)
                 if error_msg:
                     dbs.rollback()
                 logger.debug("会议更新完毕，meeting_id:" + str(meeting.id))
