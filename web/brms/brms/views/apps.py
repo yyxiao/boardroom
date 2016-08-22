@@ -5,10 +5,8 @@ __author__ = xyy
 __mtime__ = 2016/8/11
 """
 import base64
-import transaction
 from pyramid.view import view_config
 
-from ..models.model import *
 from ..common.jsonutils import serialize
 from ..service.loginutil import UserTools
 from ..service.pad_service import *
@@ -27,7 +25,6 @@ def pad_login(request):
     user_account = request.POST.get('user_account', '')
     pad_code = request.POST.get('pad_code', '')
     password = base64.encodebytes(request.params['password'].encode()).decode('utf-8').replace('\n', '')
-    error_msg = ''
     if not pad_code:
         error_msg = '终端编码不能为空'
     elif not user_account:
@@ -68,7 +65,6 @@ def user_check(request):
     user_account = request.POST.get('user_account', '')
     pad_code = request.POST.get('pad_code', '')
     password = base64.encodebytes(request.POST.get('password', '').encode()).decode('utf-8').replace('\n', '')
-    error_msg = ''
     if not pad_code:
         error_msg = '终端编码不能为空'
     elif not user_account:
@@ -111,7 +107,6 @@ def meeting_list(request):
     """
     dbs = request.dbsession
     pad_code = request.POST.get('pad_code', '')
-    error_msg = ''
     if not pad_code:
         error_msg = '终端编码不能为空'
     else:
@@ -205,6 +200,12 @@ def del_meeting(request):
 
 @view_config(route_name='pad_update_meeting', renderer='json')
 def pad_update_meeting(request):
+    """
+    更新会议
+    :param request:
+    :return:
+    """
+    # TODO 时间范围控制
     dbs = request.dbsession
     user_id = request.POST.get('user_id', '')
     meeting_id = request.POST.get('meeting_id', '')
@@ -246,6 +247,11 @@ def pad_update_meeting(request):
 
 @view_config(route_name='pad_org_list', renderer='json')
 def pad_org_list(request):
+    """
+    机构列表
+    :param request:
+    :return:
+    """
     error_msg = ''
     dbs = request.dbsession
     user_id = request.POST.get('user_id', '')
@@ -272,7 +278,11 @@ def pad_org_list(request):
 
 @view_config(route_name='pad_set_room', renderer='json')
 def pad_set_room(request):
-    error_msg = ''
+    """
+    pad修改关联会议室
+    :param request:
+    :return:
+    """
     dbs = request.dbsession
     user_id = request.POST.get('user_id', '')
     room_id = request.POST.get('room_id', '')

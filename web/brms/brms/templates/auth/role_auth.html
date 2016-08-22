@@ -1,0 +1,29 @@
+<div class="modal" id="roleModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+                <h4 class="modal-title">角色授权</h4>
+			</div>
+			<div class="form-horizontal">
+                {% if role_id %}
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">角色代码</label>
+                  <div class="col-sm-9">
+                    <input name="role_id" type="text" class="form-control" readonly="readonly"
+                           id="role_id" value="{{role_id}}">
+                  </div>
+                </div>
+                {% endif %}
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">机构</label>
+                  <div class="col-sm-9">
+                  </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-success" onclick="update_auth_user()">保存</button>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>

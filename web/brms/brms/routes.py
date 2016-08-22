@@ -65,6 +65,8 @@ def auth_include(config):
     config.add_route('to_auth', '/to_auth')
     config.add_route('to_auth_user', '/to_auth_user')
     config.add_route('update_auth_user', '/update_auth_user')
+    config.add_route('to_auth_role', '/to_auth_role')
+    config.add_route('update_auth_role', '/update_auth_role')
 
 
 def boardroom_include(config):

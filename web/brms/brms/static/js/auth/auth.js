@@ -99,6 +99,27 @@ function to_auth_user() {
 	}
 }
 /*
+ * to update role
+ */
+function to_auth_role() {
+	var idbox = $("input[name='idbox']:checked");
+	if (idbox.length > 0) {
+		var url = "/auth/to_auth_role";
+		var data = {
+			"id" : idbox.val()
+		};
+		$("#modalRoleWrapper").load(url, data, function(response, status) {
+			if (status == "error") {
+				redirect_to("/");
+			} else {
+				$("#roleModal").modal();
+			}
+		});
+	} else {
+		$.messager.popup("请先选择一个用户");
+	}
+}
+/*
  * update role
  */
 function update_auth_user() {

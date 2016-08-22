@@ -36,6 +36,15 @@ def auth_user(request):
     return render_to_response('auth/user_auth.html', locals(), request)
 
 
+@view_config(route_name='to_auth_role')
+@request_login
+def auth_role(request):
+    dbs = request.dbsession
+    role_id = request.POST.get('id', '')
+    # branch_json = json.dumps(find_branch_json_check(dbs, role_id))
+    return render_to_response('auth/role_auth.html', locals(), request)
+
+
 @view_config(route_name='update_auth_user', renderer='json')
 @request_login
 def update_auth_user(request):

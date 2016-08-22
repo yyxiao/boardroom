@@ -279,6 +279,14 @@ def pad_find_orgs(dbs, user_id):
 
 
 def set_room(dbs, user_id, pad_code, room_id):
+    """
+    pad修改关联会议室
+    :param dbs:
+    :param user_id:
+    :param pad_code:
+    :param room_id:
+    :return:
+    """
     error_msg = ''
     pad = dbs.query(HasPad)\
         .filter(HasPad.pad_code == pad_code).first()
