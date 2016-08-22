@@ -128,7 +128,7 @@ function init_calendar() {
 								language: "zh-CN",\
 								autoclose: true,\
 								todayHighlight: true,\
-								format: "hh:mm",\
+								format: "hh:ii",\
 								startDate: nowdate,\
 								startView: 1,\
 								minView: 0,\
@@ -139,7 +139,7 @@ function init_calendar() {
 								language: "zh-CN",\
 								autoclose: true,\
 								todayHighlight: true,\
-								format: "hh:mm",\
+								format: "hh:ii",\
 								startDate: nowdate,\
 								startView: 1,\
 								minView: 0,\
@@ -238,7 +238,7 @@ function init_calendar() {
 								language: "zh-CN",\
 								autoclose: true,\
 								todayHighlight: true,\
-								format: "hh:mm",\
+								format: "hh:ii",\
 								startDate: nowdate,\
 								startView: 1,\
 								minView: 0,\
@@ -249,7 +249,7 @@ function init_calendar() {
 								language: "zh-CN",\
 								autoclose: true,\
 								todayHighlight: true,\
-								format: "hh:mm",\
+								format: "hh:ii",\
 								startDate: nowdate,\
 								startView: 1,\
 								minView: 0,\

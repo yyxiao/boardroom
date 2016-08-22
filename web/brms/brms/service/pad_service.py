@@ -10,6 +10,8 @@ from sqlalchemy.orm import aliased
 from ..models.model import *
 from ..common.paginator import Paginator
 from ..common.dateutils import date_now, date_pattern1
+from ..service.booking_service import check_occupy, add_booking, delete_booking
+from ..service.meeting_service import delete_meeting
 import transaction
 import logging
 
@@ -156,6 +158,9 @@ def add_by_pad(dbs, meeting, pad_code):
             meet_bdr.create_time = date_now()
             dbs.add(meet_bdr)
             logger.debug("会议会议室关联添加完毕")
+            error_msg = add_booking(dbs, board.id, meeting.start_date, meeting.start_time, meeting.end_time)
+            if error_msg:
+                delete_meeting(dbs, meeting.id, meeting.create_user)
     except Exception as e:
         logger.error(e)
         error_msg = '新增会议失败，请核对后重试'
