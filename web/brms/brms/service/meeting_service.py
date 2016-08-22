@@ -138,7 +138,7 @@ def update(dbs, meeting, room_id, old_meeting=None):
     """
     with transaction.manager:
         try:
-            # 查询padcode对应的boardroom_id
+            # 查询meeting_id对应的boardroom_id
             meet_bdr = dbs.query(HasMeetBdr)\
                 .filter(HasMeetBdr.meeting_id == meeting.id).first()
             if not meet_bdr:                                       # 不存在

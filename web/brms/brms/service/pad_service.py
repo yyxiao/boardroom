@@ -6,13 +6,10 @@ __mtime__ = 2016/8/10
 """
 
 from datetime import datetime, timedelta
-from sqlalchemy.orm import aliased
 from ..models.model import *
-from ..common.paginator import Paginator
 from ..common.dateutils import date_now, date_pattern1
-from ..service.booking_service import check_occupy, add_booking, delete_booking
+from ..service.booking_service import add_booking, update_booking
 from ..service.meeting_service import delete_meeting
-import transaction
 import logging
 
 logger = logging.getLogger('operator')
@@ -167,7 +164,7 @@ def add_by_pad(dbs, meeting, pad_code):
     return error_msg, meeting_id
 
 
-def update_by_pad(dbs, meeting, pad_code):
+def update_by_pad(dbs, meeting, pad_code, old_meeting=None):
     """
     PAD更新会议
     :param dbs:
@@ -184,10 +181,31 @@ def update_by_pad(dbs, meeting, pad_code):
         if not board:                                       # 不存在
             error_msg = '该pad未分配会议室，请联系管理员！'
         else:
-            # 更新会议
-            dbs.add(meeting)
-            dbs.flush()
-            logger.debug("会议更新完毕，meeting_id:" + str(meeting.id))
+            # 查询meeting_id对应的boardroom_id
+            meet_bdr = dbs.query(HasMeetBdr) \
+                .filter(HasMeetBdr.meeting_id == meeting.id).first()
+            if not meet_bdr:  # 不存在
+                meet_bdr = HasMeetBdr()  # 会议室会议关联信息
+                meet_bdr.meeting_id = meeting.id
+                meet_bdr.boardroom_id = board.id
+                meet_bdr.create_user = meeting.create_user
+                create_time = date_now()
+                meet_bdr.create_time = create_time
+                dbs.add(meet_bdr)
+                error_msg = add_booking(dbs, board.id, meeting.start_date, meeting.start_time, meeting.end_time)
+                if error_msg:
+                    dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting.id,
+                                                 HasMeetBdr.boardroom_id == board.id,
+                                                 HasMeetBdr.create_time == create_time).delete()
+            else:
+                # 更新会议
+                dbs.add(meeting)
+                dbs.flush()
+                old_room_id = board.id
+                error_msg = update_booking(dbs, old_room_id, board.id, old_meeting, meeting)
+                if error_msg:
+                    dbs.rollback()
+                logger.debug("会议更新完毕，meeting_id:" + str(meeting.id))
     except Exception as e:
         logger.error(e)
         error_msg = '更新会议失败，请核对后重试'

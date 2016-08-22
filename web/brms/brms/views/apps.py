@@ -205,7 +205,6 @@ def pad_update_meeting(request):
     :param request:
     :return:
     """
-    # TODO 时间范围控制
     dbs = request.dbsession
     user_id = request.POST.get('user_id', '')
     meeting_id = request.POST.get('meeting_id', '')
@@ -222,6 +221,13 @@ def pad_update_meeting(request):
         if not meeting:
             error_msg = '未查找到该会议记录，请查看会议ID、用户ID是否正确！'
         else:
+            # 临时保存历史会议
+            old_meeting = HasMeeting()
+            old_meeting.start_date = meeting.start_date
+            old_meeting.start_time = meeting.start_time
+            old_meeting.end_date = meeting.end_date
+            old_meeting.end_time = meeting.end_time
+
             meeting.name = request.POST.get('meeting_name', '')
             meeting.description = request.POST.get('description', '')
             meeting.start_date = request.POST.get('start_date', '')
@@ -229,7 +235,7 @@ def pad_update_meeting(request):
             meeting.start_time = request.POST.get('start_time', '')
             meeting.end_time = request.POST.get('end_time', '')
             meeting.create_time = date_now()
-            error_msg, meeting_id = update_by_pad(dbs, meeting, pad_code)
+            error_msg, meeting_id = update_by_pad(dbs, meeting, pad_code, old_meeting=old_meeting)
     update_last_time(dbs, pad_code, 'updateMeeting')
     if error_msg:
         json = {
