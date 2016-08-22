@@ -198,3 +198,23 @@ def user_checking(dbs, pad_code, user_id):
         msg = '验证用户失败！'
     return msg
 
+
+def user_org(dbs, user_id, create_user, org_list, now):
+    """
+    用户授权机构信息
+    :param dbs:
+    :param user_id:
+    :param org_ids:
+    :return:
+    """
+    msg = ''
+    try:
+        dbs.query(SysUserOrg).filter(SysUserOrg.user_id == user_id).delete()
+        logger.info("清除用户授权机构信息成功！")
+        for org_id in org_list:
+            userorg = SysUserOrg(user_id=user_id, org_id=org_id, create_user=create_user, create_time=now)
+            dbs.merge(userorg)
+    except Exception as e:
+        logger.error(e)
+        msg = '用户授权失败，请稍后重试！'
+    return msg

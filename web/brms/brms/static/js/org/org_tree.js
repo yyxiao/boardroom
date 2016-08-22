@@ -24,13 +24,4 @@ $("#orgTree").click(function(event){
 $("#search_org_name").click(function(event){
     event.stopPropagation();
 });
-function onCheck(e,treeId,treeNode){
-	var treeObj=$.fn.zTree.getZTreeObj("treeUserOrg"),
-	nodes=treeObj.getCheckedNodes(true),
-	v="";
-	for(var i=0;i<nodes.length;i++){
-		v+=nodes[i].name + ",";
-		alert(nodes[i].id); //获取选中节点的值
-	}
-}
 

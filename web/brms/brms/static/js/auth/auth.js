@@ -101,26 +101,31 @@ function to_auth_user() {
 /*
  * update role
  */
-function auth_user() {
-	var id = $("#role_id").val()
-	var name = $.trim($("#name").val());
-	var desc = $.trim($("#desc").val());
+function update_auth_user() {
+	var user_id = $("#user_id").val();
+	var treeObj=$.fn.zTree.getZTreeObj("treeUserOrg"),
+	nodes=treeObj.getCheckedNodes(true),
+	org_ids="",
+	org_names="";
+	for(var i=0;i<nodes.length;i++){
+		org_names+=nodes[i].name + ",";
+		org_ids+=nodes[i].id + ",";
+	}
 	$.ajax({
 		type : "POST",
-		url : "/role/update",
+		url : "/auth/update_auth_user",
 		data : {
-			"id" : id,
-			"name" : name,
-			"desc" : desc
+			"user_id" : user_id,
+			"org_ids" : org_ids.substr(0,org_ids.length-1)
 		},
 		error : function() {
-			$.messager.popup("更新角色失败");
+			$.messager.popup("用户授权失败！");
 		},
 		success : function(data) {
 			if (data.success) {
 				$("#addModal").modal('hide');
-				$.messager.popup("更新角色成功！");
-				list(1)
+				$.messager.popup("用户授权成功！");
+				listUser(1);
 			}
 		},
 	})

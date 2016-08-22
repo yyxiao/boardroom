@@ -8,7 +8,7 @@ __mtime__ = 2016-08-09
 import transaction
 import logging
 from sqlalchemy.orm import aliased
-from ..models.model import SysOrg, SysUser
+from ..models.model import SysOrg, SysUser, SysUserOrg
 from ..common.paginator import Paginator
 
 logger = logging.getLogger('operator')
@@ -26,6 +26,12 @@ def find_branch(dbs):
 
 
 def find_branch_json(dbs):
+    """
+    获取未分配的机构树
+    :param dbs:
+    :param user_id:
+    :return:
+    """
     branches = []
     curs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id).all()
     for rec in curs:
@@ -33,6 +39,32 @@ def find_branch_json(dbs):
         branch['id'] = rec[0]
         branch['name'] = rec[1]
         branch['pId'] = rec[2]
+        if rec[2] == 0:
+            branch['open'] = True
+        branches.append(branch)
+    return branches
+
+
+def find_branch_json_check(dbs, user_id):
+    """
+    获取机构树
+    :param dbs:
+    :param user_id:
+    :return:
+    """
+    branches = []
+    orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id).all()
+    curs = dbs.query(SysUserOrg.org_id).filter(SysUserOrg.user_id == user_id).all()
+    for rec in orgs:
+        branch = {}
+        branch['id'] = rec[0]
+        branch['name'] = rec[1]
+        branch['pId'] = rec[2]
+        if rec[2] == 0:
+            branch['open'] = True
+        for org in curs:
+            if rec[0] == org[0]:
+                branch['checked'] = True
         branches.append(branch)
     return branches
 
