@@ -285,6 +285,10 @@ def set_room(dbs, user_id, pad_code, room_id):
     room = dbs.query(HasBoardroom)\
         .filter(HasBoardroom.id == room_id).first()
     try:
+        room1 = dbs.query(HasBoardroom).filter(HasBoardroom.pad_id == pad.id).first()
+        if room1:  # 清除以前会议室pad_id数据
+            room1.pad_id = 0
+            dbs.add(room1)
         room.pad_id = pad.id
         room.create_user = user_id
         room.create_time = date_now()
