@@ -45,6 +45,8 @@ def add_booking(dbs, room_id, date, start_time, end_time):
     :return:
     '''
 
+    if room_id == 0:
+        return ''
     occupy = dbs.query(HasRoomOccupy).filter(HasRoomOccupy.room_id == room_id,
                                              HasRoomOccupy.date == date).first()
     if not occupy:
@@ -61,11 +63,52 @@ def add_booking(dbs, room_id, date, start_time, end_time):
     try:
         # with transaction.manager:
         dbs.add(occupy)
-            # dbs.flush()
+        # dbs.flush()
         return ''
     except Exception as e:
         logger.error(e)
         return '添加占用失败'
+
+
+def update_booking(dbs, old_room_id, new_room_id, old_meeting, new_meeting):
+    '''
+    更新会议预定
+    :param dbs:
+    :param old_room_id:
+    :param new_room_id:
+    :param old_meeting:
+    :param new_meeting:
+    :return:
+    '''
+
+    occupy = None
+    if old_room_id != 0:
+        occupy = dbs.query(HasRoomOccupy).filter(HasRoomOccupy.room_id == old_room_id,
+                                                 HasRoomOccupy.date == old_meeting.start_date).first()
+        if occupy:
+            old_bin = get_binary(old_meeting.start_time, old_meeting.end_time)
+            tmp = delete_bin(old_bin, occupy.code)
+            occupy.code = tmp
+
+    if new_room_id != 0:
+        m_bin = get_binary(new_meeting.start_time, new_meeting.end_time)
+        if old_room_id == new_room_id and occupy:
+            br_bin = occupy.code
+        else:
+            occupy = dbs.query(HasRoomOccupy).filter(HasRoomOccupy.room_id == new_room_id,
+                                                     HasRoomOccupy.date == old_meeting.start_date).first()
+            if occupy:
+                br_bin = occupy.code
+            else:
+                occupy = HasRoomOccupy()
+                br_bin = 0
+
+        result, flag = compare_bin(m_bin, br_bin)
+        if result == 0:
+            return '时间冲突，添加失败'
+        occupy.code = result
+        dbs.add(occupy)
+        return ''
 
 
 def delete_booking(dbs, room_id, date, start_time, end_time):
@@ -88,7 +131,7 @@ def delete_booking(dbs, room_id, date, start_time, end_time):
     try:
         # with transaction.manager:
         dbs.add(occupy)
-            # dbs.flush()
+        # dbs.flush()
         return ''
     except Exception as e:
         logger.error(e)

@@ -9,7 +9,7 @@ from datetime import datetime
 from ..models.model import *
 from ..common.paginator import Paginator
 from ..common.dateutils import date_now
-from ..service.booking_service import check_occupy, add_booking, delete_booking
+from ..service.booking_service import check_occupy, add_booking, update_booking, delete_booking
 import transaction
 import logging
 
@@ -109,54 +109,67 @@ def add(dbs, meeting, room_id):
         dbs.add(meeting)
         dbs.flush()
         logger.debug("会议添加完毕，meeting_id:" + str(meeting.id))
-        meet_bdr = HasMeetBdr()  # 会议室会议关联信息
-        meet_bdr.meeting_id = meeting.id
-        meet_bdr.boardroom_id = room_id
-        meet_bdr.create_user = meeting.create_user
-        meet_bdr.create_time = date_now()
-        dbs.add(meet_bdr)
-        error_msg = add_booking(dbs, room_id, meeting.start_date, meeting.start_time, meeting.end_time)
-        if error_msg:
-            delete_meeting(dbs, meeting.id, meeting.create_user)
-            return error_msg
-        logger.debug("会议会议室关联添加完毕")
-    except Exception as e:
-        logger.error(e)
-        error_msg = '新增会议失败，请核对后重试'
-    return error_msg
-
-
-def update(dbs, meeting, room_id):
-    """
-    PAD更新会议
-    :param dbs:
-    :param meeting:
-    :param pad_code
-    :return:
-    """
-    error_msg = ''
-    try:
-        # 查询padcode对应的boardroom_id
-        meet_bdr = dbs.query(HasMeetBdr)\
-            .filter(HasMeetBdr.meeting_id == meeting.id).first()
-        if not meet_bdr:                                       # 不存在
+        if room_id != 0:
             meet_bdr = HasMeetBdr()  # 会议室会议关联信息
             meet_bdr.meeting_id = meeting.id
             meet_bdr.boardroom_id = room_id
             meet_bdr.create_user = meeting.create_user
             meet_bdr.create_time = date_now()
             dbs.add(meet_bdr)
-            # error_msg = add_booking(dbs, room_id, meeting.start_date, meeting.start_time, meeting.end_time)
-        else:
-            # 更新会议
-            dbs.add(meeting)
-            dbs.flush()
-            meet_bdr.board_id = room_id
-            dbs.add(meet_bdr)
-            logger.debug("会议更新完毕，meeting_id:" + str(meeting.id))
+            error_msg = add_booking(dbs, room_id, meeting.start_date, meeting.start_time, meeting.end_time)
+            if error_msg:
+                delete_meeting(dbs, meeting.id, meeting.create_user)
+                return error_msg
+            logger.debug("会议会议室关联添加完毕")
     except Exception as e:
         logger.error(e)
-        error_msg = '更新会议失败，请核对后重试'
+        error_msg = '新增会议失败，请核对后重试'
+    return error_msg
+
+
+def update(dbs, meeting, room_id, old_meeting=None):
+    """
+    PAD更新会议
+    :param dbs:
+    :param meeting:
+    :param room_id:
+    :param old_meeting:
+    :return:
+    """
+    with transaction.manager:
+        try:
+            # 查询padcode对应的boardroom_id
+            meet_bdr = dbs.query(HasMeetBdr)\
+                .filter(HasMeetBdr.meeting_id == meeting.id).first()
+            if not meet_bdr:                                       # 不存在
+                meet_bdr = HasMeetBdr()  # 会议室会议关联信息
+                meet_bdr.meeting_id = meeting.id
+                meet_bdr.boardroom_id = room_id
+                meet_bdr.create_user = meeting.create_user
+                create_time = date_now()
+                meet_bdr.create_time = create_time
+                dbs.add(meet_bdr)
+                error_msg = add_booking(dbs, room_id, meeting.start_date, meeting.start_time, meeting.end_time)
+                if error_msg:
+                    dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting.id,
+                                                 HasMeetBdr.boardroom_id == room_id,
+                                                 HasMeetBdr.create_time == create_time).delete()
+                    return error_msg
+            else:
+                # 更新会议
+                dbs.add(meeting)
+                # dbs.flush()
+                old_room_id = meet_bdr.boardroom_id
+                meet_bdr.boardroom_id = room_id
+                dbs.add(meet_bdr)
+                error_msg = update_booking(dbs, old_room_id, room_id, old_meeting, meeting)
+                if error_msg:
+                    dbs.rollback()
+                logger.debug("会议更新完毕，meeting_id:" + str(meeting.id))
+        except Exception as e:
+            logger.error(e)
+            dbs.rollback()
+            error_msg = '更新会议失败，请核对后重试'
     return error_msg
 
 

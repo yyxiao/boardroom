@@ -67,7 +67,7 @@ def add_meeting(request):
     #         outerjoin(HasPad, HasPad.id == HasBoardroom.pad_id).\
     #         filter(HasPad.pad_code == pad_code)
     #     if board_room:
-    room_id = int(request.POST.get('room_id', ''))
+    room_id = int(request.POST.get('room_id', 0))
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
     meeting.start_date = request.POST.get('start_date', '')
@@ -123,8 +123,16 @@ def to_update(request):
 def update_meeting(request):
     dbs = request.dbsession
     meeting_id = int(request.POST.get('id', 0))
+
     room_id = int(request.POST.get('room_id', 0))
     meeting = find_meeting(dbs, meeting_id)
+
+    old_meeting = HasMeeting()
+    old_meeting.start_date = meeting.start_date
+    old_meeting.start_time = meeting.start_time
+    old_meeting.end_date = meeting.end_date
+    old_meeting.end_time = meeting.end_time
+
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
     meeting.start_date = request.POST.get('start_date', '')
@@ -133,7 +141,7 @@ def update_meeting(request):
     meeting.end_time = request.POST.get('end_time', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
-    error_msg = update(dbs, meeting, room_id)
+    error_msg = update(dbs, meeting, room_id, old_meeting=old_meeting)
     if error_msg:
         json = {
             'success': False,
