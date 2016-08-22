@@ -29,12 +29,13 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label form-label paddingR0 paddingL0">机构</label>
                     <div class="col-sm-8 paddingR0">
-                        <select class="form-control" id="org_id" name="org_id">
-                            <option></option>
-                            {% for branch in branches %}
-                                <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
-                            {% endfor %}
-                        </select>
+                        <input type="text" class="form-control"	id="search_org_name" name="search_org_name" readonly="readonly"
+                               onclick="org_show();" placeholder="请选择">
+                        <input type="text" class="hidden" id="search_org_id" name="search_org_id">
+                        <div class="form-control" style="background-color:white;
+                        height:300px;overflow: auto;display:none;position: absolute;z-index: 8" id="orgTree">
+                            <ul id="treeDemo" class="ztree"></ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -70,7 +71,27 @@
 <div id="modalWrapper"></div>
 </section>
 
-    <script src="{{ request.static_url('brms:static/js/boardroom/boardroom.js') }}"></script>
-    <script src="{{ request.static_url('brms:static/js/lightbox.js')}}"></script>
+<script src="{{ request.static_url('brms:static/js/boardroom/boardroom.js') }}"></script>
+<script src="{{ request.static_url('brms:static/js/org/org_tree.js') }}"></script>
+<script src="{{ request.static_url('brms:static/js/lightbox.js')}}"></script>
+<script type="text/javascript">
+    var setting = {
+        check: {
+            enable: true,
+            chkStyle: "radio",
+            radioType: "all"
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            onCheck: zTreeOnCheck
+        }
+    };
+    var zNodes ={{ branch_json|safe }};
+    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+</script>
 {% endblock %}
 

@@ -5,13 +5,12 @@ __author__ = cuizc
 __mtime__ = 2016-08-08
 """
 
-import os
-from datetime import datetime
+import json
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
 from ..service.boardroom_service import *
-from ..service.org_service import find_branch
+from ..service.org_service import find_branch, find_branch_json
 from ..service.loginutil import request_login
 from ..models.model import HasBoardroom
 from ..common.dateutils import datetime_format
@@ -26,7 +25,7 @@ def boardroom_info(request):
     :return:
     """
     dbs = request.dbsession
-    branches = find_branch(dbs)
+    branch_json = json.dumps(find_branch_json(dbs))
     return render_to_response('boardroom/boardroom_info.html', locals(), request)
 
 
@@ -39,7 +38,7 @@ def boardrooms(request):
     :return:
     """
     dbs = request.dbsession
-    branches = find_branch(dbs)
+    branch_json = json.dumps(find_branch_json(dbs))
     return render_to_response('boardroom/boardroom.html', locals(), request)
 
 
