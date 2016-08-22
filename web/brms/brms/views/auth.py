@@ -10,6 +10,8 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from ..service.user_service import user_org
 from ..service.org_service import find_branch_json, find_branch_json_check
+from ..service.menu_service import find_menu_json_check
+from ..service.role_service import role_menu
 from ..service.loginutil import request_login
 from ..common.dateutils import date_now
 
@@ -41,7 +43,7 @@ def auth_user(request):
 def auth_role(request):
     dbs = request.dbsession
     role_id = request.POST.get('id', '')
-    # branch_json = json.dumps(find_branch_json_check(dbs, role_id))
+    menu_json = json.dumps(find_menu_json_check(dbs, role_id))
     return render_to_response('auth/role_auth.html', locals(), request)
 
 
@@ -59,13 +61,37 @@ def update_auth_user(request):
     org_list = org_ids.split(',')
     error_msg = user_org(dbs, user_id, create_user, org_list, date_now())
     if error_msg:
-        json = {
+        json1 = {
             'success': 'false',
             'error_msg': error_msg,
         }
     else:
-        json = {
+        json1 = {
             'success': 'true',
         }
-    return json
+    return json1
 
+
+@view_config(route_name='update_auth_role', renderer='json')
+@request_login
+def update_auth_role(request):
+    role_id = request.POST.get('role_id', '')
+    menu_ids = request.POST.get('menu_ids', '')
+    create_user = request.session['userId']
+    if not role_id:
+        error_msg = '角色ID不能为空！'
+    else:
+        error_msg = '角色ID不能为空！'
+    dbs = request.dbsession
+    menu_list = menu_ids.split(',')
+    error_msg = role_menu(dbs, role_id, create_user, menu_list, date_now())
+    if error_msg:
+        json1 = {
+            'success': 'false',
+            'error_msg': error_msg,
+        }
+    else:
+        json1 = {
+            'success': 'true',
+        }
+    return json1

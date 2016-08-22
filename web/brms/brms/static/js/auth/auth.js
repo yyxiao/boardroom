@@ -151,3 +151,36 @@ function update_auth_user() {
 		},
 	})
 }
+
+/*
+ * update role
+ */
+function update_auth_role() {
+	var role_id = $("#role_id").val();
+	var treeObj=$.fn.zTree.getZTreeObj("treeRoleMenu"),
+	nodes=treeObj.getCheckedNodes(true),
+	menu_ids="",
+	menu_names="";
+	for(var i=0;i<nodes.length;i++){
+		menu_names+=nodes[i].name + ",";
+		menu_ids+=nodes[i].id + ",";
+	}
+	$.ajax({
+		type : "POST",
+		url : "/auth/update_auth_role",
+		data : {
+			"role_id" : role_id,
+			"menu_ids" : menu_ids.substr(0,menu_ids.length-1)
+		},
+		error : function() {
+			$.messager.popup("角色授权失败！");
+		},
+		success : function(data) {
+			if (data.success) {
+				$("#roleModal").modal('hide');
+				$.messager.popup("角色授权成功！");
+				listRole(1);
+			}
+		},
+	})
+}

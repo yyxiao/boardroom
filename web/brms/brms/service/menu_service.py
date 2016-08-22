@@ -22,3 +22,27 @@ def get_user_menu(dbs, user_id):
                                       SysUserRole.user_id == user_id).all()
 
     return menus
+
+
+def find_menu_json_check(dbs, role_id):
+    """
+    获取菜单树
+    :param dbs:
+    :param role_id:
+    :return:
+    """
+    menu_branches = []
+    menus = dbs.query(SysMenu.id, SysMenu.name, SysMenu.parent_id).all()
+    curs = dbs.query(SysRoleMenu.menu_id).filter(SysRoleMenu.role_id == role_id).all()
+    for rec in menus:
+        branch = {}
+        branch['id'] = rec[0]
+        branch['name'] = rec[1]
+        branch['pId'] = rec[2]
+        if rec[2] == 0:
+            branch['open'] = True
+        for menu in curs:
+            if rec[0] == menu[0]:
+                branch['checked'] = True
+        menu_branches.append(branch)
+    return menu_branches

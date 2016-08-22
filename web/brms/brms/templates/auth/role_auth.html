@@ -15,15 +15,38 @@
                 </div>
                 {% endif %}
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">机构</label>
+                  <label class="col-sm-2 control-label">菜单</label>
                   <div class="col-sm-9">
+                      <input type="text" class="hidden" id="menu_names" name="menu_names">
+                      <input type="text" class="hidden" id="menu_ids" name="menu_ids">
+                      <div class="form-control" style="background-color:white;
+                                    height:300px;overflow: auto;z-index: 8" id="menuTree">
+                          <ul id="treeRoleMenu" class="ztree"></ul>
+                      </div>
                   </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-success" onclick="update_auth_user()">保存</button>
+                    <button type="button" class="btn btn-success" onclick="update_auth_role()">保存</button>
                 </div>
             </div>
 		</div>
 	</div>
 </div>
+<script src="{{ request.static_url('brms:static/js/auth/menu_tree.js') }}"></script>
+<script type="text/javascript">
+    var setting = {
+        check: {
+            enable: true,
+            chkStyle: 'checkbox',
+            chkboxType: {"Y" : "s", "N" : "ps" }
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        }
+    };
+    var zNodes ={{ menu_json|safe }};
+    $.fn.zTree.init($("#treeRoleMenu"), setting, zNodes);
+</script>

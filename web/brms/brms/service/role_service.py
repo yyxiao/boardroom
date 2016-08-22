@@ -8,7 +8,9 @@ __mtime__ = 2016/8/8
 from datetime import datetime
 from ..models.model import *
 from ..common.paginator import Paginator
-import transaction
+import transaction, logging
+
+logger = logging.getLogger('operator')
 
 
 def find_roles(dbs, role_name, page_no):
@@ -70,3 +72,26 @@ def delete_role(dbs, role_id):
 def find_role(dbs, role_id):
     role = dbs.query(SysRole).filter(SysRole.role_id == role_id).first()
     return role
+
+
+def role_menu(dbs, role_id, create_user, menu_list, now):
+    """
+    角色授权菜单信息
+    :param dbs:
+    :param role_id:
+    :param create_user:
+    :param menu_list:
+    :param now:
+    :return:
+    """
+    msg = ''
+    try:
+        dbs.query(SysRoleMenu).filter(SysRoleMenu.role_id == role_id).delete()
+        logger.info("清除角色授权菜单信息成功！")
+        for menu_id in menu_list:
+            rolemenu = SysRoleMenu(role_id=role_id, menu_id=menu_id, create_user=create_user, create_time=now)
+            dbs.merge(rolemenu)
+    except Exception as e:
+        logger.error(e)
+        msg = '角色授权失败，请稍后重试！'
+    return msg
