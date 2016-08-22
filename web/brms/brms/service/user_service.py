@@ -9,6 +9,7 @@ import transaction
 import logging
 from ..models.model import *
 from ..common.paginator import Paginator
+from ..common.dateutils import datetime_format
 
 logger = logging.getLogger('operator')
 
@@ -38,7 +39,8 @@ def find_users(dbs, user_account=None, user_name=None, org_id=None, role_name=No
                       SysUser.position,
                       SysUser.state,
                       SysUser.create_time,
-                      SysUser.org_id,) \
+                      SysUser.org_id,
+                      SysRole.role_id,) \
         .outerjoin(SysOrg, SysOrg.id == SysUser.org_id)\
         .outerjoin(SysUserRole, SysUser.id == SysUserRole.user_id)\
         .outerjoin(SysRole, SysUserRole.role_id == SysRole.role_id)
@@ -71,12 +73,14 @@ def find_users(dbs, user_account=None, user_name=None, org_id=None, role_name=No
         state = obj[10] if obj[10] else ''
         create_time = obj[11] if obj[11] else ''
         org_id = obj[12] if obj[12] else ''
+        role_id = obj[13] if obj[13] else ''
         temp_dict = {
             'user_id': user_id,
             'user_account': user_account,
             'user_name': user_name,
             'org_name': org_name,
             'role_name': role_name,
+            'role_id': role_id,
             'max_period': max_period,
             'user_type': user_type,
             'email': email,
@@ -117,33 +121,53 @@ def find_user_by_id(dbs, user_id):
     return None
 
 
-def add(dbs, user):
+def add(dbs, user, role_id=None, create_user=None):
     '''
     添加用户
     :param dbs:
     :param user:
+    :param role_id:
+    :param create_user:
     :return:
     '''
     try:
-        with transaction.manager:
-            dbs.add(user)
-            dbs.flush()
+        dbs.add(user)
+        dbs.flush()
+        if role_id != '' and role_id != 0:
+            user_role = SysUserRole()
+            user_role.user_id = user.id
+            user_role.create_user = create_user
+            user_role.create_time = datetime.now().strftime(datetime_format)
+            user_role.role_id = role_id
+            dbs.add(user_role)
         return ''
     except Exception as e:
         logger.error(e)
         return '添加用户失败, 请核对后重试！'
 
 
-def update(dbs, user):
+def update(dbs, user, role_id=None, create_user=None):
     '''
     更新用户信息
     :param dbs:
     :param user:
+    :param role_id:
+    :param create_user:
     :return:
     '''
     try:
         with transaction.manager:
             dbs.merge(user)
+
+            if role_id != '' and role_id != 0:
+                user_role = dbs.query(SysUserRole).filter(SysUserRole.user_id == user.id).first()
+                if not user_role:
+                    user_role = SysUserRole()
+                    user_role.user_id = user.id
+                    user_role.create_user = create_user
+                    user_role.create_time = datetime.now().strftime(datetime_format)
+                user_role.role_id = role_id
+                dbs.add(user_role)
         return ''
     except Exception as e:
         logger.error(e)

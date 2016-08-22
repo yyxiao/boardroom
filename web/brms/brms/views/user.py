@@ -11,6 +11,7 @@ from pyramid.response import Response
 from ..common.password import get_password, init_password
 from ..service.user_service import *
 from ..service.org_service import find_branch, find_branch_json
+from ..service.role_service import find_roles
 from ..service.loginutil import request_login
 from ..common.dateutils import datetime_format
 
@@ -61,6 +62,7 @@ def to_add(request):
     '''
     dbs = request.dbsession
     branches = find_branch(dbs)
+    (roles, paginator) = find_roles(dbs)
     return render_to_response('user/add.html', locals(), request)
 
 
@@ -88,10 +90,11 @@ def add_user(request):
         user.create_time = datetime.now().strftime(datetime_format)
         user.create_user = request.session['userId']
         user.state = request.POST.get('state', 1)
+        role_id = request.POST.get('role_id', 0)
 
         init_pwd = init_password()
         user.user_pwd = get_password(init_pwd)
-        msg = add(dbs, user)
+        msg = add(dbs, user, role_id, request.session['userId'])
         json = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
@@ -113,6 +116,7 @@ def to_update_user(request):
     branches = find_branch(dbs)
     user_id = request.POST.get('user_id', 0)
     user = find_user(dbs, user_id)
+    (roles, paginator) = find_roles(dbs)
     return render_to_response('user/add.html', locals(), request)
 
 
@@ -137,8 +141,9 @@ def update_user(request):
         user.org_id = request.POST.get('org_id', 0)
         user.position = request.POST.get('position', '')
         user.state = request.POST.get('state', '')
+        role_id = request.POST.get('role_id', 0)
         user.update_time = datetime.now().strftime(datetime_format)
-        msg = update(dbs, user)
+        msg = update(dbs, user, role_id, request.session['userId'])
         json = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg

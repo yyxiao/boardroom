@@ -13,7 +13,7 @@ import transaction, logging
 logger = logging.getLogger('operator')
 
 
-def find_roles(dbs, role_name, page_no):
+def find_roles(dbs, role_name=None, page_no=1):
     """
     角色列表
     :param dbs:
@@ -30,7 +30,7 @@ def find_roles(dbs, role_name, page_no):
     if role_name:
         roles = roles.filter(SysRole.role_name.like('%'+role_name+'%'))
     user_list = roles.order_by(SysRole.create_time)
-    results, paginator = Paginator(user_list, page_no).to_dict()
+    results, paginator = Paginator(user_list, page_no, page_size=100).to_dict()  # page_size=100 对于不需要分页的场景，为临时解决方案
     lists = []
     for obj in results:
         role_id = obj[0] if obj[0] else ''

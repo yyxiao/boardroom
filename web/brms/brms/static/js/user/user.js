@@ -60,7 +60,7 @@ function add() {
 	var user_account = $.trim($("#user_account_add").val());
 	var user_name = $.trim($("#user_name_add").val());
 	var branch = $.trim($("#branch_add").val());
-	// var password = $.trim($("#password_add").val());
+	var role_id = $.trim($("#role_add").val());
     var max_period = $.trim($("#max_period_add").val());
 	var email = $.trim($("#email_add").val());
 	var phone = $.trim($("#phone_add").val());
@@ -120,6 +120,9 @@ function add() {
 		$.messager.popup('电子邮件地址格式不正确 (样例格式:xxxx@xxx.com)');
 		return false;
 	}
+	if (state == '') {
+		state = 1;
+	}
 	$.ajax({
 		type : "POST",
 		url : "/user/add_user",
@@ -127,6 +130,7 @@ function add() {
 			"user_account" : user_account,
 			"user_name" : user_name,
 			"org_id" : branch,
+			"role_id" : role_id,
             "max_period": max_period,
 			"email" : email,
 			"phone" : phone,
@@ -176,7 +180,7 @@ function update() {
 	var user_account = $.trim($("#user_account_add").val());
 	var user_name = $.trim($("#user_name_add").val());
 	var branch = $.trim($("#branch_add").val());
-	// var password = $.trim($("#password_add").val());
+	var role_id = $.trim($("#role_add").val());
     var max_period = $.trim($("#max_period_add").val());
 	var email = $.trim($("#email_add").val());
 	var phone = $.trim($("#phone_add").val());
@@ -240,6 +244,9 @@ function update() {
 		$.messager.popup('电子邮件地址格式不正确 (样例格式:xxxx@xxx.com)');
 		return false;
 	}
+	if (state == '') {
+		state = 1;
+	}
 	$.ajax({
 		type : "POST",
 		url : "/user/update_user",
@@ -248,6 +255,7 @@ function update() {
 			"user_account" : user_account,
 			"user_name" : user_name,
 			"org_id" : branch,
+			"role_id" : role_id,
             "max_period": max_period,
 			"email" : email,
 			"phone" : phone,
@@ -289,9 +297,9 @@ function del() {
 					redirect_to("/");
 				},
 				success : function(data) {
-					if (data.success) {
+					if (data.resultFlag == 'success') {
 						$.messager.popup("用户删除成功！");
-						listUser(1)
+						listUser(1);
 					}
 				}
 			});

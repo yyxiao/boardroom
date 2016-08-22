@@ -24,7 +24,6 @@ from ..service.menu_service import get_user_menu
 def index(request):
     welcome = get_welcome()
     if 'loginUserSession' not in request.session:
-        print('not in')
         user_id = request.session['userId']
         dbs = request.dbsession
         sys_menu_list = get_user_menu(dbs, user_id)
