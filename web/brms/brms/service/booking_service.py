@@ -5,8 +5,94 @@ __author__ = cuizc
 __mtime__ = 2016-08-18
 """
 
+import transaction
+import logging
 from functools import reduce
-from ..models.model import HasBoardroom, HasMeeting, HasMeetBdr
+from ..models.model import HasBoardroom, HasMeeting, HasMeetBdr, HasRoomOccupy
+
+logger = logging.getLogger('operator')
+
+
+def check_occupy(dbs, room_id, date, start_time, end_time):
+    '''
+    检查给定时间范围内是否已经有被预约过
+    :param room_id:
+    :param date:
+    :param start_time:
+    :param end_time:
+    :return:
+    '''
+
+    occupy = dbs.query(HasRoomOccupy).filter(HasRoomOccupy.room_id == room_id,
+                                             HasRoomOccupy.date == date).first()
+    if occupy:
+        if occupy.code:
+            binary = get_binary(start_time, end_time)
+            result, flag = compare_bin(binary, occupy.code)
+            if not result:
+                return '开始时间冲突' if flag < 0 else ('结束时间冲突' if flag > 0 else '全部时间冲突')
+    return ''
+
+
+def add_booking(dbs, room_id, date, start_time, end_time):
+    '''
+    添加会议室占用情况
+    :param dbs:
+    :param room_id:
+    :param date:
+    :param start_time:
+    :param end_time:
+    :return:
+    '''
+
+    occupy = dbs.query(HasRoomOccupy).filter(HasRoomOccupy.room_id == room_id,
+                                             HasRoomOccupy.date == date).first()
+    if not occupy:
+        occupy = HasRoomOccupy()
+        occupy.room_id = room_id
+        occupy.date = date
+        occupy.code = get_binary(start_time, end_time)
+    else:
+        result, flag = compare_bin(get_binary(start_time, end_time), occupy.code)
+        if result == 0:
+            return '时间冲突，添加失败'
+        occupy.code = result
+
+    try:
+        # with transaction.manager:
+        dbs.add(occupy)
+            # dbs.flush()
+        return ''
+    except Exception as e:
+        logger.error(e)
+        return '添加占用失败'
+
+
+def delete_booking(dbs, room_id, date, start_time, end_time):
+    '''
+    删除占用
+    :param dbs:
+    :param room_id:
+    :param date:
+    :param start_time:
+    :param end_time:
+    :return:
+    '''
+    occupy = dbs.query(HasRoomOccupy).filter(HasRoomOccupy.room_id == room_id,
+                                             HasRoomOccupy.date == date).first()
+    if not occupy:
+        return ''
+    else:
+        occupy.code = delete_bin(get_binary(start_time, end_time), occupy.code)
+
+    try:
+        # with transaction.manager:
+        dbs.add(occupy)
+            # dbs.flush()
+        return ''
+    except Exception as e:
+        logger.error(e)
+        return '删除占用失败'
 
 
 def compare_bin(mt_bin, br_bin):
@@ -24,6 +110,9 @@ def compare_bin(mt_bin, br_bin):
         mt_bin = int(mt_bin)
     if isinstance(br_bin, str):
         br_bin = int(br_bin)
+
+    if br_bin == 0:
+        return mt_bin, 0
 
     flag = mt_bin & br_bin
     result = 0
@@ -48,7 +137,7 @@ def delete_bin(mt_bin, br_bin):
     '''
 
     result, flag = compare_bin(mt_bin, br_bin)
-    return (mt_bin ^ br_bin) if flag == 0 else br_bin
+    return (mt_bin ^ br_bin) if result == 0 and flag == 0 else br_bin
 
 
 def get_binary(start_time, end_time, start=7, hours=14):

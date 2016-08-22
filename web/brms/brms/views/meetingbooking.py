@@ -71,8 +71,8 @@ def list_by_br(request):
         org_id = int(request.POST.get('org_id', 0))
         br_id = int(request.POST.get('br_id', 0))
 
-        (meetings, paginator) = find_meetings(dbs, org_id=org_id, room_id=br_id)
-        # TODO 不需要分页
+        # TODO page_size 临时解决方法，最终不分页
+        (meetings, paginator) = find_meetings(dbs, page_size=100, org_id=org_id, room_id=br_id)
         json = {
             'resultFlag': 'success',
             'meetings': meetings

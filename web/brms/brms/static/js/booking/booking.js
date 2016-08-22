@@ -85,7 +85,7 @@ function init_calendar() {
 		select: function (start, end, allDay) {
 			var org_id = $.trim($("#org_id").val());
 			var br_id = $.trim($("#br_id").val());
-			if (br_id == ''){
+			if (br_id == '' || br_id == 0){
 				$.messager.popup('请先选择会议室！');
 				calendar.fullCalendar('unselect');
 				return false;
@@ -190,7 +190,7 @@ function init_calendar() {
 		eventClick: function (calEvent, jsEvent, view) {
 			var org_id = $.trim($("#org_id").val());
 			var br_id = $.trim($("#br_id").val());
-			if (br_id == ''){
+			if (br_id == '' || br_id == 0){
 				$.messager.popup('请先选择会议室！');
 				calendar.fullCalendar('unselect');
 				return false;
@@ -369,6 +369,10 @@ function load_br() {
 function load_meeting (){
 	var org_id = $.trim($("#org_id").val());
 	var br_id = $.trim($("#br_id").val());
+	if (br_id == ''){
+		$("#calendar").fullCalendar('removeEvents');
+		return false;
+	}
 	$.ajax({
 		type : "POST",
 		url : "/booking/list_by_br",

@@ -9,6 +9,7 @@ from datetime import datetime
 from ..models.model import *
 from ..common.paginator import Paginator
 from ..common.dateutils import date_now
+from ..service.booking_service import check_occupy, add_booking, delete_booking
 import transaction
 import logging
 
@@ -16,7 +17,7 @@ import logging
 logger = logging.getLogger('operator')
 
 
-def find_meetings(dbs, meeting_name=None, create_user=None, room_name=None, start_date=None, end_date=None, page_no=1, org_id=None, room_id=None):
+def find_meetings(dbs, meeting_name=None, create_user=None, room_name=None, start_date=None, end_date=None, page_no=1, page_size=10, org_id=None, room_id=None):
     """
     会议列表
     :param dbs:
@@ -26,6 +27,7 @@ def find_meetings(dbs, meeting_name=None, create_user=None, room_name=None, star
     :param start_date:
     :param end_date:
     :param page_no:
+    :param page_size:
     :param org_id:
     :param room_id:
     :return:
@@ -59,11 +61,11 @@ def find_meetings(dbs, meeting_name=None, create_user=None, room_name=None, star
         meetings = meetings.filter(HasBoardroom.name.like('%' + room_name + '%'))
     if room_id:
         meetings = meetings.filter(HasMeetBdr.boardroom_id == room_id)
-    if org_id:
+    if not room_id and org_id:
         meetings = meetings.filter(HasMeeting.org_id == org_id)
 
     user_list = meetings.order_by(HasMeeting.create_time.desc())
-    results, paginator = Paginator(user_list, page_no).to_dict()
+    results, paginator = Paginator(user_list, page_no, page_size).to_dict()
     lists = []
     for obj in results:
         id = obj[0] if obj[0] else ''
@@ -103,16 +105,20 @@ def add(dbs, meeting, room_id):
     error_msg = ''
     try:
         # 添加会议
+
         dbs.add(meeting)
         dbs.flush()
         logger.debug("会议添加完毕，meeting_id:" + str(meeting.id))
-        meeting_id = meeting.id  # 会议ID
         meet_bdr = HasMeetBdr()  # 会议室会议关联信息
-        meet_bdr.meeting_id = meeting_id
+        meet_bdr.meeting_id = meeting.id
         meet_bdr.boardroom_id = room_id
         meet_bdr.create_user = meeting.create_user
         meet_bdr.create_time = date_now()
         dbs.add(meet_bdr)
+        error_msg = add_booking(dbs, room_id, meeting.start_date, meeting.start_time, meeting.end_time)
+        if error_msg:
+            delete_meeting(dbs, meeting.id, meeting.create_user)
+            return error_msg
         logger.debug("会议会议室关联添加完毕")
     except Exception as e:
         logger.error(e)
@@ -140,6 +146,7 @@ def update(dbs, meeting, room_id):
             meet_bdr.create_user = meeting.create_user
             meet_bdr.create_time = date_now()
             dbs.add(meet_bdr)
+            # error_msg = add_booking(dbs, room_id, meeting.start_date, meeting.start_time, meeting.end_time)
         else:
             # 更新会议
             dbs.add(meeting)
@@ -165,11 +172,16 @@ def delete_meeting(dbs, meeting_id, user_id):
     try:
         with transaction.manager:
             meeting = dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id).filter(HasMeeting.create_user == user_id).first()
+            room = dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting_id).first()
             if not meeting:
                 error_msg = '该会议不是该用户创建，请查询后操作。'
             else:
-                dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id).delete()
-                dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting_id).delete()
+                error_msg = delete_booking(dbs, room.boardroom_id, meeting.start_date, meeting.start_time, meeting.end_time)
+                if error_msg:
+                    dbs.rollback()
+                    return error_msg
+                dbs.delete(meeting)
+                dbs.delete(room)
     except Exception as e:
         logger.error(e)
         error_msg = '删除会议失败，请核对后重试'
