@@ -10,6 +10,7 @@ from ..models.model import *
 from ..common.paginator import Paginator
 from ..common.dateutils import date_now
 from ..service.booking_service import check_occupy, add_booking, update_booking, delete_booking
+from ..service.org_service import find_org_ids
 import transaction
 import logging
 
@@ -17,12 +18,14 @@ import logging
 logger = logging.getLogger('operator')
 
 
-def find_meetings(dbs, meeting_name=None, create_user=None, room_name=None, start_date=None, end_date=None, page_no=1, page_size=10, org_id=None, room_id=None):
+def find_meetings(dbs, meeting_name=None, create_user=None, user_org_id=None, room_name=None, start_date=None, end_date=None,
+                  page_no=1, page_size=10, org_id=None, room_id=None):
     """
     会议列表
     :param dbs:
     :param meeting_name:
     :param create_user:
+    :param user_org_id:
     :param room_name:
     :param start_date:
     :param end_date:
@@ -32,6 +35,7 @@ def find_meetings(dbs, meeting_name=None, create_user=None, room_name=None, star
     :param room_id:
     :return:
     """
+    branches = find_org_ids(dbs, user_org_id)               # 获取当前用户所属机构及下属机构id
     meetings = dbs.query(HasMeeting.id,
                          HasMeeting.name,
                          HasMeeting.description,
@@ -47,12 +51,12 @@ def find_meetings(dbs, meeting_name=None, create_user=None, room_name=None, star
         .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id)\
         .outerjoin(HasBoardroom, HasBoardroom.id == HasMeetBdr.boardroom_id)\
         .outerjoin(HasPad, HasPad.id == HasBoardroom.pad_id)
-        # .filter(HasMeeting.start_date < n_days).filter(HasMeeting.start_date >= now_day)
-
     if meeting_name:
         meetings = meetings.filter(HasMeeting.name.like('%'+meeting_name+'%'))
     if create_user:
         meetings = meetings.filter(HasMeeting.create_user == create_user)
+    if user_org_id and branches:
+        meetings = meetings.filter(SysOrg.id.in_(branches))
     if start_date:
         meetings = meetings.filter(HasMeeting.start_date >= start_date)
     if end_date:

@@ -225,12 +225,22 @@ def delete(dbs, org_id):
         return '删除机构失败，请重试！'
 
 
-
-
-
-
-
-
-
-
-
+def find_org_ids(dbs, user_org_id):
+    """
+    获取当前用户所属机构及下属机构id
+    :param dbs:
+    :param user_org_id:
+    :return:
+    """
+    branches = []  # 获取当前用户所属机构及下属机构id
+    sql = 'WITH RECURSIVE r AS ( SELECT * FROM brms.sys_org '
+    if user_org_id:
+        sql += ' WHERE id = %s' % user_org_id
+    else:
+        sql += ' WHERE id = 1'
+    sql += ' union ALL SELECT sys_org.* FROM brms.sys_org, r WHERE sys_org.parent_id = r.id ) ' \
+           'SELECT id,org_name,parent_id FROM r ORDER BY id'
+    orgs = dbs.execute(sql)
+    for rec in orgs:
+        branches.append(rec[0])
+    return branches
