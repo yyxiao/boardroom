@@ -1,4 +1,13 @@
 {% block content %}
+<style type="text/css">
+.checkbox {
+ width: 19px;
+ height: 19px;
+ padding: 0 5px 0 0;
+ clear: left;
+ float: left;
+}
+</style>
 <section style="padding-top:5px;">
   <ol class="breadcrumb">
     <li><i class="fa fa-dashboard marginR6"></i><a href="javascript:loadcontent('/my_meeting');">主页</a></li>
@@ -16,8 +25,6 @@
                     <input type="text" class="form-control"	id="user_account" name="user_account" placeholder="">
                 </div>
             </div>
-        </div>
-        <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
             <div class="form-group">
                 <label class="col-sm-4 control-label form-label paddingR0 paddingL0">用户名称</label>
                 <div class="col-sm-8 paddingR0">
@@ -38,8 +45,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
             <div class="form-group">
                 <label class="col-sm-4 control-label form-label paddingR0 paddingL0">角色</label>
                 <div class="col-sm-8 paddingR0">
@@ -47,9 +52,17 @@
                 </div>
             </div>
         </div>
-        <button type="button" style="margin-left: 40px;" class="btn btn-success" onclick="listUser(1)">
-            <i class="fa fa-search marginR6" ></i>查询
-        </button>
+        <div class="col-md-4 paddingLR0" style='padding-left:20px;'>
+            <div class="form-group">
+                <div class="col-sm-1 paddingR0">
+                    <input type="checkbox" class="checkbox" id="show_child" name="show_child" checked="checked">
+                </div>
+                <label class="col-sm-4 control-label form-label paddingR0 paddingL0">显示子机构用户</label>
+            </div>
+            <button type="button" style="margin-left: 40px;" class="btn btn-success" onclick="listUser(1)">
+                <i class="fa fa-search marginR6" ></i>查询
+            </button>
+        </div>
     </div>
     </div>
     </div>
@@ -69,6 +82,7 @@
 
 <div id="modalWrapper"></div>
 </section>
+
 <script src="{{ request.static_url('brms:static/js/user/user.js') }}"></script>
 <script src="{{ request.static_url('brms:static/js/org/org_tree.js') }}"></script>
 <script type="text/javascript">
