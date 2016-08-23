@@ -27,7 +27,7 @@
                            data-lightbox="image">
                             <img class="image"
                                  src="{{ request.static_url('brms:static/img/boardroom/' + (('org/'+boardroom.picture) if boardroom.picture else 'default.jpg')) }}"
-                                 height="70" width="90" alt=""/>
+                                 height="70" width="90" alt="" title="点击图片查看大图"/>
                         </a>
                     </td>
                     <td>{{ boardroom.config }}</td>
