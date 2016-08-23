@@ -42,11 +42,14 @@ def list_user(request):
         dbs = request.dbsession
         user_account = request.POST.get('user_account', '')
         user_name = request.POST.get('user_name', '')
-        org_id = request.POST.get('org_id', '')
         role_name = request.POST.get('role_name', '')
+        show_child = request.POST.get('show_child', 'false') == 'true'
+        org_id = request.POST.get('org_id', '')
+        if not org_id:
+            org_id = request.session['userOrgId']
         page = int(request.POST.get('page', 1))
 
-        (users, paginator) = find_users(dbs, user_account, user_name, org_id, role_name, page)
+        (users, paginator) = find_users(dbs, org_id, user_account, user_name, role_name, page, show_child=show_child)
 
         return render_to_response('user/list.html', locals(), request)
 

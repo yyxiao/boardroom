@@ -10,20 +10,22 @@ import logging
 from ..models.model import *
 from ..common.paginator import Paginator
 from ..common.dateutils import datetime_format
+from .org_service import find_branch_json
 
 logger = logging.getLogger('operator')
 
 
-def find_users(dbs, user_account=None, user_name=None, org_id=None, role_name=None, page_no=1, user_id=None):
+def find_users(dbs, org_id=None, user_account=None, user_name=None, role_name=None, page_no=1, user_id=None, show_child=False):
     '''
     查找符合条件的用户， 返回用户列表和分页对象
     :param dbs:
+    :param org_id:
     :param user_account:
     :param user_name:
-    :param org_id:
     :param role_name:
     :param page_no:
     :param user_id:
+    :param show_child:
     :return:
     '''
 
@@ -31,7 +33,7 @@ def find_users(dbs, user_account=None, user_name=None, org_id=None, role_name=No
                       SysUser.user_account,
                       SysUser.user_name,
                       SysOrg.org_name,
-                      SysRole.role_name,            # TODO 多角色情况
+                      SysRole.role_name,
                       SysUser.max_period,
                       SysUser.user_type,
                       SysUser.email,
@@ -45,12 +47,19 @@ def find_users(dbs, user_account=None, user_name=None, org_id=None, role_name=No
         .outerjoin(SysUserRole, SysUser.id == SysUserRole.user_id)\
         .outerjoin(SysRole, SysUserRole.role_id == SysRole.role_id)
 
+    if org_id:
+        if show_child:
+            tmp = find_branch_json(dbs, org_id)
+            child_org = list(map((lambda x: x['id']), tmp))
+            users = users.filter(SysUser.org_id.in_(child_org))
+        else:
+            users = users.filter(SysUser.org_id == org_id)
+
     if user_account:
         users = users.filter(SysUser.user_account.like('%' + user_account + '%'))
     if user_name:
         users = users.filter(SysUser.user_name.like('%' + user_name + '%'))
-    if org_id:
-        users = users.filter(SysUser.org_id == org_id)
+
     if role_name:
         users = users.filter(SysRole.role_name.like('%' + role_name + '%'))
     if user_id:
