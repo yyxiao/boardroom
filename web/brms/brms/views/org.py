@@ -22,8 +22,9 @@ def to_org(request):
     :return:
     '''
     dbs = request.dbsession
-    branches = find_branch(dbs)
-    branch_json = json.dumps(find_branch_json(dbs))
+    user_org_id = request.session['userOrgId']
+    branches = find_branch(dbs, user_org_id)
+    branch_json = json.dumps(find_branch_json(dbs, user_org_id))
     return render_to_response('org/org.html', locals(), request)
 
 
@@ -53,9 +54,9 @@ def to_add_org(request):
     :param request:
     :return:
     '''
-
     dbs = request.dbsession
-    branches = find_branch(dbs)
+    user_org_id = request.session['userOrgId']
+    branches = find_branch(dbs, user_org_id)
     return render_to_response('org/add.html', locals(), request)
 
 
@@ -99,7 +100,8 @@ def to_update_org(request):
     :return:
     '''
     dbs = request.dbsession
-    branches = find_branch(dbs)
+    user_org_id = request.session['userOrgId']
+    branches = find_branch(dbs, user_org_id)
     org_id = request.POST.get('org_id', 0)
     org = find_org(dbs, org_id)
     return render_to_response('org/add.html', locals(), request)
@@ -138,7 +140,7 @@ def update_org(request):
     return {}
 
 
-@view_config(route_name='delete_org')
+@view_config(route_name='delete_org', renderer='json')
 @request_login
 def delete_org(request):
     '''

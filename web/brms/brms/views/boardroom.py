@@ -73,7 +73,8 @@ def to_add_br(request):
     '''
 
     dbs = request.dbsession
-    branches = find_branch(dbs)
+    user_org_id = request.session['userOrgId']
+    branches = find_branch(dbs, user_org_id)
     return render_to_response('boardroom/add.html', locals(), request)
 
 
@@ -181,7 +182,8 @@ def to_update_br(request):
     '''
 
     dbs = request.dbsession
-    branches = find_branch(dbs)
+    user_org_id = request.session['userOrgId']
+    branches = find_branch(dbs, user_org_id)
     br_id = request.POST.get('br_id')
     boardroom = find_boardroom(dbs, br_id)
     return render_to_response('boardroom/add.html', locals(), request)

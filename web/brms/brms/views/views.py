@@ -69,6 +69,7 @@ def login(request):
                     if UserTools.unlock(user):
                         request.session['userAccount'] = user_name
                         request.session['userId'] = user.id
+                        request.session['userOrgId'] = user.org_id
                         request.session['user_name_db'] = user.user_name
                         return HTTPFound(request.route_url("home"))
                     else:
@@ -80,6 +81,7 @@ def login(request):
                 else:
                     request.session['userAccount'] = user_name
                     request.session['userId'] = user.id
+                    request.session['userOrgId'] = user.org_id
                     request.session['user_name_db'] = user.user_name
                     return HTTPFound(request.route_url("home"))
 
@@ -95,6 +97,7 @@ def login(request):
 def logout(request):
     del(request.session['userAccount'])
     del(request.session['userId'])
+    del (request.session['userOrgId'])
     del(request.session['user_name_db'])
     del(request.session['loginUserSession'])
     return render_to_response('login.html', {}, request)
