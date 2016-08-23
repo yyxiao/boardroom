@@ -6,13 +6,15 @@ __mtime__ = 2016/8/11
 """
 import base64
 from pyramid.view import view_config
+from io import StringIO
 
 from ..common.jsonutils import serialize
 from ..service.loginutil import UserTools
 from ..service.pad_service import *
-from ..service.meeting_service import delete_meeting
+from ..service.meeting_service import delete_meeting, find_meeting
 from ..service.user_service import user_checking
 import transaction
+import qrcode
 
 
 @view_config(route_name='padLogin', renderer='json')
@@ -212,6 +214,7 @@ def pad_update_meeting(request):
     user_id = request.POST.get('user_id', '')
     meeting_id = request.POST.get('meeting_id', '')
     pad_code = request.POST.get('pad_code', '')
+    update_last_time(dbs, pad_code, 'updateMeeting')
     if not user_id:
         error_msg = '用户ID不能为空！'
     elif not pad_code:
@@ -219,7 +222,7 @@ def pad_update_meeting(request):
     elif not meeting_id:
         error_msg = '会议ID不能为空！'
     else:
-        meeting = dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id).first()
+        meeting = find_meeting(dbs, meeting_id)
         if not meeting:
             error_msg = '未查找到该会议记录，请查看会议ID、用户ID是否正确！'
         else:
@@ -240,8 +243,7 @@ def pad_update_meeting(request):
                 meeting.start_time = request.POST.get('start_time', '')
                 meeting.end_time = request.POST.get('end_time', '')
                 meeting.create_time = date_now()
-                error_msg, meeting_id = update_by_pad(dbs, meeting, pad_code, old_meeting=old_meeting)
-    update_last_time(dbs, pad_code, 'updateMeeting')
+                error_msg = update_by_pad(dbs, meeting, pad_code, old_meeting=old_meeting)
     if error_msg:
         json = {
             'success': 'false',
@@ -319,3 +321,12 @@ def pad_set_room(request):
             'room': room
         }
     return json
+
+
+@view_config(route_name='test_qccode')
+def test_qccode(request):
+    """
+    :return:
+    """
+    img = qrcode.make("http://www.baidu.com")
+    img.save('baidu.png')

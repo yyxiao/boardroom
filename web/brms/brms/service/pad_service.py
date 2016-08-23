@@ -11,6 +11,7 @@ from ..common.dateutils import date_now, date_pattern1
 from ..service.booking_service import add_booking, update_booking
 from ..service.meeting_service import delete_meeting
 import logging
+import transaction
 
 logger = logging.getLogger('operator')
 
@@ -169,49 +170,54 @@ def update_by_pad(dbs, meeting, pad_code, old_meeting=None):
     PAD更新会议
     :param dbs:
     :param meeting:
-    :param pad_code
+    :param pad_code:
+    :param old_meeting:
     :return:
     """
-    error_msg = ''
-    try:
-        # 查询padcode对应的boardroom_id
-        board = dbs.query(HasBoardroom.id)\
-            .outerjoin(HasPad, HasBoardroom.pad_id == HasPad.id)\
-            .filter(HasPad.pad_code == pad_code).first()
-        if not board:                                       # 不存在
-            error_msg = '该pad未分配会议室，请联系管理员！'
-        else:
-            # 查询meeting_id对应的boardroom_id
-            meet_bdr = dbs.query(HasMeetBdr) \
-                .filter(HasMeetBdr.meeting_id == meeting.id).first()
-            if not meet_bdr:  # 不存在
-                room_id = board.id
-                start_date = meeting.start_date
-                meet_bdr = HasMeetBdr()  # 会议室会议关联信息
-                meet_bdr.meeting_id = meeting.id
-                meet_bdr.boardroom_id = board.id
-                meet_bdr.create_user = meeting.create_user
-                create_time = date_now()
-                meet_bdr.create_time = create_time
-                dbs.add(meet_bdr)
-                error_msg = add_booking(dbs, room_id, start_date, meeting.start_time, meeting.end_time)
-                if error_msg:
-                    dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting.id,
-                                                 HasMeetBdr.boardroom_id == board.id,
-                                                 HasMeetBdr.create_time == create_time).delete()
+    with transaction.manager:
+        try:
+            # 查询padcode对应的boardroom_id
+            board = dbs.query(HasBoardroom.id)\
+                .outerjoin(HasPad, HasBoardroom.pad_id == HasPad.id)\
+                .filter(HasPad.pad_code == pad_code).first()
+            if not board:                                       # 不存在
+                error_msg = '该pad未分配会议室，请联系管理员！'
             else:
-                # 更新会议
-                dbs.add(meeting)
-                dbs.flush()
-                old_room_id = board.id
-                error_msg = update_booking(dbs, old_room_id, old_room_id, old_meeting, meeting)
-                if error_msg:
-                    dbs.rollback()
-                logger.debug("会议更新完毕，meeting_id:" + str(meeting.id))
-    except Exception as e:
-        logger.error(e)
-        error_msg = '更新会议失败，请核对后重试'
-    return error_msg, meeting.id
+                # 查询meeting_id对应的boardroom_id
+                meet_bdr = dbs.query(HasMeetBdr) \
+                    .filter(HasMeetBdr.meeting_id == meeting.id).first()
+                if not meet_bdr:  # 不存在
+                    room_id = board.id
+                    start_date = meeting.start_date
+                    meet_bdr = HasMeetBdr()  # 会议室会议关联信息
+                    meet_bdr.meeting_id = meeting.id
+                    meet_bdr.boardroom_id = board.id
+                    meet_bdr.create_user = meeting.create_user
+                    create_time = date_now()
+                    meet_bdr.create_time = create_time
+                    dbs.add(meet_bdr)
+                    error_msg = add_booking(dbs, room_id, start_date, meeting.start_time, meeting.end_time)
+                    if error_msg:
+                        dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting.id,
+                                                     HasMeetBdr.boardroom_id == board.id,
+                                                     HasMeetBdr.create_time == create_time).delete()
+                else:
+                    # 更新会议
+                    # TODO transation 问题
+                    # dbs.add(meeting)
+                    # dbs.flush()
+                    old_room_id = board.id
+                    # meet_bdr.boardroom_id = old_room_id
+                    # dbs.add(meet_bdr)
+                    error_msg = update_booking(dbs, old_room_id, old_room_id, old_meeting, meeting)
+                    if error_msg:
+                        dbs.rollback()
+                    else:
+                        dbs.add(meeting)
+        except Exception as e:
+            logger.error(e)
+            error_msg = '更新会议失败，请核对后重试'
+    return error_msg
 
 
 def pad_find_meeting(dbs, meeting_id):

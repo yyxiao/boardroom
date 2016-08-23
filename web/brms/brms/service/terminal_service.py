@@ -99,7 +99,7 @@ def find_rooms(dbs, user_id):
     room_list = []
     rooms = dbs.query(HasBoardroom.id, HasBoardroom.name, HasBoardroom.org_id) \
         .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id) \
-        .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id) | (SysUserOrg.org_id == SysOrg.parent_id)) \
+        .outerjoin(SysUserOrg, SysUserOrg.org_id == SysOrg.id) \
         .filter(SysUserOrg.user_id == user_id).all()
     for room in rooms:
         # 将会议室拼入公司机构list
