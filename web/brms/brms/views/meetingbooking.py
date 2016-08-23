@@ -12,6 +12,7 @@ from ..service.loginutil import request_login
 from ..service.org_service import find_branch_json
 from ..service.boardroom_service import *
 from ..service.meeting_service import *
+from ..service.booking_service import *
 
 
 @view_config(route_name='meeting_booking')
@@ -27,7 +28,7 @@ def meeting_booking(request):
     return render_to_response('booking/booking.html', locals(), request)
 
 
-@view_config(route_name='check_available')
+@view_config(route_name='check_available', renderer='json')
 @request_login
 def check_available(request):
     '''
@@ -35,6 +36,21 @@ def check_available(request):
     :param request:
     :return:
     '''
+
+    if request.method == 'POST':
+        dbs = request.dbsession
+        room_id = int(request.POST.get('room_id', 0))
+        date = request.POST.get('date', '')
+        start_time = request.POST.get('start_time', '')
+        end_time = request.POST.get('end_time', '')
+
+        msg = check_occupy(dbs, room_id, date, start_time, end_time)
+        json = {
+            'resultFlag': 'failed' if msg else 'success',
+            'error_msg': msg
+        }
+        return json
+    return {}
 
 
 @view_config(route_name='list_by_org', renderer='json')
@@ -53,7 +69,6 @@ def list_by_org(request):
             'resultFlag': 'success',
             'brs': boardrooms
         }
-        print(json)
         return json
     return {}
 
@@ -78,7 +93,6 @@ def list_by_br(request):
             'resultFlag': 'success',
             'meetings': meetings
         }
-        print(json)
         return json
     return {}
 

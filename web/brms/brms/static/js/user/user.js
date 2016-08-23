@@ -143,7 +143,7 @@ function add() {
 		success : function(data) {
 			if (data.resultFlag == "success") {
 				$("#addModal").modal('hide');
-				$.messager.popup('新增用户成功！密码已发送到该用户邮箱！');
+				$.messager.popup('新增用户成功！');
 				listUser(1)
 			} else {
 				$.messager.popup(data.error_msg);

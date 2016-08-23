@@ -14,6 +14,7 @@ _numbers = ''.join(map(str, range(3, 10)))  # 数字
 _special_character = "!@#$%^&*"
 init_chars = ''.join((_letter_cases, _upper_cases, _numbers))   # 拼接字符串
 length = 8
+DEFAULT_PASSWORD = '000000'
 
 
 def init_password():
@@ -23,6 +24,6 @@ def init_password():
 
 def get_password(passwd):
     """加密处理"""
-    '''password_md5 = crypt.crypt("hycfdp1234s",passwd)'''
+    '''password_md5 = crypt.crypt("hycfdps1234",passwd)'''
     password_md5 = base64.encodestring(passwd.encode()).decode('utf-8').replace('\n', '')
     return password_md5

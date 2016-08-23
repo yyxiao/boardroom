@@ -180,6 +180,11 @@ function init_calendar() {
 									}
 								});
 							}
+						},
+						cancel: {
+							label: '取消',
+							className: 'btn-sm',
+							callback: ''
 						}
 					}
 				}
@@ -293,7 +298,7 @@ function init_calendar() {
 							}
 						},
 						delete: {
-							lable: '删除',
+							label: '删除',
 							className: 'btn-danger',
 							callback: function () {
 								$.ajax({
@@ -318,7 +323,7 @@ function init_calendar() {
 						},
 						cancel: {
 							label: '取消',
-							className: 'btn-sm',
+							className: 'btn-info',
 							callback: ''
 						}
 					}
