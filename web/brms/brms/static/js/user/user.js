@@ -67,7 +67,7 @@ function add() {
 	var email = $.trim($("#email_add").val());
 	var phone = $.trim($("#phone_add").val());
 	var position = $.trim($("#position_add").val());
-	var state = $.trim($("#state_add").val());
+	// var state = $.trim($("#state_add").val());
 	if (user_account == '') {
 		$('#user_account_add').focus();
 		$('#user_cue').html("<font color='red'>用户帐号不能为空</font>");
@@ -122,9 +122,9 @@ function add() {
 		$.messager.popup('电子邮件地址格式不正确 (样例格式:xxxx@xxx.com)');
 		return false;
 	}
-	if (state == '') {
-		state = 1;
-	}
+	// if (state == '') {
+	// 	state = 1;
+	// }
 	$.ajax({
 		type : "POST",
 		url : "/user/add_user",
@@ -136,8 +136,8 @@ function add() {
             "max_period": max_period,
 			"email" : email,
 			"phone" : phone,
-			"position" : position,
-			"state" : state
+			"position" : position
+			// "state" : state
 		},
 		error : function() {
 			redirect_to("/");
@@ -187,7 +187,7 @@ function update() {
 	var email = $.trim($("#email_add").val());
 	var phone = $.trim($("#phone_add").val());
 	var position = $.trim($("#position_add").val());
-	var state = $.trim($("#state_add").val());
+	// var state = $.trim($("#state_add").val());
     if (user_id == '') {
         $('#user_cue').html("<font color='red'>更新失败,请刷新页面重试</font>");
         return false;
@@ -246,9 +246,9 @@ function update() {
 		$.messager.popup('电子邮件地址格式不正确 (样例格式:xxxx@xxx.com)');
 		return false;
 	}
-	if (state == '') {
-		state = 1;
-	}
+	// if (state == '') {
+	// 	state = 1;
+	// }
 	$.ajax({
 		type : "POST",
 		url : "/user/update_user",
@@ -261,8 +261,8 @@ function update() {
             "max_period": max_period,
 			"email" : email,
 			"phone" : phone,
-			"position" : position,
-			"state" : state
+			"position" : position
+			// "state" : state
 		},
 		error : function() {
 			redirect_to("/");

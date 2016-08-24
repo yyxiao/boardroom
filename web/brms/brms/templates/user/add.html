@@ -119,18 +119,18 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="input state_add" class="col-sm-2 control-label">状态</label>
-                    <div class="col-sm-9">
-                        {% if user %}
-                            <input name="state_add" type="text" class="form-control" value="{{ user.state }}"
-                               id="state_add">
-                        {% else %}
-                            <input name="state_add" type="text" class="form-control" placeholder="1"
-                               id="state_add">
-                        {% endif %}
-                    </div>
-                </div>
+{#                <div class="form-group">#}
+{#                    <label for="input state_add" class="col-sm-2 control-label">状态</label>#}
+{#                    <div class="col-sm-9">#}
+{#                        {% if user %}#}
+{#                            <input name="state_add" type="text" class="form-control" value="{{ user.state }}"#}
+{#                               id="state_add">#}
+{#                        {% else %}#}
+{#                            <input name="state_add" type="text" class="form-control" placeholder="1"#}
+{#                               id="state_add">#}
+{#                        {% endif %}#}
+{#                    </div>#}
+{#                </div>#}
                 <div class="modal-footer">
                     <div class="col-sm-offset-2 col-sm-10">
                         <button type="button" class="btn btn-default"
