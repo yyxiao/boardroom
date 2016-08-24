@@ -133,7 +133,7 @@ def add(dbs, meeting, room_id):
 
 def update(dbs, meeting, room_id, old_meeting=None):
     """
-    PAD更新会议
+    更新会议
     :param dbs:
     :param meeting:
     :param room_id:
@@ -225,7 +225,8 @@ def find_meeting_bdr(dbs, meeting_id):
             'start_date': meeting.HasMeeting.start_date,
             'end_date': meeting.HasMeeting.end_date,
             'start_time': meeting.HasMeeting.start_time,
-            'end_time': meeting.HasMeeting.end_time
+            'end_time': meeting.HasMeeting.end_time,
+            'boardroom_id': meeting.boardroom_id
         }
     return meet_bdr
 
