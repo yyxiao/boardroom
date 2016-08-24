@@ -1,30 +1,36 @@
 -- 用户初始化
-INSERT INTO "brms"."sys_user" ("id", "user_account", "user_pwd", "user_no", "user_name", "max_period", "email", "phone", "address", "user_type", "err_count", "unlock_time", "sex", "nation", "birthday", "position", "create_time", "create_user", "update_time", "org_id", "state") VALUES ('1', 'sysadmin', 'MDAwMDAw', '0', '系统管理员', '30', 'sysadmin@chyjr.com', '', '', '0', '0', '2016-08-08 15:32:12.142523', NULL, NULL, NULL, '系统管理员', NULL, NULL, NULL, '1', '1');
-INSERT INTO "brms"."sys_user" ("id", "user_account", "user_pwd", "user_no", "user_name", "max_period", "email", "phone", "address", "user_type", "err_count", "unlock_time", "sex", "nation", "birthday", "position", "create_time", "create_user", "update_time", "org_id", "state") VALUES ('2', 'cuizc', 'MDAwMDAw', NULL, '崔志超', '7', 'cuizc@chyjr.com', '18801929112', '', '0', '0', '2016-08-09 20:10:16.393332', NULL, NULL, NULL, 'python', '2016-08-09 20:15:01', '3', NULL, '1', '1');
-INSERT INTO "brms"."sys_user" ("id", "user_account", "user_pwd", "user_no", "user_name", "max_period", "email", "phone", "address", "user_type", "err_count", "unlock_time", "sex", "nation", "birthday", "position", "create_time", "create_user", "update_time", "org_id", "state") VALUES ('3', 'test', 'MDAwMDAw', NULL, 'test', '7', 'test@qq.com', '', '', '0', '0', '2016-08-12 10:56:13.320646', NULL, NULL, NULL, '', '2016-08-12 11:15:01', '3', NULL, '1', '1');
+INSERT INTO "brms"."sys_user" ("id", "user_account", "user_pwd", "user_no", "user_name", "max_period", "email", "phone", "address", "user_type", "err_count", "unlock_time", "sex", "nation", "birthday", "position", "create_time", "create_user", "update_time", "org_id", "state") VALUES (1, 'sysadmin', 'MDAwMDAw', '', '系统管理员', 30, 'sysadmin@chyjr.com', '', '', 0, 0, now(), NULL, NULL, NULL, '系统管理员', NULL, NULL, NULL, 1, 1);
+SELECT SETVAL('brms.sys_user_id_seq', 2, false);
 
--- 会议初始化
-INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('1', '会议1', '会议1滚动', NULL, NULL, NULL, '2016-08-10', '2016-08-10', '12:30', '15:30', '2016-08-10 14:33:20', '3', NULL);
-INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('2', '会议2', '会议2滚动', NULL, NULL, NULL, '2016-08-10', '2016-08-10', '11:30', '12:00', '2016-08-10 14:33:20', '3', NULL);
-INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('3', '会议3', '会议3滚动', NULL, NULL, NULL, '2016-08-10', '2016-08-10', '09:30', '10:00', '2016-08-10 14:33:20', '3', NULL);
-INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('4', '会议4', '会议4滚动', NULL, '', '', '2016-08-11', '2016-08-11', '09:30', '10:00', '2016-08-10 14:33:20', '3', '');
-INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('5', '会议5', '会议5滚动', NULL, '', '', '2016-08-11', '2016-08-11', '11:30', '12:00', '2016-08-10 14:33:20', '3', '');
-INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('7', '会议7', '会议7滚动', NULL, '', '', '2016-08-11', '2016-08-11', '16:30', '17:30', '2016-08-10 14:33:20', '3', '');
-INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('6', '会议6', '会议6滚动', NULL, '', '', '2016-08-11', '2016-08-11', '12:30', '15:30', '2016-08-10 14:33:20', '3', '');
-INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('8', '会议8', '会议8滚动', NULL, '', '', '2016-08-12', '2016-08-12', '12:30', '15:30', '2016-08-10 14:33:20', '3', '');
-INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('9', '会议9', '会议9滚动', NULL, '', '', '2016-08-12', '2016-08-12', '09:30', '10:00', '2016-08-10 14:33:20', '3', '');
-INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('10', '会议10', '会议10滚动', NULL, '', '', '2016-08-12', '2016-08-12', '11:30', '12:00', '2016-08-10 14:33:20', '3', '');
-INSERT INTO "brms"."has_meeting" ("id", "name", "description", "org_id", "repeat", "repeat_date", "start_date", "end_date", "start_time", "end_time", "create_time", "create_user", "state") VALUES ('11', '会议11', '会议11滚动', NULL, '', '', '2016-08-12', '2016-08-12', '16:30', '17:30', '2016-08-10 14:33:20', '3', '');
+-- 机构初始化
+INSERT INTO "brms"."sys_org" ("id", "org_name", "org_type", "parent_id", "org_manager", "phone", "address", "org_seq", "state", "create_time", "create_user", "update_time") VALUES (1, '海银金控', NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+SELECT SETVAL('brms.sys_org_id_seq', 2, false);
 
--- 会议室初始化
-INSERT INTO "brms"."has_boardroom" ("id", "name", "description", "config", "picture", "pad_id", "org_id", "type", "create_time", "create_user", "state") VALUES ('1', '会议室1', '会议室1', NULL, NULL, '1', '1', NULL, NULL, '3', '1');
-INSERT INTO "brms"."has_boardroom" ("id", "name", "description", "config", "picture", "pad_id", "org_id", "type", "create_time", "create_user", "state") VALUES ('2', '会议室2', '会议室2', NULL, NULL, '2', '1', NULL, NULL, '3', '1');
+-- 用户机构初始化
+INSERT INTO "brms"."sys_user_org" ("user_id", "org_id", "create_time", "create_user") VALUES (1, 1, NULL, NULL);
+
+-- 角色初始化
+INSERT INTO "brms"."sys_role" ("role_id", "role_name", "role_desc", "create_time", "create_user") VALUES (1, '系统管理员', '系统管理员', NULL, NULL);
+SELECT SETVAL('brms.sys_role_id_seq', 2, false);
+
+-- 用户角色初始化
+INSERT INTO "brms"."sys_user_role" ("role_id", "user_id", "create_time", "create_user") VALUES (1, 1, NULL, NULL);
+
+-- 角色菜单初始化
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 1, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 2, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 3, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 4, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 5, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 6, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 7, NULL, NULL);
 
 -- 菜单初始化
-INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('1', '用户管理', NULL, NULL, '/user/to_user', 'fa fa-user', NULL, NULL, NULL);
-INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('2', '机构管理', NULL, NULL, '/org/to_org', 'fa fa-sitemap', NULL, NULL, NULL);
-INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('3', '角色管理', NULL, NULL, '/role/to_role', 'fa fa-ship', NULL, NULL, NULL);
-INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('4', '授权管理', NULL, NULL, '/auth/to_auth', 'fa fa-unlock-alt', NULL, NULL, NULL);
-INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('5', '会议室管理', NULL, NULL, '/boardroom/to_boardroom', 'fa fa-gg', NULL, NULL, NULL);
-INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('6', '终端管理', NULL, NULL, '/terminal/to_terminal', 'fa fa-apple', NULL, NULL, NULL);
-INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES ('7', '会议管理', NULL, NULL, '/meeting/to_meeting', 'fa fa-tree', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES (1, '用户管理', NULL, NULL, '/user/to_user', 'fa fa-user', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES (2, '机构管理', NULL, NULL, '/org/to_org', 'fa fa-sitemap', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES (3, '角色管理', NULL, NULL, '/role/to_role', 'fa fa-group', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES (4, '授权管理', NULL, NULL, '/auth/to_auth', 'fa fa-unlock-alt', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES (5, '会议室管理', NULL, NULL, '/boardroom/to_boardroom', 'fa fa-home', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES (6, '终端管理', NULL, NULL, '/terminal/to_terminal', 'fa fa-apple', NULL, NULL, NULL);
+INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES (7, '会议管理', NULL, NULL, '/meeting/to_meeting', 'fa fa-leaf', NULL, NULL, NULL);
+SELECT SETVAL('brms.sys_menu_id_seq', 8, false);
