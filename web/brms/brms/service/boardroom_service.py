@@ -11,12 +11,13 @@ import shutil
 from datetime import datetime
 from ..models.model import SysOrg, HasBoardroom
 from ..common.paginator import Paginator
+from ..service.org_service import find_branch_json
 
 
 logger = logging.getLogger('operator')
 
 
-def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_no=1):
+def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_no=1, show_child=False):
     '''
     查询符合条件的办公室，返回列表和分页对象
     :param dbs:
@@ -25,6 +26,7 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
     :param config:
     :param org_id:
     :param page_no:
+    :param show_child:
     :return:
     '''
     boardrooms = dbs.query(HasBoardroom.id,
@@ -43,7 +45,12 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
     if config:
         boardrooms = boardrooms.filter(HasBoardroom.config.like('%' + config + '%'))
     if org_id:
-        boardrooms = boardrooms.filter(HasBoardroom.org_id == org_id)
+        if show_child:
+            tmp = find_branch_json(dbs, org_id)
+            child_org = list(map((lambda x: x['id']), tmp))
+            boardrooms = boardrooms.filter(HasBoardroom.org_id.in_(child_org))
+        else:
+            boardrooms = boardrooms.filter(HasBoardroom.org_id == org_id)
     if br_id:
         boardrooms = boardrooms.filter(HasBoardroom.id == br_id)
 
