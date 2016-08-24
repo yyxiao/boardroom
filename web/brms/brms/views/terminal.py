@@ -34,7 +34,8 @@ def list_terminal(request):
     pad_code = request.POST.get('search_code', '')
     meeting_name = request.POST.get('search_meeting_name', '')
     page_no = int(request.POST.get('page', '1'))
-    (terminals, paginator) = find_terminals(dbs, pad_code, meeting_name, page_no)
+    user_org_id = request.session['userOrgId']
+    (terminals, paginator) = find_terminals(dbs, pad_code, meeting_name, page_no, user_org_id)
     return render_to_response('terminal/list.html', locals(), request)
 
 

@@ -46,7 +46,7 @@ def list_meeting(request):
         create_user = request.POST.get('create_user', '')
         user_org_id = request.session['userOrgId']
     page_no = int(request.POST.get('page', '1'))
-    (meetings, paginator) = find_meetings(dbs, meeting_name, create_user, user_org_id, room_name, start_date, end_date, page_no)
+    (meetings, paginator) = find_meetings(dbs, meeting_name, create_user, flag, user_org_id, room_name, start_date, end_date, page_no)
     return render_to_response('meeting/list.html', locals(), request)
 
 

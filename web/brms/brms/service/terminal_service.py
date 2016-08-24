@@ -7,29 +7,35 @@ __mtime__ = 2016/8/12
 
 from ..models.model import *
 from ..common.paginator import Paginator
+from ..service.org_service import find_org_ids
 import transaction
 import logging
 
 logger = logging.getLogger('operator')
 
 
-def find_terminals(dbs, pad_code, meeting_name, page_no):
+def find_terminals(dbs, pad_code, meeting_name, page_no, user_org_id=None):
     """
     终端列表
     :param dbs:
     :param pad_code:
     :param meeting_name:
     :param page_no:
+    :param user_org_id:
     :return:
     """
+    branches = find_org_ids(dbs, user_org_id)  # 获取当前用户所属机构及下属机构id
     terminals = dbs.query(HasPad.id, HasPad.pad_code, HasPad.last_time, SysUser.user_name,
                           HasPad.create_time, HasBoardroom.name)\
-        .outerjoin(SysUser, SysUser.id == HasPad.create_user)\
+        .outerjoin(SysUser, SysUser.id == HasPad.create_user) \
+        .outerjoin(SysOrg, SysUser.org_id == SysOrg.id) \
         .outerjoin(HasBoardroom, HasBoardroom.pad_id == HasPad.id)
     if pad_code:
         terminals = terminals.filter(HasPad.pad_code.like('%'+pad_code+'%'))
     if meeting_name:
         terminals = terminals.filter(HasBoardroom.name.like('%' + meeting_name + '%'))
+    if user_org_id and branches:
+        terminals = terminals.filter(SysOrg.id.in_(branches))
     pad_list = terminals.order_by(HasPad.create_time.desc())
     results, paginator = Paginator(pad_list, page_no).to_dict()
     lists = []

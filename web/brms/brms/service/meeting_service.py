@@ -18,13 +18,15 @@ import logging
 logger = logging.getLogger('operator')
 
 
-def find_meetings(dbs, meeting_name=None, create_user=None, user_org_id=None, room_name=None, start_date=None, end_date=None,
+def find_meetings(dbs, meeting_name=None, create_user=None, flag=None, user_org_id=None,
+                  room_name=None, start_date=None, end_date=None,
                   page_no=1, page_size=10, org_id=None, room_id=None):
     """
     会议列表
     :param dbs:
     :param meeting_name:
     :param create_user:
+    :param flag:
     :param user_org_id:
     :param room_name:
     :param start_date:
