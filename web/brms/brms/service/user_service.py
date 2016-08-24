@@ -9,7 +9,7 @@ import transaction
 import logging
 from ..models.model import *
 from ..common.paginator import Paginator
-from ..common.dateutils import datetime_format
+from ..common.dateutils import date_now
 from .org_service import find_branch_json
 
 logger = logging.getLogger('operator')
@@ -142,11 +142,13 @@ def add(dbs, user, role_id=None, create_user=None):
     try:
         dbs.add(user)
         dbs.flush()
+        sys_user_org = SysUserOrg(user_id=user.id, org_id=user.org_id, create_user=create_user, create_time=date_now())
+        dbs.merge(sys_user_org)
         if role_id != '' and role_id != 0:
             user_role = SysUserRole()
             user_role.user_id = user.id
             user_role.create_user = create_user
-            user_role.create_time = datetime.now().strftime(datetime_format)
+            user_role.create_time = date_now()
             user_role.role_id = role_id
             dbs.add(user_role)
         return ''
@@ -167,14 +169,16 @@ def update(dbs, user, role_id=None, create_user=None):
     try:
         with transaction.manager:
             dbs.merge(user)
-
+            sys_user_org = SysUserOrg(user_id=user.id, org_id=user.org_id, create_user=create_user,
+                                      create_time=date_now())
+            dbs.merge(sys_user_org)
             if role_id != '' and role_id != 0:
                 user_role = dbs.query(SysUserRole).filter(SysUserRole.user_id == user.id).first()
                 if not user_role:
                     user_role = SysUserRole()
                     user_role.user_id = user.id
                     user_role.create_user = create_user
-                    user_role.create_time = datetime.now().strftime(datetime_format)
+                    user_role.create_time = date_now()
                 user_role.role_id = role_id
                 dbs.add(user_role)
         return ''
@@ -184,12 +188,12 @@ def update(dbs, user, role_id=None, create_user=None):
 
 
 def delete(dbs, user_id):
-    '''
+    """
     删除用户
     :param dbs:
     :param user_id:
     :return:
-    '''
+    """
     try:
         with transaction.manager:
             dbs.query(SysUser).filter(SysUser.id == user_id).delete()
@@ -200,7 +204,12 @@ def delete(dbs, user_id):
 
 
 def send_email(address, content):
-    '''发送密码到用户email'''
+    """
+    发送密码到用户email
+    :param address:
+    :param content:
+    :return:
+    """
     print(content)
     pass
     # TODO
@@ -237,7 +246,9 @@ def user_org(dbs, user_id, create_user, org_list, now):
     用户授权机构信息
     :param dbs:
     :param user_id:
-    :param org_ids:
+    :param create_user:
+    :param org_list:
+    :param now:
     :return:
     """
     msg = ''

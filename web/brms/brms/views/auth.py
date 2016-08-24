@@ -34,7 +34,8 @@ def auth_index(request):
 def auth_user(request):
     dbs = request.dbsession
     user_id = request.POST.get('id', '')
-    branch_json = json.dumps(find_branch_json_check(dbs, user_id))
+    user_now = request.session['userId']
+    branch_json = json.dumps(find_branch_json_check(dbs, user_id, user_now))
     return render_to_response('auth/user_auth.html', locals(), request)
 
 

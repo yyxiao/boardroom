@@ -25,3 +25,6 @@ $("#search_org_name").click(function(event){
     event.stopPropagation();
 });
 
+function beforeCheck(treeId, treeNode) {
+	return (treeNode.doCheck !== false);
+}

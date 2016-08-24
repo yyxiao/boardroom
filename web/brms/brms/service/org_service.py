@@ -59,15 +59,23 @@ def find_branch_json(dbs, user_org_id=None):
     return branches
 
 
-def find_branch_json_check(dbs, user_id):
+def find_branch_json_check(dbs, user_id, user_now=None):
     """
     获取机构树
     :param dbs:
     :param user_id:
+    :param user_now:
     :return:
     """
     branches = []
     orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id).all()
+    # 当前的登录用户可分配的机构
+    user_orgs = dbs.query(SysUserOrg.org_id).filter(SysUserOrg.user_id == user_now).all()
+    user_org_list = []
+    for rec in user_orgs:
+        user_org_list.append(rec[0])
+    user_tuple = tuple(user_org_list)
+    # 当前勾选的用户已分配的机构
     curs = dbs.query(SysUserOrg.org_id).filter(SysUserOrg.user_id == user_id).all()
     for rec in orgs:
         branch = {}
@@ -76,6 +84,11 @@ def find_branch_json_check(dbs, user_id):
         branch['pId'] = rec[2]
         if rec[2] == 0:
             branch['open'] = True
+        if rec[0] in user_tuple:
+            branch['doCheck'] = True
+        else:
+            branch['doCheck'] = False
+            branch['name'] += '(不可选)'
         for org in curs:
             if rec[0] == org[0]:
                 branch['checked'] = True
