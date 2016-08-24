@@ -55,9 +55,12 @@ def boardroom_list(request):
         name = request.POST.get('br_name', '')
         config = request.POST.get('br_config', '')
         org_id = request.POST.get('org_id', '')
+        if org_id == '':
+            org_id = request.session['userOrgId']
+        show_child = request.POST.get('show_child', 'false') == 'true'
         flag = request.POST.get('flag', '')
         page_no = int(request.POST.get('page', ''))
-        (boardrooms, paginator) = find_boardrooms(dbs, name=name, config=config, org_id=org_id, page_no=page_no)
+        (boardrooms, paginator) = find_boardrooms(dbs, name=name, config=config, org_id=org_id, page_no=page_no, show_child=show_child)
         return render_to_response('boardroom/list.html', locals(), request)
 
     return Response('', 404)

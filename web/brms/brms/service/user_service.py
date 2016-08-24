@@ -15,7 +15,7 @@ from .org_service import find_branch_json
 logger = logging.getLogger('operator')
 
 
-def find_users(dbs, org_id=None, user_account=None, user_name=None, role_name=None, page_no=1, user_id=None, show_child=False):
+def find_users(dbs, org_id=None, user_account=None, user_name=None, role_name=None, page_no=1, user_id=None, show_child=True):
     '''
     查找符合条件的用户， 返回用户列表和分页对象
     :param dbs:
