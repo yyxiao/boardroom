@@ -154,6 +154,36 @@ function init_calendar() {
 							callback: function () {
 								var name = $.trim($('#name').val());
 								var desc = $('#desc').val().replace('\n', '');
+								if (name == '') {
+									$('#name').focus();
+									$('#meeting_cue').html("<font color='red'>会议主题不能为空</font>");
+									return false;
+								}
+								if (is_str_unsafe(name) == true) {
+									$('#name').focus();
+									$('#meeting_cue').html("<font color='red'>会议主题含有非法字符</font>");
+									return false;
+								}
+								if (is_str_toolong(name) == true) {
+									$('#name').focus();
+									$('#meeting_cue').html("<font color='red'>会议主题超过最大长度</font>");
+									return false;
+								}
+								if (desc == '') {
+									$('#desc').focus();
+									$('#meeting_cue').html("<font color='red'>滚动文字不能为空</font>");
+									return false;
+								}
+								// if (is_str_unsafe(desc) == true) {
+								// 	$('#desc').focus();
+								// 	$('#meeting_cue').html("<font color='red'>滚动文字含有非法字符</font>");
+								// 	return false;
+								// }
+								if (is_str_toolong(desc, 100) == true) {
+									$('#desc').focus();
+									$('#meeting_cue').html("<font color='red'>滚动文字超过最大长度</font>");
+									return false;
+								}
 								$.ajax({
 									type : "POST",
 									url : "/meeting/add",
@@ -269,6 +299,36 @@ function init_calendar() {
 							callback: function () {
 								var name_new = $.trim($('#name').val());
 								var desc_new = $('#desc').val();
+								if (name == '') {
+									$('#name').focus();
+									$('#meeting_cue').html("<font color='red'>会议主题不能为空</font>");
+									return false;
+								}
+								if (is_str_unsafe(name) == true) {
+									$('#name').focus();
+									$('#meeting_cue').html("<font color='red'>会议主题含有非法字符</font>");
+									return false;
+								}
+								if (is_str_toolong(name) == true) {
+									$('#name').focus();
+									$('#meeting_cue').html("<font color='red'>会议主题超过最大长度</font>");
+									return false;
+								}
+								if (desc == '') {
+									$('#desc').focus();
+									$('#meeting_cue').html("<font color='red'>滚动文字不能为空</font>");
+									return false;
+								}
+								// if (is_str_unsafe(desc) == true) {
+								// 	$('#desc').focus();
+								// 	$('#meeting_cue').html("<font color='red'>滚动文字含有非法字符</font>");
+								// 	return false;
+								// }
+								if (is_str_toolong(desc, 100) == true) {
+									$('#desc').focus();
+									$('#meeting_cue').html("<font color='red'>滚动文字超过最大长度</font>");
+									return false;
+								}
 								$.ajax({
 									type : "POST",
 									url : "/meeting/update",
