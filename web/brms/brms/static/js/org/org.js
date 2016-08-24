@@ -66,7 +66,7 @@ function add() {
 	var org_manager = $.trim($("#org_manager_add").val());
 	var phone = $.trim($('#phone_add').val());
     var address = $.trim($('#address_add').val());
-    var state = $.trim($('#state_add').val());
+    // var state = $.trim($('#state_add').val());
 	if (org_name == '') {
 		$('#org_name_add').focus();
 		$('#org_cue').html("<font color='red'>机构名称不能为空</font>");
@@ -86,9 +86,9 @@ function add() {
     if (org_seq == '') {
         org_seq = 1000;
     }
-	if (state == '') {
-		state = 1;
-	}
+	// if (state == '') {
+	// 	state = 1;
+	// }
 	$.ajax({
 		type : "POST",
 		url : "/org/add_org",
@@ -98,8 +98,8 @@ function add() {
             "org_seq": org_seq,
 			"org_manager" : org_manager,
 			"phone" : phone,
-			"address" : address,
-			"state" : state
+			"address" : address
+			// "state" : state
 		},
 		error : function() {
 			redirect_to("/");
@@ -147,7 +147,7 @@ function update() {
 	var org_manager = $.trim($("#org_manager_add").val());
 	var phone = $.trim($('#phone_add').val());
     var address = $.trim($('#address_add').val());
-    var state = $.trim($('#state_add').val());
+    // var state = $.trim($('#state_add').val());
     if (org_id == '') {
         $.messager.popup('更新失败，请刷新页面后重试！');
         return false;
@@ -170,9 +170,9 @@ function update() {
     if (org_seq == '') {
         org_seq = 1000;
     }
-	if (state == '') {
-		state = 1;
-	}
+	// if (state == '') {
+	// 	state = 1;
+	// }
 	$.ajax({
 		type : "POST",
 		url : "/org/add_org",
@@ -183,8 +183,8 @@ function update() {
             "org_seq": org_seq,
 			"org_manager" : org_manager,
 			"phone" : phone,
-			"address" : address,
-			"state" : state
+			"address" : address
+			// "state" : state
 		},
 		error : function() {
 			redirect_to("/");

@@ -83,7 +83,7 @@ def find_branch_json_check(dbs, user_id):
     return branches
 
 
-def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, page_no=1):
+def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, page_no=1, show_child=True):
     """
     查询org列表
     :param dbs:
@@ -92,6 +92,7 @@ def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, pag
     :param address:
     :param org_id:
     :param page_no:
+    :param show_child:
     :return:
     """
     sysorg1 = aliased(SysOrg)
@@ -104,18 +105,23 @@ def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, pag
                      SysOrg.address,
                      SysOrg.state,
                      SysUser.user_name,
-                     SysOrg.create_time)\
-        .outerjoin(SysUser, SysUser.id == SysOrg.create_user)\
+                     SysOrg.create_time) \
+        .outerjoin(SysUser, SysUser.id == SysOrg.create_user) \
         .outerjoin(sysorg1, SysOrg.parent_id == sysorg1.id)
 
+    if org_id:
+        if show_child:
+            tmp = find_branch_json(dbs, org_id)
+            child_org = list(map((lambda x: x['id']), tmp))
+            orgs = orgs.filter(SysOrg.id.in_(child_org))
+        else:
+            orgs = orgs.filter(SysOrg.id == org_id)
     if org_name:
         orgs = orgs.filter(SysOrg.org_name.like('%' + org_name + '%'))
     if parent_id:
         orgs = orgs.filter(SysOrg.parent_id == parent_id)
     if address:
         orgs = orgs.filter(SysOrg.address.like('%' + address + '%'))
-    if org_id:
-        orgs = orgs.filter(SysOrg.id == org_id)
 
     orgs = orgs.order_by(SysOrg.create_time)
     results, paginator = Paginator(orgs, page_no).to_dict()
