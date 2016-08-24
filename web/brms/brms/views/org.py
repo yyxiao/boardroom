@@ -6,21 +6,23 @@ __mtime__ = 2016-08-15
 """
 import json
 from datetime import datetime
-from pyramid.view import view_config
+
 from pyramid.renderers import render_to_response
+from pyramid.view import view_config
+
+from ..common.dateutils import datetime_format
 from ..service.loginutil import request_login
 from ..service.org_service import *
-from ..common.dateutils import datetime_format
 
 
 @view_config(route_name='to_org')
 @request_login
 def to_org(request):
-    '''
+    """
     打开机构管理页面
     :param request:
     :return:
-    '''
+    """
     dbs = request.dbsession
     user_org_id = request.session['userOrgId']
     branches = find_branch(dbs, user_org_id)
@@ -31,11 +33,11 @@ def to_org(request):
 @view_config(route_name='list_org')
 @request_login
 def list_org(request):
-    '''
+    """
     机构列表
     :param request:
     :return:
-    '''
+    """
     if request.method == 'POST':
         dbs = request.dbsession
         org_name = request.POST.get('org_name', '')
@@ -50,11 +52,11 @@ def list_org(request):
 @view_config(route_name='to_add_org')
 @request_login
 def to_add_org(request):
-    '''
+    """
 
     :param request:
     :return:
-    '''
+    """
     dbs = request.dbsession
     user_org_id = request.session['userOrgId']
     branches = find_branch(dbs, user_org_id)
@@ -64,11 +66,11 @@ def to_add_org(request):
 @view_config(route_name='add_org', renderer='json')
 @request_login
 def add_org(request):
-    '''
+    """
 
     :param request:
     :return:
-    '''
+    """
     if request.method == 'POST':
         dbs = request.dbsession
         org = SysOrg()
@@ -83,23 +85,23 @@ def add_org(request):
         org.create_time = datetime.now().strftime(datetime_format)
         org.create_user = request.session['userId']
         msg = add(dbs, org)
-        json = {
+        json1 = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
 
-        return json
+        return json1
     return {}
 
 
 @view_config(route_name='to_update_org')
 @request_login
 def to_update_org(request):
-    '''
+    """
 
     :param request:
     :return:
-    '''
+    """
     dbs = request.dbsession
     user_org_id = request.session['userOrgId']
     branches = find_branch(dbs, user_org_id)
@@ -108,14 +110,14 @@ def to_update_org(request):
     return render_to_response('org/add.html', locals(), request)
 
 
-@view_config(route_name='update_org')
+@view_config(route_name='update_org', renderer='json')
 @request_login
 def update_org(request):
-    '''
+    """
 
     :param request:
     :return:
-    '''
+    """
     if request.method == 'POST':
         dbs = request.dbsession
         org_id = request.POST.get('org_id', 0)
@@ -130,34 +132,32 @@ def update_org(request):
             org.org_manager = request.POST.get('org_manager', '')
             org.phone = request.POST.get('phone', '')
             org.address = request.POST.get('address', '')
-            org.state = request.POSt.get('state', 1)
+            org.state = request.POST.get('state', 1)
             org.update_time = datetime.now().strftime(datetime_format)
             msg = update(dbs, org)
-        json = {
+        json1 = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
-        return json
+        return json1
     return {}
 
 
 @view_config(route_name='delete_org', renderer='json')
 @request_login
 def delete_org(request):
-    '''
+    """
 
     :param request:
     :return:
-    '''
+    """
     if request.method == 'POST':
         dbs = request.dbsession
         org_id = request.POST.get('org_id', 0)
         msg = delete(dbs, org_id)
-        json = {
+        json1 = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
-        return json
+        return json1
     return {}
-
-

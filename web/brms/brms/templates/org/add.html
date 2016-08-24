@@ -30,12 +30,15 @@
                     <label for="input parent_id_add" class="col-sm-2 control-label">上级机构</label>
                     <div class="col-sm-9">
                         <select class="form-control" id="parent_id_add" name="parent_id_add">
-                            {% if org %}
-                                <option value="{{ org.parent_id }}" selected="selected">{{ org.parent_name }}</option>
+                            {% if not org %}
+                                <option value="">请选择</option>
                             {% endif %}
-                            <option value=""></option>
                             {% for branch in branches %}
-                                <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
+                                {% if org and org.parent_id == branch.org_id %}
+                                    <option value="{{ branch.org_id }}" selected="selected">{{ branch.org_name }}</option>
+                                {% else %}
+                                    <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>

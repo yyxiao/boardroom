@@ -19,15 +19,9 @@
                 </div>
                 <div class="col-md-4 paddingLR0">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label form-label paddingR0 paddingL0">上级机构</label>
+                        <label class="col-sm-4 control-label form-label paddingR0 paddingL0">地址</label>
                         <div class="col-sm-8 paddingR0">
-                            <input type="text" class="form-control"	id="search_org_name" name="search_org_name" readonly="readonly"
-                                   onclick="org_show();" placeholder="请选择">
-                            <input type="text" class="hidden" id="search_org_id" name="search_org_id">
-                            <div class="form-control" style="background-color:white;
-                            height:300px;overflow: auto;display:none;position: absolute;z-index: 8" id="orgTree">
-                                <ul id="treeDemo" class="ztree"></ul>
-                            </div>
+                            <input type="text" class="form-control" id="address" name="address">
                         </div>
                     </div>
                 </div>
@@ -54,25 +48,6 @@
 </section>
 <script src="{{ request.static_url('brms:static/js/org/org.js') }}"></script>
 <script src="{{ request.static_url('brms:static/js/org/org_tree.js') }}"></script>
-<script type="text/javascript">
-    var setting = {
-        check: {
-            enable: true,
-            chkStyle: "radio",
-            radioType: "all"
-        },
-        data: {
-            simpleData: {
-                enable: true
-            }
-        },
-        callback: {
-            onCheck: zTreeOnCheck
-        }
-    };
-    var zNodes ={{ branch_json|safe }};
-    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-</script>
 {% endblock %}
 
 

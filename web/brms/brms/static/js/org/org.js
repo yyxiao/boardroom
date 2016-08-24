@@ -9,7 +9,6 @@ function list(page) {
 	var url = "/org/list";
 	var data = {
 		"org_name" : $("#org_name").val(),
-		"parent_id" : $("#search_org_id").val(),
 		"address" : $("#address").val(),
 		"page" : page
 	};
@@ -175,7 +174,7 @@ function update() {
 	// }
 	$.ajax({
 		type : "POST",
-		url : "/org/add_org",
+		url : "/org/update_org",
 		data : {
             "org_id": org_id,
 			"org_name" : org_name,
