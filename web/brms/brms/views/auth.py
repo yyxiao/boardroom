@@ -25,7 +25,8 @@ def auth_index(request):
     :return:
     """
     dbs = request.dbsession
-    branch_json = json.dumps(find_branch_json(dbs))
+    user_org_id = request.session['userOrgId']
+    branch_json = json.dumps(find_branch_json(dbs, user_org_id))
     return render_to_response('auth/auth.html', locals(), request)
 
 
