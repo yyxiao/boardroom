@@ -6,7 +6,6 @@ __mtime__ = 2016/8/11
 """
 import base64
 from pyramid.view import view_config
-from io import StringIO
 
 from ..common.jsonutils import serialize
 from ..service.loginutil import UserTools
@@ -14,7 +13,6 @@ from ..service.pad_service import *
 from ..service.meeting_service import delete_meeting, find_meeting
 from ..service.user_service import user_checking
 import transaction
-import qrcode
 
 
 @view_config(route_name='padLogin', renderer='json')
@@ -321,12 +319,3 @@ def pad_set_room(request):
             'room': room
         }
     return json
-
-
-@view_config(route_name='test_qccode')
-def test_qccode(request):
-    """
-    :return:
-    """
-    img = qrcode.make("http://www.baidu.com")
-    img.save('baidu.png')
