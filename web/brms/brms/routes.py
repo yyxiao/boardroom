@@ -26,7 +26,6 @@ def app_include(config):
     config.add_route('pad_update_meeting', '/updateMeeting')
     config.add_route('pad_org_list', '/orgList')
     config.add_route('pad_set_room', '/setRoom')
-    config.add_route('test_qccode', '/testQccode')
 
 
 def user_include(config):
@@ -81,6 +80,8 @@ def boardroom_include(config):
     config.add_route('update_br', '/update_boardroom')
     config.add_route('br_upload_pic', '/br_upload_pic')
     config.add_route('br_booking', '/boardroom_booking')
+    config.add_route('room_qrcode', '/room_qrcode')
+    config.add_route('to_room_qrcode', '/to_room_qrcode')
 
 
 def terminal_include(config):

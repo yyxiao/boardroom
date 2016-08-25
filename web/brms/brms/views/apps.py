@@ -6,7 +6,6 @@ __mtime__ = 2016/8/11
 """
 import base64
 from pyramid.view import view_config
-
 from ..common.jsonutils import serialize
 from ..service.loginutil import UserTools
 from ..service.pad_service import *

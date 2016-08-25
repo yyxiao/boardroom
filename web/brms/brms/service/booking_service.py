@@ -14,14 +14,14 @@ logger = logging.getLogger('operator')
 
 
 def check_occupy(dbs, room_id, date, start_time, end_time):
-    '''
+    """
     检查给定时间范围内是否已经有被预约过
     :param room_id:
     :param date:
     :param start_time:
     :param end_time:
     :return:
-    '''
+    """
 
     occupy = dbs.query(HasRoomOccupy).filter(HasRoomOccupy.room_id == room_id,
                                              HasRoomOccupy.date == date).first()
@@ -35,7 +35,7 @@ def check_occupy(dbs, room_id, date, start_time, end_time):
 
 
 def add_booking(dbs, room_id, date, start_time, end_time):
-    '''
+    """
     添加会议室占用情况
     :param dbs:
     :param room_id:
@@ -43,7 +43,7 @@ def add_booking(dbs, room_id, date, start_time, end_time):
     :param start_time:
     :param end_time:
     :return:
-    '''
+    """
 
     if room_id == 0:
         return ''
@@ -71,7 +71,7 @@ def add_booking(dbs, room_id, date, start_time, end_time):
 
 
 def update_booking(dbs, old_room_id, new_room_id, old_meeting, new_meeting):
-    '''
+    """
     更新会议预定
     :param dbs:
     :param old_room_id:
@@ -79,7 +79,7 @@ def update_booking(dbs, old_room_id, new_room_id, old_meeting, new_meeting):
     :param old_meeting:
     :param new_meeting:
     :return:
-    '''
+    """
 
     occupy = None
     if old_room_id != 0:
@@ -114,7 +114,7 @@ def update_booking(dbs, old_room_id, new_room_id, old_meeting, new_meeting):
 
 
 def delete_booking(dbs, room_id, date, start_time, end_time):
-    '''
+    """
     删除占用
     :param dbs:
     :param room_id:
@@ -122,7 +122,7 @@ def delete_booking(dbs, room_id, date, start_time, end_time):
     :param start_time:
     :param end_time:
     :return:
-    '''
+    """
     occupy = dbs.query(HasRoomOccupy).filter(HasRoomOccupy.room_id == room_id,
                                              HasRoomOccupy.date == date).first()
     if not occupy:
@@ -141,7 +141,7 @@ def delete_booking(dbs, room_id, date, start_time, end_time):
 
 
 def compare_bin(mt_bin, br_bin):
-    '''
+    """
     比较二进制判断是否有重复
     :param mt_bin: 会议时间范围对应二进制数
     :param br_bin: 会议室已占用时间范围二进制数
@@ -150,7 +150,7 @@ def compare_bin(mt_bin, br_bin):
              flag:   -1 开始时间冲突;
                      0 全部时间冲突;
                      1 结束时间冲突;
-    '''
+    """
     if isinstance(mt_bin, str):
         mt_bin = int(mt_bin)
     if isinstance(br_bin, str):
@@ -174,26 +174,26 @@ def compare_bin(mt_bin, br_bin):
 
 
 def delete_bin(mt_bin, br_bin):
-    '''
+    """
     删除会议时,清除此会议的占用值
     :param mt_bin:
     :param br_bin:
     :return:
-    '''
+    """
 
     result, flag = compare_bin(mt_bin, br_bin)
     return (mt_bin ^ br_bin) if result == 0 and flag == 0 else br_bin
 
 
 def get_binary(start_time, end_time, start=7, hours=14):
-    '''
+    """
     根据时间范围生成梳型二进制数对应整形数
     :param start_time: 开始时间
     :param end_time: 结束时间
     :param start: 允许预订的最早时间
     :param hours: 允许预订的时间长度
     :return: -1: 超出时间范围, other int:
-    '''
+    """
 
     s_h, s_m = start_time.split(':')
     e_h, e_m = end_time.split(':')

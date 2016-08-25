@@ -8,6 +8,8 @@ import logging
 import transaction
 import os
 import shutil
+import qrcode
+from io import BytesIO
 from datetime import datetime
 from ..models.model import SysOrg, HasBoardroom
 from ..common.paginator import Paginator
@@ -231,5 +233,16 @@ def move_pic(br_pic, org_id):
         logger.error(e)
 
 
-
-
+def make_qrcode(dbs, url, room_id, user_id):
+    room = dbs.query(HasBoardroom).filter(HasBoardroom.id == room_id).first()
+    json1 = {
+        'url': url,
+        'room_id': room.id,
+        'room_name': room.name,
+        'user_id': user_id
+    }
+    img = qrcode.make(json1)
+    buf = BytesIO()
+    img.save(buf, 'jpeg')
+    image_stream = buf.getvalue()
+    return image_stream

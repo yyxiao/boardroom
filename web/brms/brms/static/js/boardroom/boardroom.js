@@ -250,3 +250,21 @@ function del() {
 		$.messager.popup("请先选择一个会议室！");
 	}
 }
+
+function to_qrcode() {
+	var idbox = $("input[name='idbox']:checked");
+	if (idbox.length > 0) {
+		var url = "/boardroom/to_room_qrcode?room_id="+idbox.val();
+		var url1 = "/boardroom/room_qrcode?room_id="+idbox.val();
+		$("#modalWrapper").load(url, {}, function(response, status) {
+			if (status == "error") {
+				redirect_to("/");
+			} else {
+				$("#imgcode").attr("src", url1);
+				$("#addModal1").modal();
+			}
+		});
+	} else {
+		$.messager.popup('请先选择一个会议室！')
+	}
+}

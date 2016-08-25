@@ -48,10 +48,10 @@
             </div>
             <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
                 <div class="form-group">
-                    <div class="col-sm-5 paddingR0">
+                    <div class="col-sm-2 paddingR0">
                         <input type="checkbox" class="checkbox" id="show_child" name="show_child">
-                        <label class="control-label form-label paddingR0 paddingL0">&nbsp&nbsp显示子机构会议室</label>
                     </div>
+                    <label class="control-label form-label paddingR0 paddingL0">&nbsp&nbsp显示子机构会议室</label>
                 </div>
                 <button type="button" style="margin-left: 40px;" class="btn btn-primary" onclick="list(1)">
                     <i class="fa fa-search marginR6"></i>查询
@@ -69,6 +69,7 @@
                 <button type="button" class="btn btn-success" onclick="to_add()"><i class="fa fa-edit marginR6"></i>新增</button>
                 <button type="button" class="btn btn-default" onclick="to_update()"><i class="fa  fa-pencil marginR6"></i>修改</button>
                 <button type="button" class="btn btn-warning" onclick="del()"><i class="fa  fa-times marginR6"></i>删除</button>
+                <button type="button" class="btn btn-default" onclick="to_qrcode()"><i class="fa  fa-indent marginR6"></i>二维码</button>
             </div>
         </div>
         <div id="listWrapper">
