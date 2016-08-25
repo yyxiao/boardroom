@@ -80,14 +80,15 @@ def date_now():
 
 # 获取下一天, 日期格式为:yyyyMMdd
 def get_next_date(sdate):
-    ddate = datetime.datetime.strptime(sdate, date_pattern)
+    ddate = datetime.datetime.strptime(sdate, date_pattern1)
     rdate = ddate + datetime.timedelta(days=1)
     return rdate.strftime(date_pattern)
 
 
 # 获取前一天, 日期格式为:yyyyMMdd
 def get_pre_date(sdate):
-    ddate = datetime.datetime.strptime(sdate, date_pattern)
+    ddate = datetime.datetime.strptime(sdate, date_pattern1)
+    ddate.weekday()
     rdate = ddate + datetime.timedelta(days=-1)
     return rdate.strftime(date_pattern)
 
@@ -139,3 +140,24 @@ def get_month_range():
             '2029-10', '2029-11', '2029-12',
             '2030-01', '2030-02', '2030-03', '2030-04', '2030-05', '2030-06', '2030-07', '2030-08', '2030-09',
             '2030-10', '2030-11', '2030-12', ]
+
+
+def get_weekday(start_date, end_date, weekday_num):
+    '''
+    获取一段时间范围内每个周天对应的日期
+    :param start_date:
+    :param end_date:
+    :param weekday_num: 星期对应数字 0 ～ 6
+    :return:
+    '''
+
+    sdate = datetime.datetime.strptime(start_date, date_pattern1)
+    edate = datetime.datetime.strptime(end_date, date_pattern1)
+
+    weekdays = []
+    if sdate < edate:
+        now_weekday = sdate.weekday()
+        first_date = sdate + datetime.timedelta(days=((weekday_num - now_weekday + 7) // 7))
+        nums = int((edate - first_date).days / 7 + 1)
+        weekdays = list(map(lambda n: (first_date + datetime.timedelta(7 * n)).strftime(date_pattern1), range(nums)))
+    return weekdays

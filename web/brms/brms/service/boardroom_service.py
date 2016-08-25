@@ -57,7 +57,11 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
         boardrooms = boardrooms.filter(HasBoardroom.id == br_id)
 
     boardrooms = boardrooms.order_by(HasBoardroom.create_time)
-    results, paginator = Paginator(boardrooms, page_no).to_dict()
+    if page_no == 0:
+        results = boardrooms.all()
+        paginator = None
+    else:
+        results, paginator = Paginator(boardrooms, page_no).to_dict()
     lists = []
     for obj in results:
         br_id = obj[0] if obj[0] else ''

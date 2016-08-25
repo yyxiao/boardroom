@@ -71,7 +71,11 @@ def find_meetings(dbs, meeting_name=None, create_user=None, flag=None, user_org_
         meetings = meetings.filter(HasMeeting.org_id == org_id)
 
     user_list = meetings.order_by(HasMeeting.create_time.desc())
-    results, paginator = Paginator(user_list, page_no, page_size).to_dict()
+    if page_no == 0:
+        results = user_list.all()
+        paginator = None
+    else:
+        results, paginator = Paginator(user_list, page_no, page_size).to_dict()
     lists = []
     for obj in results:
         id = obj[0] if obj[0] else ''
