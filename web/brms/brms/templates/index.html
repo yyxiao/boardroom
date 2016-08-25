@@ -24,7 +24,7 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <li class="row-xs-4 text-center">
-            <a>{{ welcome }}：{{ request.session.user_name_db }}</a>
+            <a>{{ welcome }} {{ request.session.user_name_db }}</a>
           </li>
           <li class="row-xs-4 text-center">
             <a href="javascript:loadcontent('user/to_user_setting');">用户设置</a>
