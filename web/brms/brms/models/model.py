@@ -7,10 +7,7 @@ from sqlalchemy import (
     TEXT
 )
 from datetime import datetime
-from .meta import Base
-
-
-BRMS_SCHEMA = 'brms'
+from .meta import Base, BRMS_SCHEMA
 
 
 class HasBoardroom(Base):
@@ -32,6 +29,7 @@ class HasMeetBdr(Base):
     __tablename__ = 'has_meet_bdr'              # 会议会议室关系表
     meeting_id = Column(INT, primary_key=True)      # 会议ID
     boardroom_id = Column(INT, primary_key=True)    # 会议室ID
+    date = Column(VARCHAR(10))                  # 会议日期
     create_user = Column(INT)                   # 创建人
     create_time = Column(VARCHAR(19))           # 创建时间
 

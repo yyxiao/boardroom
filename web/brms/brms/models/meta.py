@@ -12,5 +12,7 @@ NAMING_CONVENTION = {
     "pk": "pk_%(table_name)s"
 }
 
-metadata = MetaData(schema='brms', naming_convention=NAMING_CONVENTION)
+BRMS_SCHEMA = 'brms'
+
+metadata = MetaData(schema=BRMS_SCHEMA, naming_convention=NAMING_CONVENTION)
 Base = declarative_base(metadata=metadata)
