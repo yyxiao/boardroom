@@ -9,7 +9,6 @@ import json
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from ..service.loginutil import request_login
-from ..service.org_service import find_branch_json
 from ..service.boardroom_service import *
 from ..service.meeting_service import *
 from ..service.booking_service import *
@@ -45,11 +44,11 @@ def check_available(request):
         end_time = request.POST.get('end_time', '')
 
         msg = check_occupy(dbs, room_id, date, start_time, end_time)
-        json = {
+        json_str = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
-        return json
+        return json_str
     return {}
 
 
@@ -64,12 +63,12 @@ def list_by_org(request):
     if request.method == 'POST':
         dbs = request.dbsession
         org_id = int(request.POST.get('org_id', 0))
-        (boardrooms, paginator) = find_boardrooms(dbs, org_id=org_id)
-        json = {
+        (boardrooms, paginator) = find_boardrooms(dbs, org_id=org_id, page_no=0)
+        json_str = {
             'resultFlag': 'success',
             'brs': boardrooms
         }
-        return json
+        return json_str
     return {}
 
 
@@ -87,13 +86,12 @@ def list_by_br(request):
         org_id = int(request.POST.get('org_id', 0))
         br_id = int(request.POST.get('br_id', 0))
 
-        # TODO page_size 临时解决方法，最终不分页
-        (meetings, paginator) = find_meetings(dbs, page_size=100, org_id=org_id, room_id=br_id)
-        json = {
+        (meetings, paginator) = find_meetings(dbs, page_no=0, org_id=org_id, room_id=br_id)
+        json_str = {
             'resultFlag': 'success',
             'meetings': meetings
         }
-        return json
+        return json_str
     return {}
 
 

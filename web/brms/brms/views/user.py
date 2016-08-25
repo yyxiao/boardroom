@@ -67,7 +67,7 @@ def to_add(request):
     dbs = request.dbsession
     user_org_id = request.session['userOrgId']
     branches = find_branch(dbs, user_org_id)
-    (roles, paginator) = find_roles(dbs)
+    (roles, paginator) = find_roles(dbs, page_no=0)
     return render_to_response('user/add.html', locals(), request)
 
 
@@ -122,7 +122,7 @@ def to_update_user(request):
     branches = find_branch(dbs, user_org_id)
     user_id = request.POST.get('user_id', 0)
     user = find_user(dbs, user_id)
-    (roles, paginator) = find_roles(dbs)
+    (roles, paginator) = find_roles(dbs, page_no=0)
     return render_to_response('user/add.html', locals(), request)
 
 
