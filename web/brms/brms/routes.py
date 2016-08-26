@@ -26,6 +26,7 @@ def app_include(config):
     config.add_route('pad_update_meeting', '/updateMeeting')
     config.add_route('pad_org_list', '/orgList')
     config.add_route('pad_set_room', '/setRoom')
+    config.add_route('pad_qr_code', '/padQrCode')
 
 
 def user_include(config):

@@ -22,24 +22,19 @@ def pad_login(request):
     :return:
     """
     dbs = request.dbsession
-    user_account = request.POST.get('user_account', '')
+    user_id = request.POST.get('user_id', '')
     pad_code = request.POST.get('pad_code', '')
-    password = base64.encodebytes(request.params['password'].encode()).decode('utf-8').replace('\n', '')
     if not pad_code:
         error_msg = '终端编码不能为空'
-    elif not user_account:
-        error_msg = '用户账号不能为空'
+    elif not user_id:
+        error_msg = '用户ID不能为空'
     else:
         with transaction.manager:
-            user = dbs.query(SysUser).filter(SysUser.user_account == user_account).first()
+            user = dbs.query(SysUser).filter(SysUser.id == user_id).first()
             if not user:
                 error_msg = '用户不存在'
-            elif password != user.user_pwd:
-                error_msg = '密码错误'
-                UserTools.count_err(user)
-                dbs.flush()
             else:
-                pad, error_msg = find_pad_by_id(dbs, pad_code, user.id)
+                pad, error_msg = find_pad_by_id(dbs, pad_code, user.id, user.org_id)
     update_last_time(dbs, pad_code, 'padLogin')
     if error_msg:
         json_a = {
@@ -318,3 +313,37 @@ def pad_set_room(request):
             'room': room
         }
     return json
+
+
+@view_config(route_name='pad_qr_code', renderer='json')
+def pad_qr_code(request):
+    """
+    设备初始化登录
+    :param request:
+    :return:
+    """
+    dbs = request.dbsession
+    user_id = request.POST.get('user_id', '')
+    pad_code = request.POST.get('pad_code', '')
+    room_id = request.POST.get('room_id', '')
+    if not pad_code:
+        error_msg = '终端编码不能为空'
+    elif not user_id:
+        error_msg = '用户ID不能为空'
+    elif not room_id:
+        error_msg = '会议室ID不能为空'
+    else:
+        room, error_msg = set_rooms_by_qrcode(dbs, user_id, pad_code, room_id)
+        room = serialize(room)
+    update_last_time(dbs, pad_code, 'padQrCode')
+    if error_msg:
+        json_a = {
+            'success': 'false',
+            'error_msg': error_msg,
+        }
+    else:
+        json_a = {
+            'success': 'true',
+            'room': room
+        }
+    return json_a

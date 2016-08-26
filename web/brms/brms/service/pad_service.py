@@ -16,7 +16,7 @@ import transaction
 logger = logging.getLogger('operator')
 
 
-def find_pad_by_id(dbs, pad_code, create_user):
+def find_pad_by_id(dbs, pad_code, create_user, org_id):
     """
     查找pad_code,存在则获取第一个，不存在则添加一个设备
     :param dbs:
@@ -35,11 +35,13 @@ def find_pad_by_id(dbs, pad_code, create_user):
         pad.create_user = create_user
         pad.create_time = date_now()
         pad.last_time = date_now()
-        pad.org_id = create_user
+        pad.org_id = org_id
         try:
             dbs.add(pad)
             dbs.flush()
-            json_dict = {'pad_id': pad.id
+            json_dict = {'pad_id': pad.id,
+                         'id': '',
+                         'name': ''
                          }
         except Exception as e:
             logger.error(e)
@@ -330,5 +332,51 @@ def set_room(dbs, user_id, pad_code, room_id):
         dbs.flush()
     except Exception as e:
         logger.error(e)
-        error_msg = '更新会议室失败，请核对后重试'
+        error_msg = 'pad绑定会议室失败，请核对后重试'
+    return room, error_msg
+
+
+def set_rooms_by_qrcode(dbs, user_id, pad_code, room_id):
+    """
+    pad扫码绑定会议室
+    :param dbs:
+    :param user_id:
+    :param pad_code:
+    :param room_id:
+    :return:
+    """
+    error_msg = ''
+    user = dbs.query(SysUser).filter(SysUser.id == user_id).first()
+    room = dbs.query(HasBoardroom).filter(HasBoardroom.id == room_id).first()
+    if not user:
+        error_msg = '用户不存在'
+    elif not room:
+        error_msg = '会议室不存在'
+    else:
+        try:
+            pad = dbs.query(HasPad) \
+                .outerjoin(HasBoardroom, HasBoardroom.pad_id == HasPad.id) \
+                .filter(HasPad.pad_code == pad_code).first()
+            if not pad:
+                pad = HasPad()
+                pad.pad_code = pad_code
+                pad.create_user = user_id
+                pad.create_time = date_now()
+                pad.last_time = date_now()
+                pad.org_id = user.org_id
+                dbs.add(pad)
+                dbs.flush()
+            # 设置pad绑定会议室
+            room1 = dbs.query(HasBoardroom).filter(HasBoardroom.pad_id == pad.id).first()
+            if room1:  # 清除以前会议室pad_id数据
+                room1.pad_id = 0
+                dbs.add(room1)
+            room.pad_id = pad.id
+            room.create_user = user_id
+            room.create_time = date_now()
+            dbs.add(room)
+            dbs.flush()
+        except Exception as e:
+            logger.error(e)
+            error_msg = 'pad绑定会议室失败，请核对后重试'
     return room, error_msg

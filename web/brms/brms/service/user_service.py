@@ -233,8 +233,8 @@ def user_checking(dbs, pad_code, user_id):
             orgs.filter(SysUser.id == user_id)
         if pad_code:
             org_list = orgs.filter(HasPad.pad_code == pad_code).all()
-        if not org_list:
-            msg = '该pad没有匹配会议室，请稍后重试！'
+        # if not org_list:
+        #     msg = '该pad没有匹配会议室，请稍后重试！'
     except Exception as e:
         logger.error(e)
         msg = '验证用户失败！'
