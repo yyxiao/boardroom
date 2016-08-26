@@ -9,6 +9,7 @@ import transaction
 import logging
 from sqlalchemy.orm import aliased
 from ..models.model import SysOrg, SysUser, SysUserOrg
+from ..common.dateutils import date_now
 from ..common.paginator import Paginator
 
 logger = logging.getLogger('operator')
@@ -201,9 +202,10 @@ def add(dbs, org):
     :return:
     '''
     try:
-        with transaction.manager:
-            dbs.add(org)
-            dbs.flush()
+        dbs.add(org)
+        dbs.flush()
+        sys_user_org = SysUserOrg(user_id=org.create_user, org_id=org.id, create_user=org.create_user, create_time=date_now())
+        dbs.merge(sys_user_org)
         return ''
     except Exception as e:
         logger.error(e)

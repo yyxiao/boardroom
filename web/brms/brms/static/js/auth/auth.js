@@ -5,11 +5,13 @@ listUser(1);
  */
 function listUser(page) {
 	var url = "/user/list";
+	var show_child = $("#show_child").is(":checked");
 	var data = {
 		"user_account" : $("#user_account").val(),
 		"user_name" : $("#user_name").val(),
 		"org_id" : $("#search_org_id").val(),
 		"role_name" : $("#role_name").val(),
+		"show_child": show_child,
 		"page" : page
 	};
 	$("#listWrapperUser").load(url, data, function(response, status) {
