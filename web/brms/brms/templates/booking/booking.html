@@ -1,9 +1,10 @@
 {% block content %}
+
 <section style="padding-top:5px;">
-  <ol class="breadcrumb">
-    <li><i class="fa fa-dashboard marginR6"></i><a href="javascript:loadcontent('/my_meeting');">主页</a></li>
-    <li><a href="#">会议预订</a></li>
-  </ol>
+    <ol class="breadcrumb">
+        <li><i class="fa fa-dashboard marginR6"></i><a href="javascript:loadcontent('/my_meeting');">主页</a></li>
+        <li><a href="#">会议预订</a></li>
+    </ol>
 </section>
 <section>
 <div class="user-search">
@@ -28,7 +29,7 @@
                     <label class="col-sm-4 control-label form-label paddingR0 paddingL0">会议室</label>
                     <div class="col-sm-8 paddingR0">
                         <select class="form-control" id="br_id" name="br_id" onchange="load_meeting();" >
-                        <option value="">--请选择会议室--</option>
+                            <option value="">--请选择会议室--</option>
                         </select>
                     </div>
                 </div>
@@ -51,17 +52,20 @@
         </div>
     </div>
 </section>
-
-<link rel="stylesheet" href="{{request.static_url('brms:static/fullcalendar-2.9.1/fullcalendar.min.css')}}">
 <link rel="stylesheet" href="{{request.static_url('brms:static/css/bootstrap-datetimepicker.min.css')}}">
-<script src="{{request.static_url('brms:static/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
+<link rel="stylesheet" href="{{request.static_url('brms:static/plugins/select2/select2.min.css')}}">
+<script src="{{request.static_url('brms:static/plugins/select2/select2.min.js')}}"></script>
 <script src="{{request.static_url('brms:static/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js') }}"></script>
 <script src="{{request.static_url('brms:static/fullcalendar-2.9.1/moment.min.js')}}"></script>
 <script src="{{request.static_url('brms:static/fullcalendar-2.9.1/bootbox.js')}}"></script>
 <script src="{{request.static_url('brms:static/fullcalendar-2.9.1/fullcalendar.min.js')}}"></script>
 <script src="{{request.static_url('brms:static/fullcalendar-2.9.1/lang/zh-cn.js')}}"></script>
+
 <script src="{{request.static_url('brms:static/js/booking/booking.js')}}"></script>
+
 <script src="{{request.static_url('brms:static/js/org/org_tree.js') }}"></script>
+
+
 <script type="text/javascript">
     var setting = {
         check: {

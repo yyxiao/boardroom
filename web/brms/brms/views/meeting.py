@@ -14,6 +14,7 @@ from ..service.loginutil import request_login
 from ..models.model import *
 from ..common.dateutils import datetime_format
 from datetime import datetime
+import json
 
 
 @view_config(route_name='to_meeting')
@@ -77,6 +78,8 @@ def add_meeting(request):
     meeting.start_time = request.POST.get('start_time', '')
     meeting.end_time = request.POST.get('end_time', '')
     meeting.org_id = int(request.POST.get('org_id', 0))
+    meeting.repeat = 'yes' if request.POST.get('is_repeat', 'false') == 'true' else ''
+    meeting.repeat_date = request.POST.get('weekday[]', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
     error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
@@ -120,6 +123,15 @@ def to_update(request):
     rooms = find_rooms(dbs)
     meeting = find_meeting_bdr(dbs, meeting_id)
     return render_to_response('meeting/add.html', locals(), request)
+
+
+@view_config(route_name='to_update_meeting_calender', renderer='json')
+@request_login
+def to_update_calender(request):
+    dbs = request.dbsession
+    meeting_id = int(request.POST.get('id', 0))
+    meeting = find_meeting_bdr(dbs, meeting_id)
+    return json.dumps(meeting)
 
 
 @view_config(route_name='update_meeting', renderer='json')

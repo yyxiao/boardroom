@@ -103,6 +103,7 @@ def meeting_include(config):
     config.add_route('add_meeting', '/add')
     config.add_route('to_update_meeting', '/to_update')
     config.add_route('update_meeting', '/update')
+    config.add_route('to_update_meeting_calender', 'to_update_calendar')
 
 
 def booking_include(config):

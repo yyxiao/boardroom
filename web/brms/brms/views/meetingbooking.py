@@ -85,8 +85,9 @@ def list_by_br(request):
         dbs = request.dbsession
         org_id = int(request.POST.get('org_id', 0))
         br_id = int(request.POST.get('br_id', 0))
+        user_org_id = request.session['userOrgId']
 
-        (meetings, paginator) = find_meetings(dbs, page_no=0, org_id=org_id, room_id=br_id)
+        meetings = find_meeting_calendar(dbs, user_org_id=user_org_id, org_id=org_id, room_id=br_id)
         json_str = {
             'resultFlag': 'success',
             'meetings': meetings

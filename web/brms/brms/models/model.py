@@ -28,8 +28,8 @@ class HasBoardroom(Base):
 class HasMeetBdr(Base):
     __tablename__ = 'has_meet_bdr'              # 会议会议室关系表
     meeting_id = Column(INT, primary_key=True)      # 会议ID
-    boardroom_id = Column(INT, primary_key=True)    # 会议室ID
-    meeting_date = Column(VARCHAR(10))          # 会议日期
+    boardroom_id = Column(INT)    # 会议室ID
+    meeting_date = Column(VARCHAR(10), primary_key=True)  # 会议日期
     create_user = Column(INT)                   # 创建人
     create_time = Column(VARCHAR(19))           # 创建时间
 
@@ -66,7 +66,8 @@ class SysDict(Base):
     __tablename__ = 'sys_dict'                  # 字典表
     id = Column(INT, Sequence('sys_dict_id_seq', schema=BRMS_SCHEMA), primary_key=True)      # 字典ID
     dict_name = Column(VARCHAR(128))            # 字典名称
-    dict_type = Column(INT)                     # 字典类型
+    dict_value = Column(INT)                    # 字典值
+    dict_type = Column(VARCHAR(16))             # 字典类型
     create_time = Column(VARCHAR(19))           # 创建时间
     create_user = Column(INT)                   # 创建人
 

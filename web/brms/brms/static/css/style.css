@@ -1,5 +1,14 @@
 /*8.10后台版本样式*/
 /*头部区域开始*/
+
+.checkbox {
+ width: 19px;
+ height: 19px;
+ padding: 0 5px 0 0;
+ clear: left;
+ float: left;
+}
+
 body{
 	font-family: "微软雅黑"!important;
 }

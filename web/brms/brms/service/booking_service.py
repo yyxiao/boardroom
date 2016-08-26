@@ -8,23 +8,24 @@ __mtime__ = 2016-08-18
 import transaction
 import logging
 from functools import reduce
+from ..common.dateutils import get_weekday
 from ..models.model import HasBoardroom, HasMeeting, HasMeetBdr, HasRoomOccupy
 
 logger = logging.getLogger('operator')
 
 
-def check_occupy(dbs, room_id, date, start_time, end_time):
+def check_occupy(dbs, room_id, mdate, start_time, end_time):
     """
     检查给定时间范围内是否已经有被预约过
     :param room_id:
-    :param date:
+    :param mdate:
     :param start_time:
     :param end_time:
     :return:
     """
 
     occupy = dbs.query(HasRoomOccupy).filter(HasRoomOccupy.room_id == room_id,
-                                             HasRoomOccupy.date == date).first()
+                                             HasRoomOccupy.date == mdate).first()
     if occupy:
         if occupy.code:
             binary = get_binary(start_time, end_time)
@@ -34,12 +35,12 @@ def check_occupy(dbs, room_id, date, start_time, end_time):
     return ''
 
 
-def add_booking(dbs, room_id, date, start_time, end_time):
+def add_booking(dbs, room_id, mdate, start_time, end_time):
     """
     添加会议室占用情况
     :param dbs:
     :param room_id:
-    :param date:
+    :param mdate:
     :param start_time:
     :param end_time:
     :return:
@@ -48,11 +49,11 @@ def add_booking(dbs, room_id, date, start_time, end_time):
     if room_id == 0:
         return ''
     occupy = dbs.query(HasRoomOccupy).filter(HasRoomOccupy.room_id == room_id,
-                                             HasRoomOccupy.date == date).first()
+                                             HasRoomOccupy.date == mdate).first()
     if not occupy:
         occupy = HasRoomOccupy()
         occupy.room_id = room_id
-        occupy.date = date
+        occupy.date = mdate
         occupy.code = get_binary(start_time, end_time)
     else:
         result, flag = compare_bin(get_binary(start_time, end_time), occupy.code)
@@ -113,18 +114,18 @@ def update_booking(dbs, old_room_id, new_room_id, old_meeting, new_meeting):
         return ''
 
 
-def delete_booking(dbs, room_id, date, start_time, end_time):
+def delete_booking(dbs, room_id, mdate, start_time, end_time):
     """
     删除占用
     :param dbs:
     :param room_id:
-    :param date:
+    :param mdate:
     :param start_time:
     :param end_time:
     :return:
     """
     occupy = dbs.query(HasRoomOccupy).filter(HasRoomOccupy.room_id == room_id,
-                                             HasRoomOccupy.date == date).first()
+                                             HasRoomOccupy.date == mdate).first()
     if not occupy:
         return ''
     else:
@@ -138,6 +139,65 @@ def delete_booking(dbs, room_id, date, start_time, end_time):
     except Exception as e:
         logger.error(e)
         return '删除占用失败'
+
+
+def check_repeat_occupy(dbs, room_id, start_time, end_time, week_num, start_date=None, end_date=None, dates=None):
+    """
+    检查重复会议是否冲突
+    :param dbs:
+    :param room_id:
+    :param start_time:
+    :param end_time:
+    :param week_num:
+    :param start_date:
+    :param end_date:
+    :param dates:
+    :return:   result: 0      没有冲突
+                       other  有
+               occupies:      冲突日期及冲突信息字典
+    """
+    if not dates:
+        dates = get_weekday(start_date, end_date, week_num)
+    occupies = {}
+    for mdate in dates:
+        msg = check_occupy(dbs, room_id, mdate, start_time, end_time)
+        if msg:
+            occupies[mdate] = msg
+    result = len(occupies)
+    return result, occupies
+
+
+def add_repeat_booking(dbs, room_id, start_time, end_time, week_num, start_date, end_date, dates=None):
+    """
+    添加重复会议
+    :param dbs:
+    :param room_id:
+    :param start_time:
+    :param end_time:
+    :param week_num:
+    :param start_date:
+    :param end_date:
+    :param dates:
+    :return:
+    """
+
+    if not dates:
+        dates = get_weekday(start_date, end_date, week_num)
+
+    result, occupies = check_repeat_occupy(dbs, room_id, start_time, end_time, week_num, dates=dates)
+    if result != 0:
+        result = '会议室预约有冲突'
+        return result, occupies
+    else:
+        try:
+            for mdate in dates:
+                msg = add_booking(dbs, room_id, mdate, start_time, end_time)
+                if msg:
+                    return msg, None
+            return '', None
+        except Exception as e:
+            logger.error(e)
+            return '添加会议室预约失败'
 
 
 def compare_bin(mt_bin, br_bin):
