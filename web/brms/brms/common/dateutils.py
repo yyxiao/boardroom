@@ -161,3 +161,15 @@ def get_weekday(start_date, end_date, weekday_num):
         nums = int((edate - first_date).days / 7 + 1)
         weekdays = list(map(lambda n: (first_date + datetime.timedelta(7 * n)).strftime(date_pattern1), range(nums)))
     return weekdays
+
+
+def add_date(max_period):
+    """
+    计算用户预定范围使用：日期增加、删除
+    :param max_period:
+    :return:
+    """
+    u = datetime.datetime.now().strptime(datetime.datetime.now().strftime(date_pattern1),date_pattern1)
+    d = datetime.timedelta(days=max_period)
+    t = u + d
+    return str(t)

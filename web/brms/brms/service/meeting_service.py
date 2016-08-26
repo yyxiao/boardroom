@@ -5,10 +5,9 @@ __author__ = xyy
 __mtime__ = 2016/8/8
 """
 
-from datetime import datetime
 from ..models.model import *
 from ..common.paginator import Paginator
-from ..common.dateutils import date_now
+from ..common.dateutils import date_now, add_date
 from ..service.booking_service import check_occupy, add_booking, update_booking, delete_booking
 from ..service.org_service import find_org_ids
 import transaction
@@ -257,3 +256,19 @@ def find_rooms(dbs):
     """
     rooms = dbs.query(HasBoardroom).all()
     return rooms
+
+
+def find_user_period(dbs, start_date, end_date, user_id):
+    """
+    查看用户可预订期限
+    :param start_date:
+    :param end_date:
+    :param user_id:
+    :return:
+    """
+    user = dbs.query(SysUser).filter(SysUser.id == user_id).first()
+    error_massage = ''
+    max_date = add_date(user.max_period)
+    if (start_date > max_date) | (end_date > max_date):
+        error_massage = '会议预定时间超出可预订范围！'
+    return error_massage

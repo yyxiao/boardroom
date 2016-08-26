@@ -79,7 +79,9 @@ def add_meeting(request):
     meeting.org_id = int(request.POST.get('org_id', 0))
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
-    error_msg = add(dbs, meeting, room_id)
+    error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
+    if not error_msg:
+        error_msg = add(dbs, meeting, room_id)
     if error_msg:
         json = {
             'success': False,
@@ -143,7 +145,9 @@ def update_meeting(request):
     meeting.end_time = request.POST.get('end_time', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
-    error_msg = update(dbs, meeting, room_id, old_meeting=old_meeting)
+    error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
+    if not error_msg:
+        error_msg = update(dbs, meeting, room_id, old_meeting=old_meeting)
     if error_msg:
         json = {
             'success': False,

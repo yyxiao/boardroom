@@ -9,7 +9,7 @@ from pyramid.view import view_config
 from ..common.jsonutils import serialize
 from ..service.loginutil import UserTools
 from ..service.pad_service import *
-from ..service.meeting_service import delete_meeting, find_meeting
+from ..service.meeting_service import delete_meeting, find_meeting, find_user_period
 from ..service.user_service import user_checking
 import transaction
 
@@ -152,7 +152,9 @@ def pad_add_meeting(request):
         meeting.org_id = user.org_id
         meeting.create_user = user_id
         meeting.create_time = date_now()
-        error_msg, meeting_id = add_by_pad(dbs, meeting, pad_code)
+        error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, user_id)
+        if not error_msg:
+            error_msg, meeting_id = add_by_pad(dbs, meeting, pad_code)
     update_last_time(dbs, pad_code, 'addMeeting')
     if error_msg:
         json = {
@@ -235,7 +237,9 @@ def pad_update_meeting(request):
                 meeting.start_time = request.POST.get('start_time', '')
                 meeting.end_time = request.POST.get('end_time', '')
                 meeting.create_time = date_now()
-                error_msg = update_by_pad(dbs, meeting, pad_code, old_meeting=old_meeting)
+                error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, user_id)
+                if not error_msg:
+                    error_msg = update_by_pad(dbs, meeting, pad_code, old_meeting=old_meeting)
     if error_msg:
         json = {
             'success': 'false',
