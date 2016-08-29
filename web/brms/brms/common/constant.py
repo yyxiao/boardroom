@@ -14,3 +14,8 @@ STATE_ERROR = 999       # 失败
 # 服务器地址
 BRMS_URL = 'http://10.11.11.60/app/'
 
+# 是否重复会议
+REPEAT_YES = 'yes'
+
+# 星期字典类型
+WEEKDAY = 'weekday'

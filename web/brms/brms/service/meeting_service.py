@@ -6,7 +6,7 @@ __mtime__ = 2016/8/8
 """
 
 from datetime import datetime
-from ..common.config import *
+from ..common.constant import *
 from ..models.model import *
 from ..common.paginator import Paginator
 from ..common.dateutils import date_now, get_weekday, add_date

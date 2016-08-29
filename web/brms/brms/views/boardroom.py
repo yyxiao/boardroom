@@ -6,15 +6,17 @@ __mtime__ = 2016-08-08
 """
 
 import json
-from pyramid.view import view_config
+
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
-from ..service.constant import BRMS_URL
-from ..service.boardroom_service import *
-from ..service.org_service import find_branch, find_branch_json
-from ..service.loginutil import request_login
-from ..models.model import HasBoardroom
+from pyramid.view import view_config
+
+from brms.common.constant import BRMS_URL
 from ..common.dateutils import datetime_format
+from ..models.model import HasBoardroom
+from ..service.boardroom_service import *
+from ..service.loginutil import request_login
+from ..service.org_service import find_branch, find_branch_json
 
 
 @view_config(route_name='to_brs_info')
