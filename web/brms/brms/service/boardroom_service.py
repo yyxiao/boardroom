@@ -56,7 +56,7 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
     if br_id:
         boardrooms = boardrooms.filter(HasBoardroom.id == br_id)
 
-    boardrooms = boardrooms.order_by(HasBoardroom.create_time)
+    boardrooms = boardrooms.order_by(HasBoardroom.create_time.desc())
     if page_no == 0:
         results = boardrooms.all()
         paginator = None
