@@ -275,7 +275,7 @@ def pad_find_orgs(dbs, user_id):
     :return:
     """
     orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id)\
-        .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id) | (SysUserOrg.org_id == SysOrg.parent_id))\
+        .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id))\
         .filter(SysUserOrg.user_id == user_id).all()
     rooms = dbs.query(HasBoardroom.id, HasBoardroom.name, HasBoardroom.org_id) \
         .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id)\
