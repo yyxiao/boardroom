@@ -111,11 +111,13 @@ function add() {
         $('#max_period').focus();
         $('#user_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
     }
-	var emailPat=/^([a-zA-Z0-9_-].*)+@([a-zA-Z0-9_-].*)+(.com)$/;
-	var matchArray=email.match(emailPat);
-	if (matchArray==null) {
-		$.messager.popup('电子邮件地址格式不正确 (样例格式:xxxx@xxx.com)');
-		return false;
+	if(email!=''){
+		var emailPat=/^([a-zA-Z0-9_-].*)+@([a-zA-Z0-9_-].*)+(.com)$/;
+		var matchArray=email.match(emailPat);
+		if (matchArray==null) {
+			$.messager.popup('电子邮件地址格式不正确 (样例格式:xxxx@xxx.com)');
+			return false;
+		}
 	}
 	// if (state == '') {
 	// 	state = 1;
@@ -230,11 +232,13 @@ function update() {
         $('#max_period').focus();
         $('#user_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
     }
-	var emailPat=/^([a-zA-Z0-9_-].*)+@([a-zA-Z0-9_-].*)+(.com)$/;
-	var matchArray=email.match(emailPat);
-	if (matchArray==null) {
-		$.messager.popup('电子邮件地址格式不正确 (样例格式:xxxx@xxx.com)');
-		return false;
+	if(email!=''){
+		var emailPat=/^([a-zA-Z0-9_-].*)+@([a-zA-Z0-9_-].*)+(.com)$/;
+		var matchArray=email.match(emailPat);
+		if (matchArray==null) {
+			$.messager.popup('电子邮件地址格式不正确 (样例格式:xxxx@xxx.com)');
+			return false;
+		}
 	}
 	// if (state == '') {
 	// 	state = 1;
