@@ -32,6 +32,8 @@
                         <select class="form-control" id="parent_id_add" name="parent_id_add">
                             {% if not org %}
                                 <option value="">请选择</option>
+                            {% elif org and org.parent_id == 0 %}
+                                <option value="">请选择</option>
                             {% endif %}
                             {% for branch in branches %}
                                 {% if org and org.parent_id == branch.org_id %}

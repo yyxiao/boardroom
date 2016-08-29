@@ -187,9 +187,9 @@ def find_org_by_id(dbs, org_id):
     :param org_id:
     :return:
     '''
-    user = dbs.query(SysOrg).filter(SysOrg.id == org_id).first()
-    if user:
-        return user
+    org = dbs.query(SysOrg).filter(SysOrg.id == org_id).first()
+    if org:
+        return org
     else:
         return None
 
