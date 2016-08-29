@@ -111,11 +111,6 @@ function add() {
         $('#max_period').focus();
         $('#user_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
     }
-	if (email == '') {
-		$('#email_add').focus();
-		$('#user_cue').html("<font color='red'>用户email不能为空</font>");
-		return false;
-	}
 	var emailPat=/^([a-zA-Z0-9_-].*)+@([a-zA-Z0-9_-].*)+(.com)$/;
 	var matchArray=email.match(emailPat);
 	if (matchArray==null) {
@@ -235,11 +230,6 @@ function update() {
         $('#max_period').focus();
         $('#user_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
     }
-	if (email == '') {
-		$('#email_add').focus();
-		$('#user_cue').html("<font color='red'>用户email不能为空</font>");
-		return false;
-	}
 	var emailPat=/^([a-zA-Z0-9_-].*)+@([a-zA-Z0-9_-].*)+(.com)$/;
 	var matchArray=email.match(emailPat);
 	if (matchArray==null) {
