@@ -54,11 +54,17 @@ def to_add(request):
 def add_terminal(request):
     dbs = request.dbsession
     room_id = request.POST.get('room_id', '')
+    pad_code = request.POST.get('pad_code', '')
     terminal = HasPad()
-    terminal.pad_code = request.POST.get('pad_code', '')
+    terminal.pad_code = pad_code
     terminal.create_user = request.session['userId']
     terminal.create_time = date_now()
-    error_msg = add(dbs, terminal, room_id)
+    # 判断设备编码是否已经存在
+    old_terminal = dbs.query(HasPad).filter(HasPad.pad_code == pad_code).first()
+    if old_terminal:
+        error_msg = '设备编码不能重复！'
+    else:
+        error_msg = add(dbs, terminal, room_id)
     if error_msg:
         json = {
             'success': 'false',

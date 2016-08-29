@@ -69,9 +69,10 @@ def add(dbs, terminal, room_id):
         if room1:                   # 清除以前会议室pad_id数据
             room1.pad_id = 0
             dbs.add(room1)
-        room = dbs.query(HasBoardroom).filter(HasBoardroom.id == room_id).first()
-        room.pad_id = terminal_id
-        dbs.add(room)
+        if room_id:
+            room = dbs.query(HasBoardroom).filter(HasBoardroom.id == room_id).first()
+            room.pad_id = terminal_id
+            dbs.add(room)
     except Exception as e:
         logger.error(e)
         error_msg = '新增终端失败，请核对后重试'

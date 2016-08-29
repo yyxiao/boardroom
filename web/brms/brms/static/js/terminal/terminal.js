@@ -89,7 +89,8 @@ function add() {
 				list(1)
 			}
 			else{
-				$.messager.popup("新增终端失败，请检查相关信息后重试！");
+				var msg = data.error_msg
+				$.messager.popup(msg);
 			}
 		},
 	})
