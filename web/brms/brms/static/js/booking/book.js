@@ -41,6 +41,11 @@ function init() {
 	scheduler.config.details_on_create=true;
 	scheduler.config.details_on_dblclick=true;
 	scheduler.config.xml_date="%Y-%m-%d %H:%i";
+	scheduler.config.first_hour=7;
+	scheduler.config.last_hour=21;
+	scheduler.config.time_step=30;
+
+
 
 	//===============
 	//Configuration
@@ -69,9 +74,9 @@ function init() {
 		x_unit:	"minute",
 		x_date:	"%H:%i",
 		x_step:	30,
-		x_size: 24,
-		x_start: 16,
-		x_length:	48,
+		x_size: 28,
+		x_start: 14,
+		x_length: 48,
 		y_unit: elements,
 		y_property:	"section_id",
 		render: "tree",
@@ -88,7 +93,7 @@ function init() {
 		{ name:"custom", height:23, type:"timeline", options:null , map_to:"section_id" }, //type should be the same as name of the tab
 		{ name: "recurring", type: "recurring", map_to: "", button: "recurring"},
 		{ name:"time", height:72, type:"calendar_time", map_to:"auto"}
-	]
+	];
 
 	scheduler.init('scheduler_here',new Date(),"timeline");
 	scheduler.parse([
