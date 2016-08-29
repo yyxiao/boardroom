@@ -71,17 +71,12 @@ function add() {
 		$('#role_cue').html("<font color='red'>角色名称超过最大长度</font>");
 		return false;
 	}
-	if (desc == '') {
-		$('#desc').focus();
-		$('#role_cue').html("<font color='red'>角色描述不能为空</font>");
-		return false;
-	}
-	if (is_str_unsafe(desc) == true) {
+	if (desc != '' && is_str_unsafe(desc) == true) {
 		$('#desc').focus();
 		$('#role_cue').html("<font color='red'>角色描述含有非法字符</font>");
 		return false;
 	}
-	if (is_str_toolong(desc, 100) == true) {
+	if (desc != '' && is_str_toolong(desc, 100) == true) {
 		$('#desc').focus();
 		$('#role_cue').html("<font color='red'>角色描述超过最大长度</font>");
 		return false;
@@ -151,17 +146,12 @@ function update() {
 		$('#role_cue').html("<font color='red'>角色名称超过最大长度</font>");
 		return false;
 	}
-	if (desc == '') {
-		$('#desc').focus();
-		$('#role_cue').html("<font color='red'>角色描述不能为空</font>");
-		return false;
-	}
-	if (is_str_unsafe(desc) == true) {
+	if (desc != '' && is_str_unsafe(desc) == true) {
 		$('#desc').focus();
 		$('#role_cue').html("<font color='red'>角色描述含有非法字符</font>");
 		return false;
 	}
-	if (is_str_toolong(desc, 100) == true) {
+	if (desc != '' && is_str_toolong(desc, 100) == true) {
 		$('#desc').focus();
 		$('#role_cue').html("<font color='red'>角色描述超过最大长度</font>");
 		return false;
