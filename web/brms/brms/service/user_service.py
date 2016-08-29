@@ -65,7 +65,7 @@ def find_users(dbs, org_id=None, user_account=None, user_name=None, role_name=No
     if user_id:
         users = users.filter(SysUser.id == user_id)
 
-    user_list = users.order_by(SysUser.create_time)
+    user_list = users.order_by(SysUser.create_time.desc())
     results, paginator = Paginator(user_list, page_no).to_dict()
     lists = []
     for obj in results:

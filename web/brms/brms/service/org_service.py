@@ -137,7 +137,7 @@ def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, pag
     if address:
         orgs = orgs.filter(SysOrg.address.like('%' + address + '%'))
 
-    orgs = orgs.order_by(SysOrg.create_time)
+    orgs = orgs.order_by(SysOrg.create_time.desc())
     results, paginator = Paginator(orgs, page_no).to_dict()
     lists = []
     for obj in results:

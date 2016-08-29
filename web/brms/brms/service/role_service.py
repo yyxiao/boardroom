@@ -29,7 +29,7 @@ def find_roles(dbs, role_name=None, page_no=1):
         .outerjoin(SysUser, SysUser.id == SysRole.create_user)
     if role_name:
         roles = roles.filter(SysRole.role_name.like('%'+role_name+'%'))
-    role_list = roles.order_by(SysRole.create_time)
+    role_list = roles.order_by(SysRole.create_time.desc())
     if page_no == 0:
         results = role_list.all()
         paginator = None
