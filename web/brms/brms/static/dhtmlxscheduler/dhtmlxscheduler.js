@@ -3962,15 +3962,15 @@ dhtmlx && dhtmlx.attaches && (dhtmlx.attaches.attachScheduler = function(e, t, i
     s.init(a.id, e, t),
     this.vs[this._viewRestore()].sched
 });
-var _0xaedc = ["href", "location", "dhtmlx.com/", "indexOf", "error", "This version of dhtmlxScheduler is not intended for using outside of dhtmlx.com", "message", "random", "floor"]; !
-function() {
-    var e = document[_0xaedc[1]][_0xaedc[0]]; - 1 == e[_0xaedc[3]](_0xaedc[2]) && setTimeout(function() {
-        dhtmlx[_0xaedc[6]]({
-            type: _0xaedc[4],
-            text: _0xaedc[5],
-            expire: -1
-        })
-    },
-    Math[_0xaedc[8]](5e3 * Math[_0xaedc[7]]()) + 1e3)
-} ();
+// var _0xaedc = ["href", "location", "dhtmlx.com/", "indexOf", "error", "This version of dhtmlxScheduler is not intended for using outside of dhtmlx.com", "message", "random", "floor"]; !
+// function() {
+//     var e = document[_0xaedc[1]][_0xaedc[0]]; - 1 == e[_0xaedc[3]](_0xaedc[2]) && setTimeout(function() {
+//         dhtmlx[_0xaedc[6]]({
+//             type: _0xaedc[4],
+//             text: _0xaedc[5],
+//             expire: -1
+//         })
+//     },
+//     Math[_0xaedc[8]](5e3 * Math[_0xaedc[7]]()) + 1e3)
+// } ();
 //# sourceMappingURL=sources/dhtmlxscheduler.js.map
