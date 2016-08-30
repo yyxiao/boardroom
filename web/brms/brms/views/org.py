@@ -77,7 +77,11 @@ def add_org(request):
         org.org_name = request.POST.get('org_name', '')
         # org.org_type = request.POST.get('org_type', '')
         org.parent_id = request.POST.get('parent_id', 0)
-        org.org_seq = request.POST.get('org_seq', 0)
+        org_seq = request.POST.get('org_seq', '')
+        if org_seq:
+            org.org_seq = int(org_seq)
+        else:
+            org.org_seq = 1000
         org.org_manager = request.POST.get('org_manager', '')
         org.phone = request.POST.get('phone', '')
         org.address = request.POST.get('address', '')
@@ -127,7 +131,11 @@ def update_org(request):
         else:
             org.org_name = request.POST.get('org_name', '')
             # org.org_type = request.POST.get('org_type')
-            org.org_seq = request.POST.get('org_seq', 0)
+            org_seq = request.POST.get('org_seq', '')
+            if org_seq:
+                org.org_seq = int(org_seq)
+            else:
+                org.org_seq = 1000
             org.parent_id = request.POST.get('parent_id', 0)
             org.org_manager = request.POST.get('org_manager', '')
             org.phone = request.POST.get('phone', '')
