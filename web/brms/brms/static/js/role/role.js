@@ -19,7 +19,7 @@ function listRole(page) {
  */
 function pageRole() {
 	var pageNo = $("#pageRoleNo").val()
-	if (isNaN(pageNo)){
+	if (isNaN(pageNo) || pageNo == ''){
 		$.messager.popup('错误的页码，请重新输入')
 		return false
 	}

@@ -40,7 +40,7 @@ function listRole(page) {
  */
 function pageUser() {
 	var pageNo = $("#pageNo").val();
-	if (isNaN(pageNo)){
+	if (isNaN(pageNo) || pageNo == ''){
 		$.messager.popup('错误的页码，请重新输入');
 		return false
 	}
@@ -51,7 +51,7 @@ function pageUser() {
  */
 function pageRole() {
 	var pageNo = $("#pageRoleNo").val()
-	if (isNaN(pageNo)){
+	if (isNaN(pageNo) || pageNo == ''){
 		$.messager.popup('错误的页码，请重新输入')
 		return false
 	}
