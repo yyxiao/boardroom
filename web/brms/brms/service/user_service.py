@@ -118,6 +118,21 @@ def find_user(dbs, user_id):
     return None
 
 
+def check_user_account(dbs, user_account):
+    """
+    判断用户帐号是否已被占用
+    :param dbs:
+    :param user_account:
+    :return:
+    """
+    if not user_account:
+        return "登陆名不能为空"
+
+    user = dbs.query(SysUser).filter(SysUser.user_account == user_account).first()
+
+    return "登陆名已被占用" if user else ""
+
+
 def find_user_by_id(dbs, user_id):
     """
     根据用户id查找用户，返回用户模型对象

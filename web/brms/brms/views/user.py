@@ -82,24 +82,27 @@ def add_user(request):
     if request.method == 'POST':
         dbs = request.dbsession
         # TODO 判断用户名是否重复
-        user = SysUser()
-        user.user_account = request.POST.get('user_account', '')
-        user.user_name = request.POST.get('user_name', '')
-        user.phone = request.POST.get('phone', '')
-        user.address = request.POST.get('address', '')
-        user.email = request.POST.get('email', '')
-        user.max_period = request.POST.get('max_period', 7)
-        user.user_type = request.POST.get('user_type', 0)
-        user.org_id = request.POST.get('org_id', 0)             # TODO org_id 不能为空
-        user.position = request.POST.get('position', '')
-        user.create_time = datetime.now().strftime(datetime_format)
-        user.create_user = request.session['userId']
-        user.state = request.POST.get('state', 1)
-        role_id = request.POST.get('role_id', 0)
+        user_account = request.POST.get('user_account', '')
+        msg = check_user_account(dbs, user_account)
+        if not msg:
+            user = SysUser()
+            user.user_account = user_account
+            user.user_name = request.POST.get('user_name', '')
+            user.phone = request.POST.get('phone', '')
+            user.address = request.POST.get('address', '')
+            user.email = request.POST.get('email', '')
+            user.max_period = request.POST.get('max_period', 7)
+            user.user_type = request.POST.get('user_type', 0)
+            user.org_id = request.POST.get('org_id', 0)             # TODO org_id 不能为空
+            user.position = request.POST.get('position', '')
+            user.create_time = datetime.now().strftime(datetime_format)
+            user.create_user = request.session['userId']
+            user.state = request.POST.get('state', 1)
+            role_id = request.POST.get('role_id', 0)
 
-        init_pwd = DEFAULT_PASSWORD  # init_password()
-        user.user_pwd = get_password(init_pwd)
-        msg = add(dbs, user, role_id, request.session['userId'])
+            init_pwd = DEFAULT_PASSWORD  # init_password()
+            user.user_pwd = get_password(init_pwd)
+            msg = add(dbs, user, role_id, request.session['userId'])
         json_str = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
