@@ -163,8 +163,8 @@ class SysUserOrg(Base):
 
 class SysUserRole(Base):
     __tablename__ = 'sys_user_role'             # 用户角色关系表
-    role_id = Column(INT, primary_key=True)     # 角色ID
     user_id = Column(INT, primary_key=True)     # 用户ID
+    role_id = Column(INT)                       # 角色ID
     create_time = Column(VARCHAR(19))           # 创建时间
     create_user = Column(INT)                   # 创建人
 
