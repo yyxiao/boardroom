@@ -11,7 +11,9 @@ INSERT INTO "brms"."sys_user_org" ("user_id", "org_id", "create_time", "create_u
 
 -- 角色初始化
 INSERT INTO "brms"."sys_role" ("role_id", "role_name", "role_desc", "create_time", "create_user") VALUES (1, '系统管理员', '系统管理员', NULL, NULL);
-SELECT SETVAL('brms.sys_role_id_seq', 2, false);
+INSERT INTO "brms"."sys_role" ("role_id", "role_name", "role_desc", "create_time", "create_user") VALUES (2, '普通管理员', '普通管理员', NULL, NULL);
+INSERT INTO "brms"."sys_role" ("role_id", "role_name", "role_desc", "create_time", "create_user") VALUES (3, '普通用户', '普通用户', NULL, NULL);
+SELECT SETVAL('brms.sys_role_id_seq', 4, false);
 
 -- 用户角色初始化
 INSERT INTO "brms"."sys_user_role" ("role_id", "user_id", "create_time", "create_user") VALUES (1, 1, NULL, NULL);
@@ -24,6 +26,14 @@ INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create
 INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 5, NULL, NULL);
 INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 6, NULL, NULL);
 INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 7, NULL, NULL);
+
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 1, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 2, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 4, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 5, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 6, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 7, NULL, NULL);
+
 
 -- 菜单初始化
 INSERT INTO "brms"."sys_menu" ("id", "name", "parent_id", "target", "url", "icon_name", "sort_index", "create_time", "create_user") VALUES (1, '用户管理', NULL, NULL, '/user/to_user', 'fa fa-user', NULL, NULL, NULL);
