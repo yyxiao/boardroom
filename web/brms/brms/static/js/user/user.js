@@ -312,7 +312,7 @@ function check_pwd() {
 	var pwd1 = $.trim($("#passwd_new1").val());
 	var pwd2 = $.trim($("#passwd_new2").val());
 
-	if(pwd1 != pwd2){
+	if(pwd1 != '' && pwd2 != '' && pwd1 != pwd2){
 		$("#user_cue").html("<font color='red'>新密码不一致</font>");
 		return false;
 	}else{

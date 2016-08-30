@@ -15,8 +15,9 @@ from .org_service import find_branch_json
 logger = logging.getLogger('operator')
 
 
-def find_users(dbs, org_id=None, user_account=None, user_name=None, role_name=None, page_no=1, user_id=None, show_child=True):
-    '''
+def find_users(dbs, org_id=None, user_account=None, user_name=None, role_name=None, page_no=1, user_id=None,
+               show_child=True):
+    """
     查找符合条件的用户， 返回用户列表和分页对象
     :param dbs:
     :param org_id:
@@ -27,7 +28,7 @@ def find_users(dbs, org_id=None, user_account=None, user_name=None, role_name=No
     :param user_id:
     :param show_child:
     :return:
-    '''
+    """
 
     users = dbs.query(SysUser.id,
                       SysUser.user_account,
@@ -104,12 +105,12 @@ def find_users(dbs, org_id=None, user_account=None, user_name=None, role_name=No
 
 
 def find_user(dbs, user_id):
-    '''
+    """
     根据用户id查找用户, 返回用户信息字典对象
     :param dbs:
     :param user_id:
     :return:
-    '''
+    """
     (users, paginator) = find_users(dbs, user_id=user_id)
 
     if len(users) >= 1:
@@ -118,12 +119,12 @@ def find_user(dbs, user_id):
 
 
 def find_user_by_id(dbs, user_id):
-    '''
+    """
     根据用户id查找用户，返回用户模型对象
     :param dbs:
     :param user_id:
     :return:
-    '''
+    """
     user = dbs.query(SysUser).filter(SysUser.id == user_id).first()
     if user:
         return user
@@ -131,14 +132,14 @@ def find_user_by_id(dbs, user_id):
 
 
 def add(dbs, user, role_id=None, create_user=None):
-    '''
+    """
     添加用户
     :param dbs:
     :param user:
     :param role_id:
     :param create_user:
     :return:
-    '''
+    """
     try:
         dbs.add(user)
         dbs.flush()
@@ -157,22 +158,26 @@ def add(dbs, user, role_id=None, create_user=None):
         return '添加用户失败, 请核对后重试！'
 
 
-def update(dbs, user, role_id=None, create_user=None):
-    '''
+def update(dbs, user, role_id=None, org_id=None, create_user=None):
+    """
     更新用户信息
     :param dbs:
     :param user:
     :param role_id:
+    :param org_id:
     :param create_user:
     :return:
-    '''
+    """
     try:
         with transaction.manager:
+            if org_id and org_id != '' and org_id != 0:
+                sys_user_org = dbs.query(SysUserOrg).filter(SysUserOrg.user_id == user.id,
+                                                            SysUserOrg.org_id == user.org_id).first()
+                sys_user_org.org_id = org_id
+                dbs.merge(sys_user_org)
+                user.org_id = org_id
             dbs.merge(user)
-            sys_user_org = SysUserOrg(user_id=user.id, org_id=user.org_id, create_user=create_user,
-                                      create_time=date_now())
-            dbs.merge(sys_user_org)
-            if role_id != '' and role_id != 0:
+            if role_id and role_id != '' and role_id != 0:
                 user_role = dbs.query(SysUserRole).filter(SysUserRole.user_id == user.id).first()
                 if not user_role:
                     user_role = SysUserRole()
@@ -210,6 +215,7 @@ def send_email(address, content):
     :param content:
     :return:
     """
+    print(address)
     print(content)
     pass
     # TODO
@@ -256,8 +262,8 @@ def user_org(dbs, user_id, create_user, org_list, now):
         dbs.query(SysUserOrg).filter(SysUserOrg.user_id == user_id).delete()
         logger.info("清除用户授权机构信息成功！")
         for org_id in org_list:
-            userorg = SysUserOrg(user_id=user_id, org_id=org_id, create_user=create_user, create_time=now)
-            dbs.merge(userorg)
+            user_org_ = SysUserOrg(user_id=user_id, org_id=org_id, create_user=create_user, create_time=now)
+            dbs.merge(user_org_)
     except Exception as e:
         logger.error(e)
         msg = '用户授权失败，请稍后重试！'
