@@ -4,7 +4,7 @@
 var loadcontent = function(url) {
 	$('#mainContent').load(url,function(response,status,xhr){
 		if (status == 'error'){
-				redirect_to("/");
+				redirect_to("/login");
 		}
 	});
-}
+};

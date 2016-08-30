@@ -20,11 +20,14 @@ from ..service.menu_service import get_user_menu
 
 
 @view_config(route_name='home')
-@request_login
 def index(request):
     welcome = get_welcome()
     if 'loginUserSession' not in request.session:
-        user_id = request.session['userId']
+        try:
+            user_id = request.session['userId']
+        except:
+            return HTTPFound(request.route_url('login'))
+
         dbs = request.dbsession
         sys_menu_list = get_user_menu(dbs, user_id)
         login_user_session = {

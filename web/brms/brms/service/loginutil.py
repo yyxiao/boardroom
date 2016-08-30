@@ -7,6 +7,7 @@ __mtime__ = ''
 """
 from datetime import datetime
 from pyramid.httpexceptions import HTTPFound
+from pyramid.response import Response
 
 
 def request_login(func):
@@ -14,7 +15,8 @@ def request_login(func):
         try:
             user_name = request.session['userAccount']
         except:
-            return HTTPFound(request.route_url('login'))
+            # return HTTPFound(request.route_url('login'))
+            return Response(status=404)
         return func(request)
 
     return _request_login
