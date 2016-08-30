@@ -74,11 +74,20 @@ function add() {
 		$('#user_cue').html("<font color='red'>用户帐号不能为空</font>");
 		return false;
 	}
+	if(user_account != ''){
+		var user_accountPat = /^([a-zA-Z])+([a-zA-Z0-9].*)$/;
+		var matchAccount = user_account.match(user_accountPat);
+		if (matchAccount == null) {
+			$.messager.popup('登陆帐号只能输入字母、数字，以字母开头');
+			return false;
+		}
+	}
 	if (is_str_unsafe(user_account) == true) {
 		$('#user_account_add').focus();
 		$('#user_cue').html("<font color='red'>用户帐号含有非法字符</font>");
 		return false;
 	}
+
 	if (is_str_toolong(user_account) == true) {
 		$('#user_account_add').focus();
 		$('#user_cue').html("<font color='red'>用户帐号超过最大长度</font>");
@@ -202,6 +211,14 @@ function update() {
 		$('#user_account_add').focus();
 		$('#user_cue').html("<font color='red'>用户帐号不能为空</font>");
 		return false;
+	}
+	if(user_account != ''){
+		var user_accountPat = /^([a-zA-Z])+([a-zA-Z0-9].*)$/;
+		var matchAccount = user_account.match(user_accountPat);
+		if (matchAccount == null) {
+			$.messager.popup('登陆帐号只能输入字母、数字，以字母开头');
+			return false;
+		}
 	}
 	if (is_str_unsafe(user_account) == true) {
 		$('#user_account_add').focus();
