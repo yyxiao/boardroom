@@ -204,7 +204,11 @@ def add(dbs, org):
     try:
         dbs.add(org)
         dbs.flush()
-        sys_user_org = SysUserOrg(user_id=org.create_user, org_id=org.id, create_user=org.create_user, create_time=date_now())
+        sys_user_org = SysUserOrg(user_id=org.create_user, org_id=org.id, create_user=org.create_user,
+                                  create_time=date_now())
+        dbs.merge(sys_user_org)
+        sys_user_org = SysUserOrg(user_id=1, org_id=org.id, create_user=org.create_user,
+                                  create_time=date_now())
         dbs.merge(sys_user_org)
         return ''
     except Exception as e:
