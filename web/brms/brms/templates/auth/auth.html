@@ -1,7 +1,9 @@
 {% block content %}
 <ul class="nav nav-tabs">
     <li class="active"><a href="#tab_1" data-toggle="tab">用户授权</a></li>
+    {% if user_role_id == 1 %}
     <li><a href="#tab_2" data-toggle="tab">角色授权</a></li>
+    {% endif %}
 </ul>
 <section style="padding-top:5px;">
     <ol class="breadcrumb">

@@ -283,3 +283,9 @@ def user_org(dbs, user_id, create_user, org_list, now):
         logger.error(e)
         msg = '用户授权失败，请稍后重试！'
     return msg
+
+
+def find_user_role(dbs, user_id):
+    user_role = dbs.query(SysUserRole).filter(SysUserRole.user_id == user_id).first();
+    return user_role
+

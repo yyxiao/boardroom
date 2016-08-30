@@ -8,12 +8,13 @@ __mtime__ = 2016/8/19
 import json
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
-from ..service.user_service import user_org
+from ..service.user_service import user_org, find_user_role
 from ..service.org_service import find_branch_json, find_branch_json_check
 from ..service.menu_service import find_menu_json_check
 from ..service.role_service import role_menu
 from ..service.loginutil import request_login
 from ..common.dateutils import date_now
+from ..models.model import SysUser
 
 
 @view_config(route_name='to_auth')
@@ -25,6 +26,9 @@ def auth_index(request):
     :return:
     """
     dbs = request.dbsession
+    user_id = request.session['userId']
+    user_role = find_user_role(dbs, user_id)
+    user_role_id = user_role.role_id
     user_org_id = request.session['userOrgId']
     branch_json = json.dumps(find_branch_json(dbs, user_org_id))
     return render_to_response('auth/auth.html', locals(), request)
