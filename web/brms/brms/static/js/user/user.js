@@ -366,9 +366,19 @@ function user_setting() {
 		$("#user_cue").html("<font color='red'>新密码不能为空</font>")
 		return false;
 	}
+	if (is_str_unsafe(pwd_new1) == true) {
+		$('#passwd_new1').focus();
+		$('#user_cue').html("<font color='red'>密码含有非法字符</font>");
+		return false;
+	}
 	if (pwd_new2 == '' ) {
 		$("#passwd_new2").focus();
 		$("#user_cue").html("<font color='red'>新密码不能为空</font>")
+		return false;
+	}
+	if (is_str_unsafe(pwd_new2) == true) {
+		$('#passwd_new2').focus();
+		$('#user_cue').html("<font color='red'>密码含有非法字符</font>");
 		return false;
 	}
 
