@@ -207,7 +207,7 @@ function update() {
 		success : function(data) {
 			if (data.resultFlag == "success") {
 				$("#addModal").modal('hide');
-				$.messager.popup('新增会议室成功！');
+				$.messager.popup('更新会议室成功！');
 				list(1)
 			} else {
 				$.messager.popup(data.error_msg);

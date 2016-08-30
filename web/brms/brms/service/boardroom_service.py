@@ -20,7 +20,7 @@ logger = logging.getLogger('operator')
 
 
 def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_no=1, show_child=False):
-    '''
+    """
     查询符合条件的办公室，返回列表和分页对象
     :param dbs:
     :param br_id:
@@ -30,7 +30,7 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
     :param page_no:
     :param show_child:
     :return:
-    '''
+    """
     boardrooms = dbs.query(HasBoardroom.id,
                            HasBoardroom.name,
                            HasBoardroom.picture,
@@ -90,12 +90,12 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
 
 
 def find_boardroom(dbs, br_id):
-    '''
+    """
     根据id查找会议室
     :param dbs:
     :param br_id:
     :return:
-    '''
+    """
     (brs, paginator) = find_boardrooms(dbs, br_id=br_id)
     if len(brs) >= 1:
         return brs[0]
@@ -103,12 +103,12 @@ def find_boardroom(dbs, br_id):
 
 
 def add(dbs, boardroom):
-    '''
+    """
     添加会议室到数据库
     :param dbs:
     :param boardroom:
     :return:
-    '''
+    """
     try:
         with transaction.manager:
             dbs.add(boardroom)
@@ -120,12 +120,12 @@ def add(dbs, boardroom):
 
 
 def update(dbs, boardroom):
-    '''
+    """
     更新会议室信息到数据库
     :param dbs:
     :param boardroom:
     :return:
-    '''
+    """
     try:
         with transaction.manager:
             dbs.merge(boardroom)
@@ -136,19 +136,20 @@ def update(dbs, boardroom):
     return msg
 
 
-def delete(dbs, br_id):
-    '''
+def delete(dbs, br_id, app_path=None):
+    """
     删除会议室
     :param dbs:
     :param br_id:
+    :param app_path:
     :return:
-    '''
+    """
 
     try:
         with transaction.manager:
             br = dbs.query(HasBoardroom).filter(HasBoardroom.id == br_id).first()
             if br.picture:
-                delete_pic(br.picture, br.org_id)
+                delete_pic(br.picture, br.org_id, app_path)
             dbs.delete(br)
 
         return ''
@@ -157,16 +158,17 @@ def delete(dbs, br_id):
         return '删除用户失败！'
 
 
-def writefile(file, filename, org_id=None):
-    '''
+def writefile(file, filename, org_id=None, app_path=None):
+    """
 
     :param file:
     :param filename:
     :param org_id:
+    :param app_path:
     :return:
-    '''
+    """
 
-    file_path = get_pic_path(filename, org_id)
+    file_path = get_pic_path(filename, org_id, app_path)
     try:
         with open(file_path, 'wb') as fp:
             fp.write(file.read())
@@ -176,34 +178,39 @@ def writefile(file, filename, org_id=None):
     return msg
 
 
-def delete_pic(filename, org_id=None):
-    '''
+def delete_pic(filename, org_id=None, app_path=None):
+    """
     删除会议室图片
     :param filename:
     :param org_id:
+    :param app_path:
     :return:
-    '''
+    """
 
-    file_path = get_pic_path(filename, org_id, create_dirs=False)
+    if not filename:
+        return
+
+    file_path = get_pic_path(filename, org_id, app_path=app_path, create_dirs=False)
     if os.path.exists(file_path):
         os.remove(file_path)
 
 
-def get_pic_path(filename, org_id=None, create_dirs=True):
-    '''
+def get_pic_path(filename, org_id=None, app_path=None, create_dirs=True):
+    """
 
     :param filename:
     :param org_id:
+    :param app_path:
     :param create_dirs:
     :return:
-    '''
+    """
     # 若org_id为空，则写入到临时目录
     if not org_id:
         org_id = 'tmp'
     else:
         org_id = 'org/' + str(org_id)
 
-    path = os.path.join(os.getcwd(), 'brms/static/img/boardroom/', org_id)
+    path = os.path.join(app_path, 'boardroom_manage/web/brms/brms/static/img/boardroom/', org_id)
     if create_dirs:
         os.makedirs(path, exist_ok=True)
 
@@ -212,24 +219,25 @@ def get_pic_path(filename, org_id=None, create_dirs=True):
 
 
 def get_save_name(filename):
-    '''
+    """
     获取文件扩展名
     :param filename:
     :return:
-    '''
+    """
     name = str(int(datetime.now().timestamp() * 1000000))
     return name + os.path.splitext(filename)[1]
 
 
-def move_pic(br_pic, org_id):
-    '''
+def move_pic(br_pic, org_id, app_path=None):
+    """
     从临时目录移动图片到对应机构下
     :param br_pic:
     :param org_id:
+    :param app_path:
     :return:
-    '''
-    src_path = get_pic_path(br_pic, create_dirs=False)
-    target_path = get_pic_path(br_pic, org_id)
+    """
+    src_path = get_pic_path(br_pic, app_path=app_path, create_dirs=False)
+    target_path = get_pic_path(br_pic, org_id, app_path=app_path)
 
     try:
         shutil.move(src_path, target_path)

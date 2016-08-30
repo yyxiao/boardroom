@@ -13,7 +13,6 @@ from pyramid.view import view_config
 
 from brms.common.constant import BRMS_URL
 from ..common.dateutils import datetime_format
-from ..models.model import HasBoardroom
 from ..service.boardroom_service import *
 from ..service.loginutil import request_login
 from ..service.org_service import find_branch, find_branch_json
@@ -34,7 +33,7 @@ def boardroom_info(request):
 
 @view_config(route_name='to_br')
 @request_login
-def boardrooms(request):
+def to_boardrooms(request):
     """
     会议室管理主页
     :param request:
@@ -63,7 +62,8 @@ def boardroom_list(request):
         show_child = request.POST.get('show_child', 'false') == 'true'
         flag = request.POST.get('flag', '')
         page_no = int(request.POST.get('page', ''))
-        (boardrooms, paginator) = find_boardrooms(dbs, name=name, config=config, org_id=org_id, page_no=page_no, show_child=show_child)
+        (boardrooms, paginator) = find_boardrooms(dbs, name=name, config=config, org_id=org_id, page_no=page_no,
+                                                  show_child=show_child)
         return render_to_response('boardroom/list.html', locals(), request)
 
     return Response('', 404)
@@ -93,24 +93,25 @@ def upload_pic(request):
     :return:
     """
     if request.method == 'POST':
+        app_path = request.registry.settings['app_path']
         file = request.POST.get('br_pic', '')
         save_name = ''
         if file != '':
             upload_name = file.filename
             save_name = get_save_name(upload_name)
-            msg = writefile(file.file, save_name)
+            msg = writefile(file.file, save_name, app_path=app_path)
 
             if not msg:
                 request.session[upload_name] = save_name
         else:
             msg = 'file name is null'
 
-        json = {
+        json_str = {
             'resultFlag': 'failed' if msg else 'success',
             'name': save_name,
             'error_msg': msg
         }
-        return json
+        return json_str
 
     return {}
 
@@ -125,6 +126,7 @@ def add_br(request):
     """
 
     if request.method == 'POST':
+        app_path = request.registry.settings['app_path']
         dbs = request.dbsession
 
         br = HasBoardroom()
@@ -143,13 +145,13 @@ def add_br(request):
         org_id = br.org_id
         msg = add(dbs, br)
         if not msg and pic_name:
-            move_pic(br_pic, org_id)
+            move_pic(br_pic, org_id, app_path)
 
-        json = {
+        json_str = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
-        return json
+        return json_str
 
     return {}
 
@@ -164,16 +166,17 @@ def delete_br(request):
     """
 
     if request.method == 'POST':
+        app_path = request.registry.settings['app_path']
         dbs = request.dbsession
         br_id = request.POST.get('br_id')
 
-        msg = delete(dbs, br_id)
+        msg = delete(dbs, br_id, app_path)
 
-        json = {
+        json_str = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
-        return json
+        return json_str
 
     return {}
 
@@ -206,6 +209,7 @@ def update_br(request):
 
     if request.method == 'POST':
         dbs = request.dbsession
+        app_path = request.registry.settings['app_path']
         br = dbs.query(HasBoardroom).filter(HasBoardroom.id == request.POST.get('br_id', 0)).first()
         old_pic = br.picture
         old_org = br.org_id
@@ -221,15 +225,15 @@ def update_br(request):
         org_id = br.org_id
         msg = update(dbs, br)
         if not msg and pic_name:
-            delete_pic(old_pic, old_org)
-            move_pic(br_pic, org_id)
+            delete_pic(old_pic, old_org, app_path)
+            move_pic(br_pic, org_id, app_path)
 
-        json = {
+        json_str = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
 
-        return json
+        return json_str
 
     return {}
 
