@@ -200,7 +200,7 @@ def update(dbs, user, role_id=None, org_id=None, create_user=None):
                     user_role.create_user = create_user
                     user_role.create_time = date_now()
                 user_role.role_id = role_id
-                dbs.add(user_role)
+                dbs.merge(user_role)
         return ''
     except Exception as e:
         logger.error(e)
