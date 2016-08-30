@@ -19,7 +19,7 @@ def get_user_menu(dbs, user_id):
     menus = dbs.query(SysMenu).filter(SysMenu.id == SysRoleMenu.menu_id,
                                       SysRoleMenu.role_id == SysRole.role_id,
                                       SysRole.role_id == SysUserRole.role_id,
-                                      SysUserRole.user_id == user_id).all()
+                                      SysUserRole.user_id == user_id).order_by(SysRoleMenu.menu_id).all()
 
     return menus
 
