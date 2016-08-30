@@ -20,7 +20,7 @@ function list(page) {
  */
 function page() {
 	var pageNo = $("#pageNo").val()
-	if (isNaN(pageNo)){
+	if (isNaN(pageNo) || pageNo == ''){
 		$.messager.popup('错误的页码，请重新输入')
 		return false
 	}
