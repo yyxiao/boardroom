@@ -111,6 +111,14 @@ function add() {
         $('#max_period').focus();
         $('#user_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
     }
+	if(phone!=''){
+		var phonePat=/^([0-9-].*)$/;
+		var matchPhone=phone.match(phonePat);
+		if (matchPhone==null) {
+			$.messager.popup('电话格式不正确');
+			return false;
+		}
+	}
 	if(email!=''){
 		var emailPat=/^([a-zA-Z0-9_-].*)+@([a-zA-Z0-9_-].*)+(.com)$/;
 		var matchArray=email.match(emailPat);
@@ -232,10 +240,18 @@ function update() {
         $('#max_period').focus();
         $('#user_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
     }
+	if(phone!=''){
+		var phonePat=/^([0-9-].*)$/;
+		var matchPhone=phone.match(phonePat);
+		if (matchPhone==null) {
+			$.messager.popup('电话格式不正确');
+			return false;
+		}
+	}
 	if(email!=''){
 		var emailPat=/^([a-zA-Z0-9_-].*)+@([a-zA-Z0-9_-].*)+(.com)$/;
-		var matchArray=email.match(emailPat);
-		if (matchArray==null) {
+		var matchEmail=email.match(emailPat);
+		if (matchEmail==null) {
 			$.messager.popup('电子邮件地址格式不正确 (样例格式:xxxx@xxx.com)');
 			return false;
 		}
