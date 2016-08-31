@@ -251,11 +251,12 @@ def user_checking(dbs, pad_code, user_id):
             .outerjoin(SysUser, SysUser.id == SysUserOrg.user_id)\
             .outerjoin(HasPad, HasBoardroom.pad_id == HasPad.id)
         if user_id:
-            orgs.filter(SysUser.id == user_id)
+            orgs = orgs.filter(SysUser.id == user_id)
         if pad_code:
-            org_list = orgs.filter(HasPad.pad_code == pad_code).all()
-        # if not org_list:
-        #     msg = '该pad没有匹配会议室，请稍后重试！'
+            orgs = orgs.filter(HasPad.pad_code == pad_code)
+        orgs = orgs.all()
+        if not orgs:
+            msg = '该用户无权限操作该设备！'
     except Exception as e:
         logger.error(e)
         msg = '验证用户失败！'
