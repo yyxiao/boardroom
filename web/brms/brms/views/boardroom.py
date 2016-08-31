@@ -27,7 +27,8 @@ def boardroom_info(request):
     :return:
     """
     dbs = request.dbsession
-    branch_json = json.dumps(find_branch_json(dbs))
+    user_org_id = request.session['userOrgId']
+    branch_json = json.dumps(find_branch_json(dbs, user_org_id))
     return render_to_response('boardroom/boardroom_info.html', locals(), request)
 
 
@@ -40,7 +41,8 @@ def to_boardrooms(request):
     :return:
     """
     dbs = request.dbsession
-    branch_json = json.dumps(find_branch_json(dbs))
+    user_org_id = request.session['userOrgId']
+    branch_json = json.dumps(find_branch_json(dbs, user_org_id))
     return render_to_response('boardroom/boardroom.html', locals(), request)
 
 
