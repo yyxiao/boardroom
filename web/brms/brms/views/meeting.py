@@ -5,16 +5,12 @@ __author__ = xyy
 __mtime__ = 2016/8/8
 """
 
-
+import copy
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
-from pyramid.response import Response
+from ..common.dateutils import datetime_format
 from ..service.meeting_service import *
 from ..service.loginutil import request_login
-from ..models.model import *
-from ..common.dateutils import datetime_format
-from datetime import datetime
-import json
 
 
 @view_config(route_name='to_meeting')
@@ -47,7 +43,8 @@ def list_meeting(request):
         create_user = request.POST.get('create_user', '')
         user_org_id = request.session['userOrgId']
     page_no = int(request.POST.get('page', '1'))
-    (meetings, paginator) = find_meetings(dbs, meeting_name, create_user, flag, user_org_id, room_name, start_date, end_date, page_no)
+    (meetings, paginator) = find_meetings(dbs, meeting_name, create_user, flag, user_org_id, room_name, start_date,
+                                          end_date, page_no)
     return render_to_response('meeting/list.html', locals(), request)
 
 
@@ -78,7 +75,7 @@ def add_meeting(request):
     meeting.start_time = request.POST.get('start_time', '')
     meeting.end_time = request.POST.get('end_time', '')
     meeting.org_id = int(request.POST.get('org_id', 0))
-    meeting.repeat = 'yes' if request.POST.get('is_repeat', 'false') == 'true' else ''
+    meeting.repeat = REPEAT_YES if request.POST.get('is_repeat', 'false') == 'true' else ''
     meeting.repeat_date = request.POST.get('weekday[]', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
@@ -86,15 +83,15 @@ def add_meeting(request):
     if not error_msg:
         error_msg = add(dbs, meeting, room_id)
     if error_msg:
-        json = {
+        json_str = {
             'success': False,
             'error_msg': error_msg,
         }
     else:
-        json = {
+        json_str = {
             'success': True,
         }
-    return json
+    return json_str
 
 
 @view_config(route_name='delete_meeting', renderer='json')
@@ -105,15 +102,15 @@ def del_meeting(request):
     user_id = request.session['userId']
     error_msg = delete_meeting(dbs, meeting_id, user_id)
     if error_msg:
-        json = {
+        json_str = {
             'success': False,
             'error_msg': error_msg,
         }
     else:
-        json = {
+        json_str = {
             'success': True,
         }
-    return json
+    return json_str
 
 
 @view_config(route_name='to_update_meeting')
@@ -143,33 +140,29 @@ def update_meeting(request):
     room_id = int(request.POST.get('room_id', 0))
     meeting = find_meeting(dbs, meeting_id)
 
-    old_meeting = HasMeeting()
-    old_meeting.start_date = meeting.start_date
-    old_meeting.start_time = meeting.start_time
-    old_meeting.end_date = meeting.end_date
-    old_meeting.end_time = meeting.end_time
+    old_meeting = copy.deepcopy(meeting)
 
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
+    meeting.repeat = REPEAT_YES if request.POST.get('is_repeat', 'false') == 'true' else ''
     meeting.start_date = request.POST.get('start_date', '')
     meeting.end_date = request.POST.get('end_date', '')
     meeting.start_time = request.POST.get('start_time', '')
     meeting.end_time = request.POST.get('end_time', '')
-    meeting.create_user = request.session['userId']
-    meeting.create_time = datetime.now().strftime(datetime_format)
+
     error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
     if not error_msg:
         error_msg = update(dbs, meeting, room_id, old_meeting=old_meeting)
     if error_msg:
-        json = {
+        json_str = {
             'success': False,
             'error_msg': error_msg,
         }
     else:
-        json = {
+        json_str = {
             'success': True,
         }
-    return json
+    return json_str
 
 
 @view_config(route_name='my_meeting')

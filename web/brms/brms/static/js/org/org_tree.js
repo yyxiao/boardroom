@@ -13,7 +13,7 @@ function zTreeOnCheck(event, treeId, treeNode) {
 		$("#search_org_name").val(treeNode.name);
 	}
 	$("#orgTree").hide();
-};
+}
 //任何地方点击都隐藏orgTree
 $(document).click(function(){
     $("#orgTree").hide();
