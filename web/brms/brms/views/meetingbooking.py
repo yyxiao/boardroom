@@ -23,7 +23,8 @@ def meeting_booking(request):
     :return:
     '''
     dbs = request.dbsession
-    branch_json = json.dumps(find_branch_json(dbs))
+    user_org_id = request.session['userOrgId']
+    branch_json = json.dumps(find_branch_json(dbs, user_org_id))
     return render_to_response('booking/booking.html', locals(), request)
 
 
@@ -63,7 +64,7 @@ def list_by_org(request):
     if request.method == 'POST':
         dbs = request.dbsession
         org_id = int(request.POST.get('org_id', 0))
-        (boardrooms, paginator) = find_boardrooms(dbs, org_id=org_id, page_no=0)
+        (boardrooms, paginator) = find_boardrooms(dbs, org_id=org_id, page_no=0, show_child=True)
         json_str = {
             'resultFlag': 'success',
             'brs': boardrooms
