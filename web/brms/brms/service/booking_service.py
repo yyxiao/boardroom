@@ -9,7 +9,7 @@ import transaction
 import logging
 from functools import reduce
 from ..common.dateutils import get_weekday
-from ..models.model import HasBoardroom, HasMeeting, HasMeetBdr, HasRoomOccupy
+from ..models.model import *
 
 logger = logging.getLogger('operator')
 
@@ -266,3 +266,41 @@ def get_binary(start_time, end_time, start=7, hours=14):
 
     binary = reduce((lambda x, y: x + 2 ** y), range(left, right), 0)
     return binary
+
+
+def find_orgs(dbs, user_id):
+    """
+    获取可分配的机构
+    :param dbs:
+    :param user_id:
+    :return:
+    """
+    orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id)\
+        .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id))\
+        .filter(SysUserOrg.user_id == user_id).all()
+    rooms = dbs.query(HasBoardroom.id, HasBoardroom.name, HasBoardroom.org_id) \
+        .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id)\
+        .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id)) \
+        .filter(SysUserOrg.user_id == user_id).all()
+    lists = []
+    for org in orgs:
+        org_id = org.id
+        org_name = org.org_name
+        parent_id = org.parent_id
+        room_list = []
+        for room in rooms:
+            # 将会议室拼入公司机构list
+            if org_id == room.org_id:
+                room_dict = {
+                    'key': room.id,
+                    'label': room.name
+                }
+                room_list.append(room_dict)
+        temp_dict = {
+            'org_id': org_id,
+            'label': org_name,
+            'open': True,
+            'children': room_list
+        }
+        lists.append(temp_dict)
+    return lists

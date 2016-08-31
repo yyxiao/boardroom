@@ -96,5 +96,36 @@ def list_by_br(request):
     return {}
 
 
+@view_config(route_name='list_by_br_new', renderer='json')
+@request_login
+def list_by_br_new(request):
+    """
+
+    :param request:
+    :return:
+    """
+    dbs = request.dbsession
+    org_id = int(request.POST.get('org_id', 0))
+    br_id = int(request.POST.get('br_id', 0))
+    # user_org_id = request.session['userOrgId']
+
+    meetings = find_meeting_calendar(dbs, user_org_id=1, org_id=org_id, room_id=br_id)
+    json_str = {
+        'meetings': meetings
+    }
+    return json_str
 
 
+@view_config(route_name='org_room_list', renderer='json')
+@request_login
+def org_room_list(request):
+    dbs = request.dbsession
+    org_id = int(request.POST.get('org_id', 0))
+    br_id = int(request.POST.get('br_id', 0))
+    # user_org_id = request.session['userOrgId']
+
+    org_room = find_orgs(dbs, user_id=1)
+    json_str = {
+        'org_room': org_room
+    }
+    return json_str

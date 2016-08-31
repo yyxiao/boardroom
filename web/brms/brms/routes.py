@@ -114,3 +114,5 @@ def booking_include(config):
     config.add_route('meeting_booking', '/meeting_booking')
     config.add_route('list_by_org', '/list_by_org')
     config.add_route('list_by_br', '/list_by_br')
+    config.add_route('list_by_br_new', '/list_by_br_new')
+    config.add_route('org_room_list', '/org_room_list')

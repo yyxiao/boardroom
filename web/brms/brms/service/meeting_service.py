@@ -124,7 +124,8 @@ def find_meeting_calendar(dbs, user_org_id=None, start_date=None, end_date=None,
                          HasMeeting.start_time,
                          HasMeeting.end_time,
                          SysUser.user_name,
-                         HasBoardroom.name) \
+                         HasBoardroom.name,
+                         HasBoardroom.id) \
         .outerjoin(SysUser, SysUser.id == HasMeeting.create_user) \
         .outerjoin(SysOrg, SysUser.org_id == SysOrg.id) \
         .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id) \
@@ -150,15 +151,13 @@ def find_meeting_calendar(dbs, user_org_id=None, start_date=None, end_date=None,
         end_time = obj[5] if obj[5] else ''
         create_user = obj[6] if obj[6] else ''
         room_name = obj[7] if obj[7] else ''
+        room_id1 = obj[8] if obj[8] else ''
         temp_dict = {
             'id': meeting_id,
-            'name': name,
-            'description': description,
-            'meeting_date': meeting_date,
-            'start_time': start_time,
-            'end_time': end_time,
-            'create_user': create_user,
-            'room_name': room_name
+            'text': name,
+            'start_date': meeting_date + " " + start_time,
+            'end_date': meeting_date + " " + end_time,
+            'room_id': room_id1
         }
         lists.append(temp_dict)
     return lists
