@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from ..models.model import *
 from ..common.dateutils import date_now, date_pattern1
 from ..service.booking_service import add_booking, update_booking
-from ..service.meeting_service import delete_meeting
+from ..service.meeting_service import delete_meeting, add_meeting_bdr
 import logging
 import transaction
 
@@ -151,12 +151,13 @@ def add_by_pad(dbs, meeting, pad_code):
             dbs.flush()
             logger.debug("会议添加完毕，meeting_id:" + str(meeting.id))
             meeting_id = meeting.id                         # 会议ID
-            meet_bdr = HasMeetBdr()                         # 会议室会议关联信息
-            meet_bdr.meeting_id = meeting_id
-            meet_bdr.boardroom_id = board.id
-            meet_bdr.create_user = meeting.create_user
-            meet_bdr.create_time = date_now()
-            dbs.add(meet_bdr)
+            # meet_bdr = HasMeetBdr()                         # 会议室会议关联信息
+            # meet_bdr.meeting_id = meeting_id
+            # meet_bdr.boardroom_id = board.id
+            # meet_bdr.create_user = meeting.create_user
+            # meet_bdr.create_time = date_now()
+            # dbs.add(meet_bdr)
+            add_meeting_bdr(dbs, meeting_id, board.id, meeting.start_date, meeting.create_user)
             logger.debug("会议会议室关联添加完毕")
             error_msg = add_booking(dbs, board.id, meeting.start_date, meeting.start_time, meeting.end_time)
             if error_msg:
@@ -187,35 +188,24 @@ def update_by_pad(dbs, meeting, pad_code, old_meeting=None):
             else:
                 # 查询meeting_id对应的boardroom_id
                 meet_bdr = dbs.query(HasMeetBdr) \
-                    .filter(HasMeetBdr.meeting_id == meeting.id).first()
-                if not meet_bdr:  # 不存在
-                    room_id = board.id
-                    start_date = meeting.start_date
-                    meet_bdr = HasMeetBdr()  # 会议室会议关联信息
-                    meet_bdr.meeting_id = meeting.id
-                    meet_bdr.boardroom_id = board.id
-                    meet_bdr.create_user = meeting.create_user
-                    create_time = date_now()
-                    meet_bdr.create_time = create_time
-                    dbs.add(meet_bdr)
-                    error_msg = add_booking(dbs, room_id, start_date, meeting.start_time, meeting.end_time)
-                    if error_msg:
-                        dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting.id,
-                                                     HasMeetBdr.boardroom_id == board.id,
-                                                     HasMeetBdr.create_time == create_time).delete()
+                    .filter(HasMeetBdr.meeting_id == meeting.id,
+                            HasMeetBdr.boardroom_id == board.id,
+                            HasMeetBdr.meeting_date == old_meeting.start_date).first()
+                # dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting.id,
+                #                              HasMeetBdr.boardroom_id == board.id).delete()
+                # 更新会议
+                # TODO transation 问题
+                dbs.merge(meeting)
+                # dbs.flush()
+                old_room_id = board.id
+                meet_bdr.boardroom_id = old_room_id
+                meet_bdr.meeting_date = meeting.start_date
+                dbs.merge(meet_bdr)
+                error_msg = update_booking(dbs, old_room_id, old_room_id, old_meeting, meeting)
+                if error_msg:
+                    dbs.rollback()
                 else:
-                    # 更新会议
-                    # TODO transation 问题
-                    # dbs.add(meeting)
-                    # dbs.flush()
-                    old_room_id = board.id
-                    # meet_bdr.boardroom_id = old_room_id
-                    # dbs.add(meet_bdr)
-                    error_msg = update_booking(dbs, old_room_id, old_room_id, old_meeting, meeting)
-                    if error_msg:
-                        dbs.rollback()
-                    else:
-                        dbs.add(meeting)
+                    dbs.add(meeting)
         except Exception as e:
             logger.error(e)
             error_msg = '更新会议失败，请核对后重试'
