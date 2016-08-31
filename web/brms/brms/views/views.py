@@ -103,4 +103,4 @@ def logout(request):
     del (request.session['userOrgId'])
     del(request.session['user_name_db'])
     del(request.session['loginUserSession'])
-    return render_to_response('login.html', {}, request)
+    return HTTPFound(request.route_url('login'))

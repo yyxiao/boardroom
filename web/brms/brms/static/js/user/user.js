@@ -350,7 +350,7 @@ function check_pwd() {
 		$("#user_cue").html("<font color='red'>新密码不一致</font>");
 		return false;
 	}else{
-		$("#user_cue").html("");
+		$("#user_cue").html("&nbsp");
 		return true;
 	}
 
@@ -368,8 +368,8 @@ function user_setting() {
 	var user_name = $.trim($("#user_name").val());
 	var phone = $.trim($("#phone").val());
 	var pwd_old = $.trim($("#passwd_old").val());
-	var pwd_new1 = $.trim($("#passwd_new1").val());
-	var pwd_new2 = $.trim($("#passwd_new2").val());
+	var pwd_new1 = $("#passwd_new1").val();
+	var pwd_new2 = $("#passwd_new2").val();
 
 	if (user_id == '') {
         $.messager.popup('更新用户失败,请刷新页面后重试');
@@ -415,6 +415,7 @@ function user_setting() {
 		$('#user_cue').html("<font color='red'>密码含有非法字符</font>");
 		return false;
 	}
+	$("#user_cue").html("&nbsp");
 
 	$.ajax({
 		type : "POST",
