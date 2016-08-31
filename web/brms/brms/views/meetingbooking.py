@@ -108,9 +108,9 @@ def list_by_br_new(request):
     dbs = request.dbsession
     org_id = int(request.POST.get('org_id', 0))
     br_id = int(request.POST.get('br_id', 0))
-    # user_org_id = request.session['userOrgId']
+    user_org_id = request.session['userOrgId']
 
-    meetings = find_meeting_calendar(dbs, user_org_id=1, org_id=org_id, room_id=br_id)
+    meetings = find_meeting_calendar(dbs, user_org_id=user_org_id, org_id=org_id, room_id=br_id)
     json_str = {
         'meetings': meetings
     }
@@ -121,11 +121,9 @@ def list_by_br_new(request):
 @request_login
 def org_room_list(request):
     dbs = request.dbsession
-    org_id = int(request.POST.get('org_id', 0))
-    br_id = int(request.POST.get('br_id', 0))
-    # user_org_id = request.session['userOrgId']
+    user_id = request.session['userId']
 
-    org_room = find_orgs(dbs, user_id=1)
+    org_room = find_orgs(dbs, user_id=user_id)
     json_str = {
         'org_room': org_room
     }
