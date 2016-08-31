@@ -93,11 +93,11 @@ def update_booking(dbs, old_room_id, new_room_id, old_meeting, new_meeting):
 
     if new_room_id != 0:
         m_bin = get_binary(new_meeting.start_time, new_meeting.end_time)
-        if old_room_id == new_room_id and occupy:
+        if old_room_id == new_room_id and old_meeting.start_date == new_meeting.start_date and occupy:
             br_bin = occupy.code
         else:
             occupy = dbs.query(HasRoomOccupy).filter(HasRoomOccupy.room_id == new_room_id,
-                                                     HasRoomOccupy.date == old_meeting.start_date).first()
+                                                     HasRoomOccupy.date == new_meeting.start_date).first()
             if occupy:
                 br_bin = occupy.code
             else:

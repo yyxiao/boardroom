@@ -233,7 +233,7 @@ def update(dbs, meeting, room_id, old_meeting=None):
                     return error_msg
             else:
                 # 更新会议
-                dbs.add(meeting)
+                dbs.merge(meeting)
                 # dbs.flush()
                 old_room_id = meet_bdr.boardroom_id
                 meet_bdr.boardroom_id = room_id
