@@ -49,7 +49,8 @@ def find_meetings(dbs, meeting_name=None, create_user=None, flag=None, user_org_
                          HasMeeting.create_time,
                          HasBoardroom.name)\
         .outerjoin(SysUser, SysUser.id == HasMeeting.create_user)\
-        .outerjoin(SysOrg, SysUser.org_id == SysOrg.id) \
+        .outerjoin(SysUserOrg, and_(SysUserOrg.user_id == SysUser.id, HasMeeting.org_id == SysUserOrg.org_id))\
+        .outerjoin(SysOrg, SysUserOrg.org_id == SysOrg.id) \
         .outerjoin(HasMeetBdr,
                    and_(HasMeetBdr.meeting_id == HasMeeting.id, HasMeetBdr.meeting_date == HasMeeting.start_date)) \
         .outerjoin(HasBoardroom, HasBoardroom.id == HasMeetBdr.boardroom_id)\
@@ -80,7 +81,7 @@ def find_meetings(dbs, meeting_name=None, create_user=None, flag=None, user_org_
         results, paginator = Paginator(meeting_list, page_no, page_size).to_dict()
     lists = []
     for obj in results:
-        id = obj[0] if obj[0] else ''
+        meeting_id = obj[0] if obj[0] else ''
         name = obj[1] if obj[1] else ''
         description = obj[2] if obj[2] else ''
         start_date = obj[3] if obj[3] else ''
@@ -91,7 +92,7 @@ def find_meetings(dbs, meeting_name=None, create_user=None, flag=None, user_org_
         create_time = obj[8] if obj[8] else ''
         room_name = obj[9] if obj[9] else ''
         temp_dict = {
-            'id': id,
+            'id': meeting_id,
             'name': name,
             'description': description,
             'start_date': start_date,
@@ -259,13 +260,15 @@ def delete_meeting(dbs, meeting_id, user_id):
     error_msg = ''
     try:
         with transaction.manager:
-            meeting = dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id).filter(HasMeeting.create_user == user_id).first()
+            meeting = dbs.query(HasMeeting).filter(HasMeeting.id == meeting_id).filter(
+                HasMeeting.create_user == user_id).first()
             rooms = dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == meeting_id).all()
             if not meeting:
                 error_msg = '该会议不是该用户创建，请查询后操作。'
             else:
                 for room in rooms:
-                    error_msg = delete_booking(dbs, room.boardroom_id, room.meeting_date, meeting.start_time, meeting.end_time)
+                    error_msg = delete_booking(dbs, room.boardroom_id, room.meeting_date, meeting.start_time,
+                                               meeting.end_time)
                     if error_msg:
                         dbs.rollback()
                         return error_msg
@@ -326,7 +329,7 @@ def find_rooms(dbs):
 
 
 def add_meeting_bdr(dbs, meeting_id, room_id, meeting_date, create_user):
-    '''
+    """
 
     :param dbs:
     :param meeting_id:
@@ -334,7 +337,7 @@ def add_meeting_bdr(dbs, meeting_id, room_id, meeting_date, create_user):
     :param meeting_date:
     :param create_user:
     :return:
-    '''
+    """
     meet_bdr = HasMeetBdr()
     meet_bdr.meeting_id = meeting_id
     meet_bdr.boardroom_id = room_id
@@ -344,10 +347,10 @@ def add_meeting_bdr(dbs, meeting_id, room_id, meeting_date, create_user):
     dbs.add(meet_bdr)
 
 
-
 def find_user_period(dbs, start_date, end_date, user_id):
     """
     查看用户可预订期限
+    :param dbs:
     :param start_date:
     :param end_date:
     :param user_id:

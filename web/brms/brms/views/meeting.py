@@ -74,7 +74,7 @@ def add_meeting(request):
     meeting.end_date = request.POST.get('end_date', '')
     meeting.start_time = request.POST.get('start_time', '')
     meeting.end_time = request.POST.get('end_time', '')
-    meeting.org_id = int(request.POST.get('org_id', 0))
+    meeting.org_id = int(request.POST.get('org_id', request.session['userOrgId']))
     meeting.repeat = REPEAT_YES if request.POST.get('is_repeat', 'false') == 'true' else ''
     meeting.repeat_date = request.POST.get('weekday[]', '')
     meeting.create_user = request.session['userId']
