@@ -64,8 +64,11 @@ def list_by_org(request):
     """
     if request.method == 'POST':
         dbs = request.dbsession
-        org_id = int(request.POST.get('org_id', 0))
-        (boardrooms, paginator) = find_boardrooms(dbs, org_id=org_id, page_no=0, show_child=True)
+        org_ids = json.loads(request.POST.get('org_ids', ''))
+        boardrooms = []
+        for org_id in org_ids:
+            (rooms, paginator) = find_boardrooms(dbs, org_id=org_id, page_no=0)
+            boardrooms.extend(rooms)
         json_str = {
             'resultFlag': 'success',
             'brs': boardrooms

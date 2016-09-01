@@ -16,7 +16,7 @@
                     <div class="col-sm-8 paddingR0">
                         <input type="text" class="form-control"	id="search_org_name" name="search_org_name" readonly="readonly"
                                onclick="org_show();" placeholder="--请选择机构--">
-                        <input type="text" class="hidden" id="search_org_id" name="search_org_id" >
+{#                        <input type="text" class="hidden" id="search_org_id" name="search_org_id" >#}
                         <div class="form-control" style="background-color:white;
                         height:300px;overflow: auto;display:none;position: absolute;z-index: 8" id="orgTree">
                             <ul id="treeDemo" class="ztree"></ul>
@@ -31,14 +31,6 @@
                         <select class="form-control" id="br_id" name="br_id" onchange="load_meeting();">
                             <option value="">--请选择会议室--</option>
                         </select>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
-                <div class="form-group">
-                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">显示子机构会议室</label>
-                    <div class="col-sm-8 paddingR0">
-                        <input type="checkbox" class="checkbox" id="show_child" name="show_child">
                     </div>
                 </div>
             </div>
@@ -81,7 +73,7 @@
         check: {
             enable: true,
             chkStyle: 'checkbox',
-            chkboxType: {"Y" : "s", "N" : "ps" }
+            chkboxType: {"Y" : "", "N" : "s" }
         },
         data: {
             simpleData: {
@@ -89,12 +81,13 @@
             }
         },
         callback: {
-            onCheck: load_br
+            onCheck: zTreeOnCheck4MB
         }
     };
 
     var zNodes ={{ branch_json|safe }};
     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    zTreeOnCheck4MB(null, null, null);
 
 </script>
 {% endblock %}
