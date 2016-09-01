@@ -17,6 +17,9 @@ class HasBoardroom(Base):
     description = Column(VARCHAR(512))          # 会议室描述
     config = Column(VARCHAR(512))               # 会议室配置
     picture = Column(VARCHAR(200))              # 会议室照片
+    logo = Column(VARCHAR(200))                 # 会议室logo
+    button_img = Column(VARCHAR(200))           # 按钮图标
+    background = Column(VARCHAR(200))           # 背景
     pad_id = Column(INT)                        # 绑定pad id
     org_id = Column(INT)                        # 所属机构id
     type = Column(INT)                          # 会议室类型
