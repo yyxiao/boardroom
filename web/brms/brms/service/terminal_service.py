@@ -28,7 +28,7 @@ def find_terminals(dbs, pad_code, meeting_name, page_no, user_org_id=None):
     terminals = dbs.query(HasPad.id, HasPad.pad_code, HasPad.last_time, SysUser.user_name,
                           HasPad.create_time, HasBoardroom.name)\
         .outerjoin(SysUser, SysUser.id == HasPad.create_user) \
-        .outerjoin(SysOrg, SysUser.org_id == SysOrg.id) \
+        .outerjoin(SysOrg, HasPad.org_id == SysOrg.id) \
         .outerjoin(HasBoardroom, HasBoardroom.pad_id == HasPad.id)
     if pad_code:
         terminals = terminals.filter(HasPad.pad_code.like('%'+pad_code+'%'))

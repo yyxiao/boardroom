@@ -370,3 +370,20 @@ def set_rooms_by_qrcode(dbs, user_id, pad_code, room_id):
             logger.error(e)
             error_msg = 'pad绑定会议室失败，请核对后重试'
     return room, error_msg
+
+
+def pad_clear_room(dbs, pad_code):
+    error_msg = ''
+    with transaction.manager:
+        try:
+            # 查询padcode对应的boardroom_id
+            board = dbs.query(HasBoardroom) \
+                .outerjoin(HasPad, HasBoardroom.pad_id == HasPad.id) \
+                .filter(HasPad.pad_code == pad_code).first()
+            if board:  # 存在
+                board.pad_id = 0
+                dbs.merge(board)
+        except Exception as e:
+            logger.error(e)
+            error_msg = '清除pad数据失败，请联系管理员！'
+    return error_msg

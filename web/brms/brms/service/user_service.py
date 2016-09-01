@@ -263,6 +263,32 @@ def user_checking(dbs, pad_code, user_id):
     return msg
 
 
+def account_checking(dbs, pad_code, user_id):
+    """
+    验证管理员是否可以使用该pad
+    :param dbs:
+    :param pad_code:
+    :param user_id:
+    :return:
+    """
+    msg = ''
+    try:
+        pads = dbs.query(HasPad) \
+            .outerjoin(SysUserOrg, SysUserOrg.org_id == HasPad.org_id) \
+            .outerjoin(SysUser, SysUser.id == SysUserOrg.user_id)
+        if user_id:
+            pads = pads.filter(SysUser.id == user_id)
+        if pad_code:
+            pads = pads.filter(HasPad.pad_code == pad_code)
+        pads = pads.all()
+        if not pads:
+            msg = '该用户无权限操作该设备！'
+    except Exception as e:
+        logger.error(e)
+        msg = '验证用户失败！'
+    return msg
+
+
 def user_org(dbs, user_id, create_user, org_list, now):
     """
     用户授权机构信息

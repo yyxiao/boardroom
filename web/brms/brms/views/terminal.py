@@ -58,6 +58,7 @@ def add_terminal(request):
     terminal = HasPad()
     terminal.pad_code = pad_code
     terminal.create_user = request.session['userId']
+    terminal.org_id = request.session['userOrgId']
     terminal.create_time = date_now()
     # 判断设备编码是否已经存在
     old_terminal = dbs.query(HasPad).filter(HasPad.pad_code == pad_code).first()

@@ -10,7 +10,7 @@ from ..common.jsonutils import serialize
 from ..service.loginutil import UserTools
 from ..service.pad_service import *
 from ..service.meeting_service import delete_meeting, find_meeting, find_user_period
-from ..service.user_service import user_checking
+from ..service.user_service import user_checking, account_checking
 import transaction
 
 
@@ -78,6 +78,50 @@ def user_check(request):
                 max_period = user.max_period
                 user_id = user.id
                 error_msg = user_checking(dbs, pad_code, user.id)
+    update_last_time(dbs, pad_code, 'userCheck')
+    if error_msg:
+        json_a = {
+            'success': 'false',
+            'error_msg': error_msg,
+        }
+    else:
+        json_a = {
+            'success': 'true',
+            'user_id': user_id,
+            'max_period': max_period
+        }
+    return json_a
+
+
+@view_config(route_name='accountCheck', renderer='json')
+def account_check(request):
+    """
+    验证管理员是否可以使用设置
+    :param request:
+    :return:
+    """
+    dbs = request.dbsession
+    user_account = request.POST.get('user_account', '')
+    pad_code = request.POST.get('pad_code', '')
+    password = base64.encodebytes(request.POST.get('password', '').encode()).decode('utf-8').replace('\n', '')
+    if not pad_code:
+        error_msg = '终端编码不能为空'
+    elif not user_account:
+        error_msg = '用户账号不能为空'
+    else:
+        with transaction.manager:
+            user = dbs.query(SysUser).filter(SysUser.user_account == user_account).first()
+            if not user:
+                error_msg = '用户不存在'
+            elif password != user.user_pwd:
+                error_msg = '密码错误'
+                UserTools.count_err(user)
+                dbs.flush()
+            else:
+                # 获取该用户最大可申请期限
+                max_period = user.max_period
+                user_id = user.id
+                error_msg = account_checking(dbs, pad_code, user.id)
     update_last_time(dbs, pad_code, 'userCheck')
     if error_msg:
         json_a = {
@@ -349,5 +393,35 @@ def pad_qr_code(request):
         json_a = {
             'success': 'true',
             'room': room
+        }
+    return json_a
+
+
+@view_config(route_name='pad_clear', renderer='json')
+def pad_clear(request):
+    """
+    设备清除缓存
+    :param request:
+    :return:
+    """
+    error_msg = ''
+    dbs = request.dbsession
+    user_id = request.POST.get('user_id', '')
+    pad_code = request.POST.get('pad_code', '')
+    if not pad_code:
+        error_msg = '终端编码不能为空'
+    elif not user_id:
+        error_msg = '用户ID不能为空'
+    else:
+        error_msg = pad_clear_room(dbs, pad_code)
+    update_last_time(dbs, pad_code, 'padClear')
+    if error_msg:
+        json_a = {
+            'success': 'false',
+            'error_msg': error_msg
+        }
+    else:
+        json_a = {
+            'success': 'true'
         }
     return json_a

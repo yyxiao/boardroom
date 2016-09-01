@@ -20,6 +20,7 @@ def includeme(config):
 def app_include(config):
     config.add_route('padLogin', '/padLogin')
     config.add_route('userCheck', '/userCheck')
+    config.add_route('accountCheck', '/accountCheck')
     config.add_route('meetingList', '/meetingList')
     config.add_route('app_index', '/index')
     config.add_route('pad_add_meeting', '/addMeeting')
@@ -28,6 +29,7 @@ def app_include(config):
     config.add_route('pad_org_list', '/orgList')
     config.add_route('pad_set_room', '/setRoom')
     config.add_route('pad_qr_code', '/padQrCode')
+    config.add_route('pad_clear', '/padClear')
 
 
 def user_include(config):
