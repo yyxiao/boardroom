@@ -25,7 +25,7 @@ def to_org(request):
     """
     dbs = request.dbsession
     user_org_id = request.session['userOrgId']
-    branches = find_branch(dbs, user_org_id)
+    # branches = find_branch(dbs, user_org_id, '0')
     branch_json = json.dumps(find_branch_json(dbs, user_org_id))
     return render_to_response('org/org.html', locals(), request)
 
@@ -59,7 +59,7 @@ def to_add_org(request):
     """
     dbs = request.dbsession
     user_org_id = request.session['userOrgId']
-    branches = find_branch(dbs, user_org_id)
+    branches = find_branch(dbs, user_org_id, '0')
     return render_to_response('org/add.html', locals(), request)
 
 
@@ -82,6 +82,7 @@ def add_org(request):
             org.org_seq = int(org_seq)
         else:
             org.org_seq = 1000
+        org.org_type = request.POST.get('org_type', '0')
         org.org_manager = request.POST.get('org_manager', '')
         org.phone = request.POST.get('phone', '')
         org.address = request.POST.get('address', '')
@@ -108,7 +109,7 @@ def to_update_org(request):
     """
     dbs = request.dbsession
     user_org_id = request.session['userOrgId']
-    branches = find_branch(dbs, user_org_id)
+    branches = find_branch(dbs, user_org_id, '0')
     org_id = request.POST.get('org_id', 0)
     org = find_org_by_id(dbs, org_id)
     return render_to_response('org/add.html', locals(), request)
@@ -137,6 +138,7 @@ def update_org(request):
             else:
                 org.org_seq = 1000
             org.parent_id = request.POST.get('parent_id', 0)
+            org.org_type = request.POST.get('org_type', '0')
             org.org_manager = request.POST.get('org_manager', '')
             org.phone = request.POST.get('phone', '')
             org.address = request.POST.get('address', '')

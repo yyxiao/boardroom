@@ -15,15 +15,24 @@ from ..common.paginator import Paginator
 logger = logging.getLogger('operator')
 
 
-def find_branch(dbs, user_org_id=None):
+def find_branch(dbs, user_org_id=None, org_type=None):
+    """
+    获取机构列表
+    :param dbs:
+    :param user_org_id:
+    :param org_type:0公司，1部门
+    :return:
+    """
     branches = []
     sql = 'WITH RECURSIVE r AS ( SELECT * FROM brms.sys_org '
     if user_org_id:
         sql += ' WHERE id = %s' % user_org_id
     else:
         sql += ' WHERE id = 1'
-    sql += ' union   ALL SELECT sys_org.* FROM brms.sys_org, r WHERE sys_org.parent_id = r.id ) ' \
-           'SELECT id,org_name,parent_id FROM r ORDER BY id'
+    sql += ' union   ALL SELECT sys_org.* FROM brms.sys_org, r WHERE sys_org.parent_id = r.id '
+    if org_type:
+        sql += ' and sys_org.org_type = \'' + org_type + '\''
+    sql += ') SELECT id,org_name,parent_id FROM r ORDER BY id'
     curs = dbs.execute(sql)
     for rec in curs:
         branch = {}
@@ -33,11 +42,12 @@ def find_branch(dbs, user_org_id=None):
     return branches
 
 
-def find_branch_json(dbs, user_org_id=None):
+def find_branch_json(dbs, user_org_id=None, org_type=None):
     """
     获取未分配的机构树
     :param dbs:
     :param user_org_id:
+    :param org_type:0公司，1部门
     :return:
     """
     branches = []
@@ -46,8 +56,10 @@ def find_branch_json(dbs, user_org_id=None):
         sql += ' WHERE id = %s' % user_org_id
     else:
         sql += ' WHERE id = 1'
-    sql += ' union   ALL SELECT sys_org.* FROM brms.sys_org, r WHERE sys_org.parent_id = r.id ) ' \
-           'SELECT id,org_name,parent_id FROM r ORDER BY id'
+    sql += ' union   ALL SELECT sys_org.* FROM brms.sys_org, r WHERE sys_org.parent_id = r.id '
+    if org_type:
+        sql += ' and sys_org.org_type = \'' + org_type + '\''
+    sql += ') SELECT id,org_name,parent_id FROM r ORDER BY id'
     curs = dbs.execute(sql)
     for rec in curs:
         branch = {}

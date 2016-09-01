@@ -62,6 +62,7 @@ function add() {
 	var org_name = $.trim($("#org_name_add").val());
 	var parent_id = $.trim($("#parent_id_add").val());
     var org_seq = $.trim($("#org_seq_add").val());
+	var org_type = $.trim($("#org_type").val())
 	var org_manager = $.trim($("#org_manager_add").val());
 	var phone = $.trim($('#phone_add').val());
     var address = $.trim($('#address_add').val());
@@ -95,6 +96,7 @@ function add() {
 			"org_name" : org_name,
 			"parent_id" : parent_id,
             "org_seq": org_seq,
+			"org_type": org_type,
 			"org_manager" : org_manager,
 			"phone" : phone,
 			"address" : address
@@ -142,6 +144,7 @@ function update() {
     var org_id = $.trim($("#org_id").val());
     var org_name = $.trim($("#org_name_add").val());
 	var parent_id = $.trim($("#parent_id_add").val());
+	var org_type = $.trim($("#org_type").val())
     var org_seq = $.trim($("#org_seq_add").val());
 	var org_manager = $.trim($("#org_manager_add").val());
 	var phone = $.trim($('#phone_add').val());
@@ -180,6 +183,7 @@ function update() {
 			"org_name" : org_name,
 			"parent_id" : parent_id,
             "org_seq": org_seq,
+			"org_type": org_type,
 			"org_manager" : org_manager,
 			"phone" : phone,
 			"address" : address

@@ -4,7 +4,7 @@
         <tr>
             <th></th>
             <th>机构名称</th>
-            {#				<th>机构类型</th>#}
+            <th>机构类型</th>
             <th>上级机构</th>
             <th>法人</th>
             <th>电话</th>
@@ -19,7 +19,13 @@
             <tr>
                 <td><input type="checkbox" name="idbox" value="{{ org.id }}" onclick="checkorg(this)"></td>
                 <td>{{ org.org_name }}</td>
-                {#				<td>{{org.org_type}}</td>#}
+                <td>
+                    {% if org and org.org_type == "0" %}
+                        公司
+                    {% elif org and org.org_type == "1" %}
+                        部门
+                    {% endif %}
+                </td>
                 <td>{{ org.parent_name }}</td>
                 <td>{{ org.org_manager }}</td>
                 <td>{{ org.phone }}</td>

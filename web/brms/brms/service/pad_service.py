@@ -266,7 +266,7 @@ def pad_find_orgs(dbs, user_id):
     """
     orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id)\
         .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id))\
-        .filter(SysUserOrg.user_id == user_id).all()
+        .filter(SysUserOrg.user_id == user_id, SysOrg.org_type == '0').all()
     rooms = dbs.query(HasBoardroom.id, HasBoardroom.name, HasBoardroom.org_id) \
         .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id)\
         .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id)) \
