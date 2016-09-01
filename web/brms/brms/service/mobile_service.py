@@ -53,3 +53,45 @@ def find_org_rooms(dbs, user_id):
         }
         lists.append(temp_dict)
     return lists
+
+
+def find_meetings(dbs, user_id, room_id):
+    meetings = dbs.query(HasMeeting.id, HasMeeting.name, HasMeeting.description,
+                         HasMeeting.start_date, HasMeeting.end_date, HasMeeting.start_time,
+                         HasMeeting.end_time, HasMeeting.create_user, HasMeeting.create_time,
+                         SysUser.user_name, SysUser.phone, SysOrg.org_name) \
+        .outerjoin(SysUser, HasMeeting.create_user == SysUser.id) \
+        .outerjoin(SysOrg, SysUser.org_id == SysOrg.id) \
+        .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id)\
+        .outerjoin(HasBoardroom, HasMeetBdr.boardroom_id == HasBoardroom.id)\
+        .filter(HasBoardroom.id == room_id).all()
+    lists = []
+    for meeting in meetings:
+        id = meeting.id
+        name = meeting.name
+        description = meeting.description
+        start_date = meeting.start_date
+        end_date = meeting.end_date
+        start_time = meeting.start_time
+        end_time = meeting.end_time
+        create_user = meeting.create_user
+        create_time = meeting.create_time
+        user_name = meeting.user_name
+        phone = meeting.phone
+        org_name = meeting.org_name
+        temp_dict = {
+            'meeting_id': id,
+            'meeting_name': name,
+            'description': description,
+            'start_date': start_date,
+            'end_date': end_date,
+            'start_time': start_time,
+            'end_time': end_time,
+            'create_user': create_user,
+            'create_time': create_time,
+            'user_name': user_name,
+            'user_phone': phone,
+            'org_name': org_name,
+        }
+    lists.append(temp_dict)
+    return lists
