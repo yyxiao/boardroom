@@ -80,8 +80,8 @@
     var setting = {
         check: {
             enable: true,
-            chkStyle: "radio",
-            radioType: "all"
+            chkStyle: 'checkbox',
+            chkboxType: {"Y" : "s", "N" : "ps" }
         },
         data: {
             simpleData: {
@@ -89,10 +89,12 @@
             }
         },
         callback: {
-            onCheck: zTreeOnCheck4MB
+            onCheck: load_br
         }
     };
+
     var zNodes ={{ branch_json|safe }};
     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+
 </script>
 {% endblock %}

@@ -364,7 +364,6 @@ scheduler.config.occurrence_timestamp_in_utc = !1, scheduler.config.recurring_wo
 }, scheduler._validId = function (e) {
     return !this._is_virtual_event(e)
 }, scheduler.showLightbox_rec = scheduler.showLightbox, scheduler.showLightbox = function (e) {
-    debugger;
     var t = this.locale,
         a = scheduler.config.lightbox_recurring,
         r = this.getEvent(e),

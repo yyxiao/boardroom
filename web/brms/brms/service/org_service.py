@@ -109,6 +109,61 @@ def find_branch_json_check(dbs, user_id, user_now=None):
     return branches
 
 
+def find_branch_json_4booking(dbs, user_id, user_org_id):
+    """
+    获取机构树
+    :param dbs:
+    :param user_id:
+    :param user_org_id:
+    :return:
+    """
+    user_orgs = dbs.query(SysUserOrg.org_id).filter(SysUserOrg.user_id == user_id).all()
+    orgs_ids = [i.org_id for i in user_orgs]
+
+    user_orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id).filter(SysOrg.id.in_(orgs_ids)).all()
+    org_dict = {}
+    for org in user_orgs:
+        branch = dict()
+        branch['id'] = org[0]
+        branch['name'] = org[1]
+        branch['pId'] = org[2]
+        branch['doCheck'] = True
+        if org[2] == 0:
+            branch['open'] = True
+        if org[0] == user_org_id:
+            branch['checked'] = True
+        org_dict[org[0]] = branch
+    for org_id in orgs_ids:
+        find_parents(dbs, org_dict[org_id]['pId'], org_dict, is_open=(org_id == user_org_id))
+
+    return [v for k, v in org_dict.items()]
+
+
+def find_parents(dbs, parent_id, org_dict, is_open=False):
+    """
+    查找父机构并加入到字典中
+    :param dbs:
+    :param parent_id:
+    :param org_dict:
+    :param is_open:
+    :return:
+    """
+    if parent_id == 0 or parent_id in org_dict.keys():
+        return
+    org = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id).filter(SysOrg.id == parent_id).first()
+    branch = dict()
+    branch['id'] = org[0]
+    branch['name'] = org[1]
+    branch['pId'] = org[2]
+    branch['doCheck'] = False
+    branch['open'] = is_open
+    org_dict[parent_id] = branch
+    if org[2] == 0:
+        return
+    find_parents(dbs, org[2], org_dict, is_open)
+    return
+
+
 def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, page_no=1, show_child=True):
     """
     查询org列表
