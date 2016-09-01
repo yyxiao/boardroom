@@ -6,23 +6,64 @@
         <li><a href="#">会议预订</a></li>
     </ol>
 </section>
-<section>
-    <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:560px;'>
-		<div class="dhx_cal_navline">
-			<div class="dhx_cal_prev_button">&nbsp;</div>
-			<div class="dhx_cal_next_button">&nbsp;</div>
-			<div class="dhx_cal_today_button"></div>
-			<div class="dhx_cal_date"></div>
-			<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
-			<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
-			<div class="dhx_cal_tab" name="timeline_tab" style="right:280px;"></div>
-			<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
-		</div>
-		<div class="dhx_cal_header">
-		</div>
-		<div class="dhx_cal_data">
-		</div>
-	</div>
+    <section>
+<div class="user-search">
+    <div class="row form-horizontal" id="search-form">
+        <div style="padding:0 130px 0 30px;">
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">机构</label>
+                    <div class="col-sm-8 paddingR0">
+                        <input type="text" class="form-control"	id="search_org_name" name="search_org_name" readonly="readonly"
+                               onclick="org_show();" placeholder="--请选择机构--">
+                        <input type="text" class="hidden" id="search_org_id" name="search_org_id" >
+                        <div class="form-control" style="background-color:white;
+                        height:300px;overflow: auto;display:none;position: absolute;z-index: 8" id="orgTree">
+                            <ul id="treeDemo" class="ztree"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">会议室</label>
+                    <div class="col-sm-8 paddingR0">
+                        <select class="form-control" id="br_id" name="br_id" onchange="load_meeting();">
+                            <option value="">--请选择会议室--</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">显示子机构会议室</label>
+                    <div class="col-sm-8 paddingR0">
+                        <input type="checkbox" class="checkbox" id="show_child" name="show_child">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+<section class="content-search-area">
+    <div class="space"></div>
+    <div id="scheduler_here"  class="dhx_cal_container" style='width:100%; height:550px; padding:10px;'>
+        <div class="dhx_cal_navline">
+            <div class="dhx_cal_prev_button">&nbsp;</div>
+            <div class="dhx_cal_next_button">&nbsp;</div>
+            <div class="dhx_cal_today_button"></div>
+            <div class="dhx_cal_date"></div>
+            <div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+            <div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+            <div class="dhx_cal_tab" name="timeline_tab" style="right:280px;"></div>
+            <div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+        </div>
+        <div class="dhx_cal_header">
+        </div>
+        <div class="dhx_cal_data">
+        </div>
+    </div>
 </section>
 
 <link rel="stylesheet" href="{{request.static_url('brms:static/dhtmlxscheduler/dhtmlxscheduler.css')}}">
@@ -34,5 +75,24 @@
 <script src="{{request.static_url('brms:static/dhtmlxscheduler/dhtmlxscheduler_minical.js')}}"></script>
 <script src="{{request.static_url('brms:static/dhtmlxscheduler/dhtmlxscheduler_recurring.js')}}"></script>
 <script src="{{request.static_url('brms:static/js/booking/book.js')}}"></script>
-
+<script src="{{ request.static_url('brms:static/js/org/org_tree.js') }}"></script>
+<script type="text/javascript">
+    var setting = {
+        check: {
+            enable: true,
+            chkStyle: "radio",
+            radioType: "all"
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            onCheck: zTreeOnCheck4MB
+        }
+    };
+    var zNodes ={{ branch_json|safe }};
+    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+</script>
 {% endblock %}

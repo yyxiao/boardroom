@@ -19,23 +19,19 @@ import json
 logger = logging.getLogger('operator')
 
 
-def find_meetings(dbs, meeting_name=None, create_user=None, flag=None, user_org_id=None,
-                  room_name=None, start_date=None, end_date=None,
-                  page_no=1, page_size=10, org_id=None, room_id=None):
+def find_meetings(dbs, user_id=None, user_org_id=None, meeting_name=None, room_name=None, start_date=None,
+                  end_date=None, org_id=None, page_no=1):
     """
     会议列表
     :param dbs:
-    :param meeting_name:
-    :param create_user:
-    :param flag:
+    :param user_id:
     :param user_org_id:
+    :param meeting_name:
     :param room_name:
     :param start_date:
     :param end_date:
-    :param page_no:
-    :param page_size:
     :param org_id:
-    :param room_id:
+    :param page_no:
     :return:
     """
     meetings = dbs.query(HasMeeting.id,
@@ -58,8 +54,8 @@ def find_meetings(dbs, meeting_name=None, create_user=None, flag=None, user_org_
     branches = find_org_ids(dbs, user_org_id)               # 获取当前用户所属机构及下属机构id
     if meeting_name:
         meetings = meetings.filter(HasMeeting.name.like('%'+meeting_name+'%'))
-    if create_user:
-        meetings = meetings.filter(HasMeeting.create_user == create_user)
+    if user_id:
+        meetings = meetings.filter(HasMeeting.create_user == user_id)
     if user_org_id and branches:
         meetings = meetings.filter(SysOrg.id.in_(branches))
     if start_date:
@@ -68,9 +64,7 @@ def find_meetings(dbs, meeting_name=None, create_user=None, flag=None, user_org_
         meetings = meetings.filter(HasMeeting.end_date <= end_date)
     if room_name:
         meetings = meetings.filter(HasBoardroom.name.like('%' + room_name + '%'))
-    if room_id:
-        meetings = meetings.filter(HasMeetBdr.boardroom_id == room_id)
-    if not room_id and org_id:
+    if org_id:
         meetings = meetings.filter(HasMeeting.org_id == org_id)
 
     meeting_list = meetings.order_by(HasMeeting.create_time.desc())
@@ -78,7 +72,7 @@ def find_meetings(dbs, meeting_name=None, create_user=None, flag=None, user_org_
         results = meeting_list.all()
         paginator = None
     else:
-        results, paginator = Paginator(meeting_list, page_no, page_size).to_dict()
+        results, paginator = Paginator(meeting_list, page_no).to_dict()
     lists = []
     for obj in results:
         meeting_id = obj[0] if obj[0] else ''

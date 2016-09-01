@@ -3,7 +3,7 @@
  */
 init();
 Date.prototype.Format = function(fmt)
-{ //author: meizz
+{
   var o = {
     'M+' : this.getUTCMonth()+1,                 //月份
     'd+' : this.getUTCDate(),                    //日
@@ -19,7 +19,7 @@ Date.prototype.Format = function(fmt)
   return fmt;
 };
 Date.prototype.FormatLocal = function(fmt)
-{ //author: meizz
+{
   var o = {
     'M+' : this.getMonth()+1,                 //月份
     'd+' : this.getDate(),                    //日
@@ -45,11 +45,6 @@ function init() {
 	scheduler.config.last_hour=21;
 	scheduler.config.time_step=30;
 
-
-
-	//===============
-	//Configuration
-	//===============
 	var elements;
 	 $.ajax({
 	 	type : "POST",
@@ -78,9 +73,6 @@ function init() {
 		}
 	  });
 
-	//===============
-	//Data loading
-	//===============
 	scheduler.config.lightbox.sections=[
 		{ name:"会议名称", height:130, map_to:"text", type:"textarea" , focus:true},
 		{ name:"会议描述", height:130, map_to:"desc", type:"textarea" , focus:true},
@@ -102,6 +94,7 @@ function init() {
 		}
 	  });
 	scheduler.attachEvent("onEventChanged", function(id,ev){
+		debugger;
 		var parms = {pid:id,event:ev.text,startDate:ev.start_date,endDate:ev.end_date};
 		var name = $.trim(ev.text);
 		var desc = $.trim(ev.text);
@@ -136,3 +129,62 @@ function get_date_time(date_str, time_str){
 	date_list = date_str.concat(" "+time_str);
 	return date_list;
 }
+
+function load_br() {
+	var org_id = $.trim($('#search_org_id').val());
+	if (org_id == '') {
+		document.getElementById('br_id').innerHTML = '';
+		var opt=document.createElement('option');
+		opt.innerText='--请选择会议室--';
+		opt.value='';
+		opt.selected='selected';
+		$('#br_id').append(opt);
+		return
+	}
+	$.ajax({
+		type : 'POST',
+		url : '/booking/list_by_org',
+		data : {
+			'org_id' : org_id
+		},
+		error : function() {
+			$.messager.popup('与服务器通信失败，请稍后重试！');
+		},
+		success : function(data) {
+			if (data.resultFlag == 'success') {
+				document.getElementById('br_id').innerHTML = '';
+				var opt=document.createElement('option');
+				opt.innerText='--请选择会议室--';
+				opt.value='';
+				opt.selected='selected';
+				$('#br_id').append(opt);
+				var all=document.createElement('option');
+				all.innerText='该机构下所有会议室';
+				all.value=0;
+				$('#br_id').append(all);
+				for(var index=0;index<data.brs.length;index++)
+				{
+					opt=document.createElement('option');
+					opt.innerText=data.brs[index]['br_name'];
+					opt.value=data.brs[index]['br_id'];
+					$('#br_id').append(opt);
+				}
+			} else {
+				$.messager.popup(data.error_msg);
+			}
+		}
+	})
+}
+
+function zTreeOnCheck4MB(event, treeId, treeNode) {
+	if($('#search_org_id').val()==treeNode.id){
+		$('#search_org_id').val('');
+		$('#search_org_name').val('')
+	}else {
+		$('#search_org_id').val(treeNode.id);
+		$('#search_org_name').val(treeNode.name);
+	}
+	load_br();
+	$("#orgTree").hide();
+}
+
