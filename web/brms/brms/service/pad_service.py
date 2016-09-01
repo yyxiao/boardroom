@@ -48,8 +48,8 @@ def find_pad_by_id(dbs, pad_code, create_user, org_id):
             error_msg = '新增设备失败，请稍后后重试!'
     else:
         json_dict = {'pad_id': pad[0],
-                     'id': pad[1],
-                     'name': pad[2]
+                     'id': pad[1] if pad[1] else '',
+                     'name': pad[2] if pad[2] else ''
                      }
     return json_dict, error_msg
 
