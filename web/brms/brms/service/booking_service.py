@@ -268,20 +268,27 @@ def get_binary(start_time, end_time, start=7, hours=14):
     return binary
 
 
-def find_orgs(dbs, user_id):
+def find_orgs(dbs, user_id, org_id=None, room_id=None, show_child=False):
     """
-    获取可分配的机构
+    机构会议室树
     :param dbs:
     :param user_id:
+    :param org_id:
+    :param room_id:
+    :param show_child:
     :return:
     """
     orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id)\
-        .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id))\
-        .filter(SysUserOrg.user_id == user_id).all()
-    rooms = dbs.query(HasBoardroom.id, HasBoardroom.name, HasBoardroom.org_id) \
+        .outerjoin(SysUser, SysUser.org_id == SysOrg.id)\
+        .filter(SysUser.id == user_id)
+    # .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id))\
+    # .filter(SysUserOrg.user_id == user_id).all()
+    rooms = dbs.query(HasBoardroom.id, HasBoardroom.name, HasBoardroom.org_id)\
         .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id)\
-        .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id)) \
-        .filter(SysUserOrg.user_id == user_id).all()
+        .outerjoin(SysUser, SysUser.org_id == SysOrg.id)\
+        .filter(SysUser.id == user_id)
+    # .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id))\
+    # .filter(SysUserOrg.user_id == user_id).all()
     lists = []
     for org in orgs:
         org_id = org.id
