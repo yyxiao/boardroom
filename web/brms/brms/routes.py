@@ -14,6 +14,7 @@ def includeme(config):
     config.include(terminal_include, '/terminal')
     config.include(meeting_include, '/meeting')
     config.include(booking_include, '/booking')
+    config.include(mobile_include, '/mobile')
 
 
 def app_include(config):
@@ -116,3 +117,13 @@ def booking_include(config):
     config.add_route('list_by_br', '/list_by_br')
     config.add_route('list_by_br_new', '/list_by_br_new')
     config.add_route('org_room_list', '/org_room_list')
+
+
+def mobile_include(config):
+    config.add_route('mobile_login', '/login')
+    config.add_route('mobile_org_list', '/orgList')
+    config.add_route('mobile_meetingList', '/meetingList')
+    config.add_route('mobile_add_meeting', '/addMeeting')
+    config.add_route('mobile_del_meeting', '/delMeeting')
+    config.add_route('mobile_update_meeting', '/updateMeeting')
+    config.add_route('mobile_update_user', '/update_user')
