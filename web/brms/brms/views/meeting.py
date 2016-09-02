@@ -11,6 +11,7 @@ from pyramid.renderers import render_to_response
 from ..common.dateutils import datetime_format
 from ..service.meeting_service import *
 from ..service.loginutil import request_login
+from ..service.boardroom_service import find_boardrooms
 
 
 @view_config(route_name='to_meeting')
@@ -52,7 +53,8 @@ def list_meeting(request):
 @request_login
 def to_add(request):
     dbs = request.dbsession
-    rooms = find_rooms(dbs)
+    user_id = request.session['userId']
+    (rooms, paginator) = find_boardrooms(dbs, user_id, page_no=0, show_child=True)
     return render_to_response('meeting/add.html', locals(), request)
 
 
@@ -117,7 +119,8 @@ def del_meeting(request):
 def to_update(request):
     dbs = request.dbsession
     meeting_id = int(request.POST.get('id', 0))
-    rooms = find_rooms(dbs)
+    user_id = request.session['userId']
+    (rooms, paginator) = find_boardrooms(dbs, user_id, page_no=0, show_child=True)
     meeting = find_meeting_bdr(dbs, meeting_id)
     return render_to_response('meeting/add.html', locals(), request)
 

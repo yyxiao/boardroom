@@ -61,12 +61,13 @@ def boardroom_list(request):
         name = request.POST.get('br_name', '')
         config = request.POST.get('br_config', '')
         org_id = request.POST.get('org_id', '')
+        user_id = request.session['userId']
         if org_id == '':
             org_id = request.session['userOrgId']
         show_child = request.POST.get('show_child', 'false') == 'true'
         flag = request.POST.get('flag', '')
         page_no = int(request.POST.get('page', ''))
-        (boardrooms, paginator) = find_boardrooms(dbs, name=name, config=config, org_id=org_id, page_no=page_no,
+        (boardrooms, paginator) = find_boardrooms(dbs, user_id, name=name, config=config, org_id=org_id, page_no=page_no,
                                                   show_child=show_child)
         return render_to_response('boardroom/list.html', locals(), request)
 
@@ -227,9 +228,10 @@ def to_update_br(request):
 
     dbs = request.dbsession
     user_org_id = request.session['userOrgId']
+    user_id = request.session['userId']
     branches = find_branch(dbs, user_org_id, '0')
     br_id = request.POST.get('br_id')
-    boardroom = find_boardroom(dbs, br_id)
+    boardroom = find_boardroom(dbs, user_id, br_id)
     return render_to_response('boardroom/add.html', locals(), request)
 
 
