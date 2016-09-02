@@ -19,3 +19,5 @@ REPEAT_YES = 'yes'
 
 # 星期字典类型
 WEEKDAY = 'weekday'
+
+IMG_RPATH = 'static/img/boardroom/org/'

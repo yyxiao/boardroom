@@ -3,14 +3,16 @@
         <thead>
             <tr>
                 {% if flag == 'mg' %}
-                    <th width="10"></th>
+                    <th width="20"></th>
                 {% endif %}
-                <th width="120">会议室名称</th>
-                <th width="100">会议室图片</th>
+                <th width="90">会议室名称</th>
+                <th width="100">会议室照片</th>
+                <th width="100">logo</th>
+                <th width="100">按钮图标</th>
+                <th width="100">背景图片</th>
                 <th width="350">配置</th>
                 <th width="200">描述</th>
                 <th width="100">所属机构</th>
-{#                <th>状态</th>#}
             </tr>
         </thead>
         <tbody>
@@ -23,17 +25,43 @@
                     <td>{{ boardroom.br_name }}</td>
                     <td>
                         <a class="image-link"
-                           href="{{ request.static_url('brms:static/img/boardroom/' + (('org/'+boardroom.picture) if boardroom.picture else 'default.jpg')) }}"
+                           href="{{ request.static_url('brms:' + (boardroom.picture if boardroom.picture else 'static/img/boardroom/default.jpg')) }}"
                            data-lightbox="image">
                             <img class="image"
-                                 src="{{ request.static_url('brms:static/img/boardroom/' + (('org/'+boardroom.picture) if boardroom.picture else 'default.jpg')) }}"
+                                 src="{{ request.static_url('brms:' + (boardroom.picture if boardroom.picture else 'static/img/boardroom/default.jpg')) }}"
+                                 height="70" width="90" alt="" title="点击图片查看大图"/>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="image-link"
+                           href="{{ request.static_url('brms:' + (boardroom.logo if boardroom.logo else 'static/img/boardroom/default.jpg')) }}"
+                           data-lightbox="image">
+                            <img class="image"
+                                 src="{{ request.static_url('brms:' + (boardroom.logo if boardroom.logo else 'static/img/boardroom/default.jpg')) }}"
+                                 height="70" width="90" alt="" title="点击图片查看大图"/>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="image-link"
+                           href="{{ request.static_url('brms:' + (boardroom.button_img if boardroom.button_img else 'static/img/boardroom/default.jpg')) }}"
+                           data-lightbox="image">
+                            <img class="image"
+                                 src="{{ request.static_url('brms:' + (boardroom.button_img if boardroom.button_img else 'static/img/boardroom/default.jpg')) }}"
+                                 height="70" width="90" alt="" title="点击图片查看大图"/>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="image-link"
+                           href="{{ request.static_url('brms:' + (boardroom.background if boardroom.background else 'static/img/boardroom/default.jpg')) }}"
+                           data-lightbox="image">
+                            <img class="image"
+                                 src="{{ request.static_url('brms:' + (boardroom.background if boardroom.background else 'static/img/boardroom/default.jpg')) }}"
                                  height="70" width="90" alt="" title="点击图片查看大图"/>
                         </a>
                     </td>
                     <td>{{ boardroom.config }}</td>
                     <td>{{ boardroom.description }}</td>
                     <td>{{ boardroom.org_name }}</td>
-{#                    <td>{{ boardroom.state }}</td>#}
                 </tr>
             {% endfor %}
         </tbody>

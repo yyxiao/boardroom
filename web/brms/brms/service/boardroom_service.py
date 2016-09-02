@@ -4,18 +4,18 @@
 __author__ = cuizc
 __mtime__ = 2016-08-10
 """
-import logging
-import transaction
 import os
 import shutil
 import qrcode
-from PIL import Image
+import logging
+import transaction
 from io import BytesIO
+from PIL import Image
 from datetime import datetime
-from ..models.model import SysOrg, HasBoardroom
+from ..common.constant import IMG_RPATH
 from ..common.paginator import Paginator
+from ..models.model import SysOrg, HasBoardroom
 from ..service.org_service import find_branch_json
-
 
 logger = logging.getLogger('operator')
 
@@ -35,6 +35,9 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
     boardrooms = dbs.query(HasBoardroom.id,
                            HasBoardroom.name,
                            HasBoardroom.picture,
+                           HasBoardroom.logo,
+                           HasBoardroom.button_img,
+                           HasBoardroom.background,
                            HasBoardroom.config,
                            HasBoardroom.description,
                            HasBoardroom.org_id,
@@ -68,17 +71,23 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
         br_id = obj[0] if obj[0] else ''
         br_name = obj[1] if obj[1] else ''
         picture = obj[2] if obj[2] else ''
-        config = obj[3] if obj[3] else ''
-        description = obj[4] if obj[4] else ''
-        org_id = obj[5] if obj[5] else ''
-        org_name = obj[6] if obj[6] else ''
-        pad_code = obj[7] if obj[7] else ''
-        state = obj[8] if obj[8] else ''
+        logo = obj[3] if obj[3] else ''
+        button_img = obj[4] if obj[4] else ''
+        background = obj[5] if obj[5] else ''
+        config = obj[6] if obj[6] else ''
+        description = obj[7] if obj[7] else ''
+        org_id = obj[8] if obj[8] else ''
+        org_name = obj[9] if obj[9] else ''
+        pad_code = obj[10] if obj[10] else ''
+        state = obj[11] if obj[11] else ''
 
         temp_dict = {
             'br_id': br_id,
             'br_name': br_name,
-            'picture': (str(org_id) + '/' + picture) if picture else '',
+            'picture': picture,
+            'logo': logo,
+            'button_img': button_img,
+            'background': background,
             'config': config,
             'description': description,
             'org_id': org_id,
@@ -113,7 +122,7 @@ def add(dbs, boardroom):
     try:
         with transaction.manager:
             dbs.add(boardroom)
-            dbs.flush()
+            # dbs.flush()
         return ''
     except Exception as e:
         logger.error(e)
@@ -150,7 +159,10 @@ def delete(dbs, br_id, app_path=None):
         with transaction.manager:
             br = dbs.query(HasBoardroom).filter(HasBoardroom.id == br_id).first()
             if br.picture:
-                delete_pic(br.picture, br.org_id, app_path)
+                delete_pic(br.picture, app_path)
+                delete_pic(br.logo, app_path)
+                delete_pic(br.button_img, app_path)
+                delete_pic(br.background, app_path)
             dbs.delete(br)
 
         return ''
@@ -179,11 +191,10 @@ def writefile(file, filename, org_id=None, app_path=None):
     return msg
 
 
-def delete_pic(filename, org_id=None, app_path=None):
+def delete_pic(filename, app_path=None):
     """
     删除会议室图片
     :param filename:
-    :param org_id:
     :param app_path:
     :return:
     """
@@ -191,7 +202,7 @@ def delete_pic(filename, org_id=None, app_path=None):
     if not filename:
         return
 
-    file_path = get_pic_path(filename, org_id, app_path=app_path, create_dirs=False)
+    file_path = os.path.join(app_path, 'boardroom_manage/web/brms/brms/', filename)
     if os.path.exists(file_path):
         os.remove(file_path)
 
@@ -244,6 +255,40 @@ def move_pic(br_pic, org_id, app_path=None):
         shutil.move(src_path, target_path)
     except Exception as e:
         logger.error(e)
+
+
+def move_piv_org(old_db_path, new_db_path, app_apth=None):
+    """
+    会议室机构发生改变时，移动图片到新机构目录下
+    :param old_db_path:
+    :param new_db_path:
+    :param app_apth:
+    :return:
+    """
+    src_path = app_apth + 'boardroom_manage/web/brms/brms/' + old_db_path
+    target_path = app_apth + 'boardroom_manage/web/brms/brms/' + new_db_path
+    try:
+        shutil.move(src_path, target_path)
+    except Exception as e:
+        logger.error(e)
+
+
+def update_pic(old_br, new_br):
+    """
+    图片在不同机构间的移动
+    :param old_br:
+    :param new_br:
+    :return:
+    """
+
+    if old_br.picture == new_br.picture:
+        new_br.picture = IMG_RPATH + str(new_br.org_id) + '/' + new_br.picture.split('/')[-1]
+    if old_br.logo == new_br.logo:
+        new_br.logo = IMG_RPATH + str(new_br.org_id) + '/' + new_br.logo.split('/')[-1]
+    if old_br.button_img == new_br.button_img:
+        new_br.button_img = IMG_RPATH + str(new_br.org_id) + '/' + new_br.button_img.split('/')[-1]
+    if old_br.background == new_br.background:
+        new_br.background = IMG_RPATH + str(new_br.org_id) + '/' + new_br.background.split('/')[-1]
 
 
 def make_qrcode(dbs, url, room_id, user_id, app_path):
