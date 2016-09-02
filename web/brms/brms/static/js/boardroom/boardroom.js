@@ -88,15 +88,19 @@ function add() {
     var br_config = $.trim($("#br_config_add").val());
 	var br_desc = $.trim($("#br_desc_add").val());
 	var room_pic_file = $.trim($('#room_pic').val());
-	var room_logo_file = $.trim($('#room_logo').val());
+	var room_logo1_file = $.trim($('#room_logo1').val());
+	var room_logo2_file = $.trim($('#room_logo2').val());
 	var room_btn_file = $.trim($('#room_btn').val());
 	var room_bgd_file = $.trim($('#room_bgd').val());
 
 	if (room_pic_file != '') {
 		var room_pic = room_pic_file.substring(room_pic_file.lastIndexOf('\\')+1 );
 	}
-	if (room_logo_file != '') {
-		var room_logo = room_logo_file.substring(room_logo_file.lastIndexOf('\\')+1 );
+	if (room_logo1_file != '') {
+		var room_logo1 = room_logo1_file.substring(room_logo1_file.lastIndexOf('\\')+1 );
+	}
+	if (room_logo2_file != '') {
+		var room_logo2 = room_logo2_file.substring(room_logo2_file.lastIndexOf('\\')+1 );
 	}
 	if (room_btn_file != '') {
 		var room_btn = room_btn_file.substring(room_btn_file.lastIndexOf('\\')+1 );
@@ -129,7 +133,8 @@ function add() {
             "br_config": br_config,
 			"br_desc" : br_desc,
 			"room_pic" : room_pic,
-			"room_logo": room_logo,
+			"room_logo1": room_logo1,
+			"room_logo2": room_logo2,
 			"room_btn": room_btn,
 			"room_bgd": room_bgd
 		},
@@ -178,15 +183,19 @@ function update() {
     var br_config = $.trim($("#br_config_add").val());
 	var br_desc = $.trim($("#br_desc_add").val());
 	var room_pic_file = $.trim($('#room_pic').val());
-	var room_logo_file = $.trim($('#room_logo').val());
+	var room_logo1_file = $.trim($('#room_logo1').val());
+	var room_logo2_file = $.trim($('#room_logo2').val());
 	var room_btn_file = $.trim($('#room_btn').val());
 	var room_bgd_file = $.trim($('#room_bgd').val());
 
 	if (room_pic_file != '') {
 		var room_pic = room_pic_file.substring(room_pic_file.lastIndexOf('\\')+1 );
 	}
-	if (room_logo_file != '') {
-		var room_logo = room_logo_file.substring(room_logo_file.lastIndexOf('\\')+1 );
+	if (room_logo1_file != '') {
+		var room_logo1 = room_logo1_file.substring(room_logo1_file.lastIndexOf('\\')+1 );
+	}
+	if (room_logo2_file != '') {
+		var room_logo2 = room_logo2_file.substring(room_logo2_file.lastIndexOf('\\')+1 );
 	}
 	if (room_btn_file != '') {
 		var room_btn = room_btn_file.substring(room_btn_file.lastIndexOf('\\')+1 );
@@ -224,7 +233,8 @@ function update() {
             "br_config": br_config,
 			"br_desc" : br_desc,
 			"room_pic" : room_pic,
-			"room_logo": room_logo,
+			"room_logo1": room_logo1,
+			"room_logo2": room_logo2,
 			"room_btn": room_btn,
 			"room_bgd": room_bgd
 		},

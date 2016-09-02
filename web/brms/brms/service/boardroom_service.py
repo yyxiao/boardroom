@@ -35,7 +35,8 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
     boardrooms = dbs.query(HasBoardroom.id,
                            HasBoardroom.name,
                            HasBoardroom.picture,
-                           HasBoardroom.logo,
+                           HasBoardroom.logo1,
+                           HasBoardroom.logo2,
                            HasBoardroom.button_img,
                            HasBoardroom.background,
                            HasBoardroom.config,
@@ -71,21 +72,23 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
         br_id = obj[0] if obj[0] else ''
         br_name = obj[1] if obj[1] else ''
         picture = obj[2] if obj[2] else ''
-        logo = obj[3] if obj[3] else ''
-        button_img = obj[4] if obj[4] else ''
-        background = obj[5] if obj[5] else ''
-        config = obj[6] if obj[6] else ''
-        description = obj[7] if obj[7] else ''
-        org_id = obj[8] if obj[8] else ''
-        org_name = obj[9] if obj[9] else ''
-        pad_code = obj[10] if obj[10] else ''
-        state = obj[11] if obj[11] else ''
+        logo1 = obj[3] if obj[3] else ''
+        logo2 = obj[4] if obj[4] else ''
+        button_img = obj[5] if obj[5] else ''
+        background = obj[6] if obj[6] else ''
+        config = obj[7] if obj[7] else ''
+        description = obj[8] if obj[8] else ''
+        org_id = obj[9] if obj[9] else ''
+        org_name = obj[10] if obj[10] else ''
+        pad_code = obj[11] if obj[11] else ''
+        state = obj[12] if obj[12] else ''
 
         temp_dict = {
             'br_id': br_id,
             'br_name': br_name,
             'picture': picture,
-            'logo': logo,
+            'logo1': logo1,
+            'logo2': logo2,
             'button_img': button_img,
             'background': background,
             'config': config,
@@ -160,7 +163,8 @@ def delete(dbs, br_id, app_path=None):
             br = dbs.query(HasBoardroom).filter(HasBoardroom.id == br_id).first()
             if br.picture:
                 delete_pic(br.picture, app_path)
-                delete_pic(br.logo, app_path)
+                delete_pic(br.logo1, app_path)
+                delete_pic(br.logo2, app_path)
                 delete_pic(br.button_img, app_path)
                 delete_pic(br.background, app_path)
             dbs.delete(br)
@@ -283,8 +287,10 @@ def update_pic(old_br, new_br):
 
     if old_br.picture == new_br.picture:
         new_br.picture = IMG_RPATH + str(new_br.org_id) + '/' + new_br.picture.split('/')[-1]
-    if old_br.logo == new_br.logo:
-        new_br.logo = IMG_RPATH + str(new_br.org_id) + '/' + new_br.logo.split('/')[-1]
+    if old_br.logo1 == new_br.logo1:
+        new_br.logo1 = IMG_RPATH + str(new_br.org_id) + '/' + new_br.logo1.split('/')[-1]
+    if old_br.logo2 == new_br.logo2:
+        new_br.logo2 = IMG_RPATH + str(new_br.org_id) + '/' + new_br.logo2.split('/')[-1]
     if old_br.button_img == new_br.button_img:
         new_br.button_img = IMG_RPATH + str(new_br.org_id) + '/' + new_br.button_img.split('/')[-1]
     if old_br.background == new_br.background:
