@@ -348,7 +348,6 @@ def pad_set_room(request):
         error_msg = '会议室ID不能为空！'
     else:
         room, error_msg = set_room(dbs, user_id, pad_code, room_id)
-        room = serialize(room)
     update_last_time(dbs, pad_code, 'setRoom')
     if error_msg:
         json = {

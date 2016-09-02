@@ -316,14 +316,32 @@ def set_room(dbs, user_id, pad_code, room_id):
             room1.pad_id = 0
             dbs.add(room1)
         room.pad_id = pad.id
-        room.create_user = user_id
-        room.create_time = date_now()
+        # room.create_user = user_id
+        # room.create_time = date_now()
         dbs.add(room)
         dbs.flush()
+        if room:
+            room_dict = {
+                "id": room.id,
+                "name": room.name,
+                "pad_id": room.pad_id,
+                "description": room.description,
+                "logo2": room.logo2 if room.logo2 else '',
+                "type": room.type,
+                "state": room.state,
+                "button_img": room.button_img if room.button_img else '',
+                "logo1": room.logo1 if room.logo1 else '',
+                "create_user": room.create_user,
+                "org_id": room.org_id,
+                "create_time": room.create_time,
+                "background": room.background if room.background else '',
+                "picture": room.picture,
+                "config": room.config
+            }
     except Exception as e:
         logger.error(e)
         error_msg = 'pad绑定会议室失败，请核对后重试'
-    return room, error_msg
+    return room_dict, error_msg
 
 
 def set_rooms_by_qrcode(dbs, user_id, pad_code, room_id):
@@ -362,14 +380,30 @@ def set_rooms_by_qrcode(dbs, user_id, pad_code, room_id):
                 room1.pad_id = 0
                 dbs.add(room1)
             room.pad_id = pad.id
-            room.create_user = user_id
-            room.create_time = date_now()
             dbs.add(room)
             dbs.flush()
+            if room:
+                room_dict = {
+                    "id": room.id,
+                    "name": room.name,
+                    "pad_id": room.pad_id,
+                    "description": room.description,
+                    "logo2": room.logo2 if room.logo2 else '',
+                    "type": room.type,
+                    "state": room.state,
+                    "button_img": room.button_img if room.button_img else '',
+                    "logo1": room.logo1 if room.logo1 else '',
+                    "create_user": room.create_user,
+                    "org_id": room.org_id,
+                    "create_time": room.create_time,
+                    "background": room.background if room.background else '',
+                    "picture": room.picture,
+                    "config": room.config
+                }
         except Exception as e:
             logger.error(e)
             error_msg = 'pad绑定会议室失败，请核对后重试'
-    return room, error_msg
+    return room_dict, error_msg
 
 
 def pad_clear_room(dbs, pad_code):

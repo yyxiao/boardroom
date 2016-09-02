@@ -55,7 +55,7 @@ def find_org_rooms(dbs, user_id):
     return lists
 
 
-def find_meetings(dbs, user_id, room_id):
+def mob_find_meetings(dbs, user_id, room_id):
     meetings = dbs.query(HasMeeting.id, HasMeeting.name, HasMeeting.description,
                          HasMeeting.start_date, HasMeeting.end_date, HasMeeting.start_time,
                          HasMeeting.end_time, HasMeeting.create_user, HasMeeting.create_time,
@@ -94,4 +94,52 @@ def find_meetings(dbs, user_id, room_id):
             'org_name': org_name,
         }
     lists.append(temp_dict)
+    return lists
+
+
+def mob_find_boardrooms(dbs, user_id):
+    """
+    查询符合条件的办公室，返回列表和分页对象
+    :param dbs:
+    :param user_id:
+    :return:
+    """
+    # 当前用户可分配会议室
+    boardrooms = dbs.query(HasBoardroom.id,
+                           HasBoardroom.name,
+                           HasBoardroom.picture,
+                           HasBoardroom.config,
+                           HasBoardroom.description,
+                           HasBoardroom.org_id,
+                           SysOrg.org_name,
+                           HasBoardroom.pad_id,
+                           HasBoardroom.state)\
+        .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id)\
+        .outerjoin(SysUser, SysUser.org_id == user_id)
+
+    boardrooms = boardrooms.order_by(HasBoardroom.create_time.desc())
+    lists = []
+    for obj in boardrooms:
+        br_id = obj[0] if obj[0] else ''
+        br_name = obj[1] if obj[1] else ''
+        picture = obj[2] if obj[2] else ''
+        config = obj[3] if obj[3] else ''
+        description = obj[4] if obj[4] else ''
+        org_id = obj[5] if obj[5] else ''
+        org_name = obj[6] if obj[6] else ''
+        pad_code = obj[7] if obj[7] else ''
+        state = obj[8] if obj[8] else ''
+
+        temp_dict = {
+            'br_id': br_id,
+            'br_name': br_name,
+            'picture': (str(org_id) + '/' + picture) if picture else '',
+            'config': config,
+            'description': description,
+            'org_id': org_id,
+            'org_name': org_name,
+            'pad_code': pad_code,
+            'state': state
+        }
+        lists.append(temp_dict)
     return lists

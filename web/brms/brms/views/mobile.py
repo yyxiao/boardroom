@@ -94,7 +94,29 @@ def mobile_meeting_list(request):
     elif not room_id:
         error_msg = '会议室ID不能为空！'
     else:
-        meetings = find_meetings(dbs, user_id, room_id)
+        meetings = mob_find_meetings(dbs, user_id, room_id)
+    if error_msg:
+        json_a = {
+            'status': 'false',
+            'error_msg': error_msg,
+        }
+    else:
+        json_a = {
+            'status': 'true',
+            'meetings': meetings
+        }
+    return json_a
+
+
+@view_config(route_name='mobile_room_list', renderer='json')
+def mobile_room_list(request):
+    error_msg = ''
+    dbs = request.dbsession
+    user_id = request.POST.get('user_id', '')
+    if not user_id:
+        error_msg = '用户ID不能为空！'
+    else:
+        meetings = mob_find_boardrooms(dbs, user_id)
     if error_msg:
         json_a = {
             'status': 'false',
