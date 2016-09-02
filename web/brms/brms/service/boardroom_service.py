@@ -9,6 +9,7 @@ import transaction
 import os
 import shutil
 import qrcode
+from PIL import Image
 from io import BytesIO
 from datetime import datetime
 from ..models.model import SysOrg, HasBoardroom
@@ -251,9 +252,45 @@ def make_qrcode(dbs, url, room_id, user_id):
         'url': url,
         'room_id': room.id,
         'room_name': room.name,
-        'user_id': user_id
+        'user_id': user_id,
+        'img': {
+            'logo': room.logo if room.logo else '',
+            'button': room.button_img if room.button_img else '',
+            'background': room.background if room.background else ''
+        }
     }
-    img = qrcode.make(json1)
+    # 设置生成二维码格式
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=8,
+        border=4,
+    )
+    qr.add_data(json1)
+    qr.make(fit=True)
+    img = qr.make_image()
+    img = img.convert("RGBA")
+    logo = os.path.abspath('')+'\\brms\\static\\img\\logo.png'
+    if logo and os.path.exists(logo):
+        try:
+            icon = Image.open(logo)
+            img_w, img_h = img.size
+        except Exception as e:
+            print(e)
+    factor = 4
+    size_w = int(img_w / factor)
+    size_h = int(img_h / factor)
+    icon_w, icon_h = icon.size
+    if icon_w > size_w:
+        icon_w = size_w
+    if icon_h > size_h:
+        icon_h = size_h
+    icon = icon.resize((icon_w, icon_h), Image.ANTIALIAS)
+
+    w = int((img_w - icon_w) / 2)
+    h = int((img_h - icon_h) / 2)
+    icon = icon.convert("RGBA")
+    img.paste(icon, (w, h), icon)
     buf = BytesIO()
     img.save(buf, 'jpeg')
     image_stream = buf.getvalue()
