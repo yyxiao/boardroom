@@ -117,7 +117,9 @@ def find_branch_json_4booking(dbs, user_id, user_org_id):
     :param user_org_id:
     :return:
     """
-    user_orgs = dbs.query(SysUserOrg.org_id).filter(SysUserOrg.user_id == user_id).all()
+    user_orgs = dbs.query(SysUserOrg.org_id)\
+        .outerjoin(SysOrg, SysOrg.id == SysUserOrg.org_id)\
+        .filter(SysUserOrg.user_id == user_id, SysOrg.org_type == '0').all()
     orgs_ids = [i.org_id for i in user_orgs]
 
     user_orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id).filter(SysOrg.id.in_(orgs_ids)).all()
@@ -153,9 +155,9 @@ def find_parents(dbs, parent_id, org_dict, is_open=False):
     org = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id).filter(SysOrg.id == parent_id).first()
     branch = dict()
     branch['id'] = org[0]
-    branch['name'] = org[1]
+    branch['name'] = org[1] + '(不可选)'
     branch['pId'] = org[2]
-    branch['doCheck'] = False
+    branch['chkDisabled'] = True
     branch['open'] = is_open
     org_dict[parent_id] = branch
     if org[2] == 0:
