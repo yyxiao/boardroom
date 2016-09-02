@@ -270,7 +270,7 @@ def make_qrcode(dbs, url, room_id, user_id):
     qr.make(fit=True)
     img = qr.make_image()
     img = img.convert("RGBA")
-    logo = os.path.abspath('')+'\\brms\\static\\img\\logo.png'
+    logo = os.path.abspath('')+'/brms/static/img/logo.png'
     if logo and os.path.exists(logo):
         try:
             icon = Image.open(logo)
