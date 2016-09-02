@@ -303,12 +303,7 @@ def make_qrcode(dbs, url, room_id, user_id, app_path):
         'url': url,
         'room_id': room.id,
         'room_name': room.name,
-        'user_id': user_id,
-        'img': {
-            'logo': room.logo if room.logo else '',
-            'button': room.button_img if room.button_img else '',
-            'background': room.background if room.background else ''
-        }
+        'user_id': user_id
     }
     # 设置生成二维码格式
     qr = qrcode.QRCode(
