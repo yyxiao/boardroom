@@ -7,6 +7,7 @@ function zTreeOnCheck4MB(event, treeId, treeNode) {
 }
 
 function load_br() {
+    debugger;
     var org_ids = get_orgs("org_ids");
     if (org_ids.length == 0) {
         document.getElementById('room_id').innerHTML = '';
@@ -50,6 +51,11 @@ function load_br() {
 }
 
 function load_meeting(){
+    debugger;
+    var org_ids = get_orgs("org_ids");
+    if (org_ids.length == 0) {
+        return ;
+    }
     try{
         scheduler.destroy();
     }catch(e){}
