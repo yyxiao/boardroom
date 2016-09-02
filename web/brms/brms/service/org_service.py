@@ -310,6 +310,7 @@ def delete(dbs, org_id):
     try:
         with transaction.manager:
             dbs.query(SysOrg).filter(SysOrg.id == org_id).delete()
+            dbs.query(SysUserOrg).filter(SysUserOrg.org_id == org_id).delete()
             dbs.flush()
         return ''
     except Exception as e:
