@@ -246,7 +246,7 @@ def move_pic(br_pic, org_id, app_path=None):
         logger.error(e)
 
 
-def make_qrcode(dbs, url, room_id, user_id):
+def make_qrcode(dbs, url, room_id, user_id, app_path):
     room = dbs.query(HasBoardroom).filter(HasBoardroom.id == room_id).first()
     json1 = {
         'url': url,
@@ -270,7 +270,7 @@ def make_qrcode(dbs, url, room_id, user_id):
     qr.make(fit=True)
     img = qr.make_image()
     img = img.convert("RGBA")
-    logo = os.path.abspath('')+'/brms/static/img/logo.png'
+    logo = os.path.join(app_path, 'boardroom_manage/web/brms/brms/static/img/logo.png')
     if logo and os.path.exists(logo):
         try:
             icon = Image.open(logo)

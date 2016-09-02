@@ -262,7 +262,8 @@ def room_qrcode(request):
     url = BRMS_URL
     room_id = request.GET.get('room_id', 0)
     user_id = request.session['userId']
-    image_stream = make_qrcode(dbs, url, room_id, user_id)
+    app_path = request.registry.settings['app_path']
+    image_stream = make_qrcode(dbs, url, room_id, user_id, app_path)
     response = Response(
         image_stream,
         request=request,
