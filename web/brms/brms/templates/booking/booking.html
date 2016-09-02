@@ -87,6 +87,14 @@
 
     var zNodes ={{ branch_json|safe }};
     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+
+    scheduler.config.lightbox.sections = [
+        {name: "会议名称", height: 30, map_to: "text", type: "textarea", focus: true},
+        {name: "会议描述", height: 130, map_to: "desc", type: "textarea", focus: true},
+        {name: "会议室", height: 23, type: "timeline", options: null, map_to: "room_id"},
+        {name: "recurring", type: "recurring", map_to: "", button: "recurring"},
+        {name: "time", height: 72, type: "calendar_time", map_to: "auto"}
+    ];
     zTreeOnCheck4MB(null, null, null);
 
 </script>

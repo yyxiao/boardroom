@@ -3,11 +3,11 @@ function zTreeOnCheck4MB(event, treeId, treeNode) {
     var names = get_orgs("names");
     $('#search_org_name').val(names);
     load_br();
+    init();
     load_meeting();
 }
 
 function load_br() {
-    debugger;
     var org_ids = get_orgs("org_ids");
     if (org_ids.length == 0) {
         document.getElementById('room_id').innerHTML = '';
@@ -51,7 +51,6 @@ function load_br() {
 }
 
 function load_meeting(){
-    debugger;
     var org_ids = get_orgs("org_ids");
     if (org_ids.length == 0) {
         return ;
@@ -107,13 +106,6 @@ function init() {
         }
     });
 
-    scheduler.config.lightbox.sections = [
-        {name: "会议名称", height: 130, map_to: "text", type: "textarea", focus: true},
-        {name: "会议描述", height: 130, map_to: "desc", type: "textarea", focus: true},
-        {name: "会议室", height: 23, type: "timeline", options: null, map_to: "room_id"},
-        {name: "recurring", type: "recurring", map_to: "", button: "recurring"},
-        {name: "time", height: 72, type: "calendar_time", map_to: "auto"}
-    ];
     scheduler.init('scheduler_here', new Date(), "timeline");
     $.ajax({
         type: "POST",
