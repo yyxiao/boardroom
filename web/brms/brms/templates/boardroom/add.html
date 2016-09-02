@@ -81,15 +81,28 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="input room_logo" class="col-sm-2 control-label">logo</label>
+                    <label for="input room_logo1" class="col-sm-2 control-label">logo1</label>
                     <div class="col-sm-9">
-                        <input type="file" name="picture" id="room_logo" />
-                        {% if boardroom and boardroom.logo%}
-                            <div id='room_logo_preview'>
-                                <img src="{{ request.static_url('brms:' + boardroom.logo) }}" height="150" width="150"/>
+                        <input type="file" name="picture" id="room_logo1" />
+                        {% if boardroom and boardroom.logo1%}
+                            <div id='room_logo1_preview'>
+                                <img src="{{ request.static_url('brms:' + boardroom.logo1) }}" height="150" width="150"/>
                             </div>
                         {% else %}
-                            <div id='room_logo_preview'></div>
+                            <div id='room_logo1_preview'></div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input room_logo2" class="col-sm-2 control-label">logo2</label>
+                    <div class="col-sm-9">
+                        <input type="file" name="picture" id="room_logo2" />
+                        {% if boardroom and boardroom.logo2%}
+                            <div id='room_logo2_preview'>
+                                <img src="{{ request.static_url('brms:' + boardroom.logo2) }}" height="150" width="150"/>
+                            </div>
+                        {% else %}
+                            <div id='room_logo2_preview'></div>
                         {% endif %}
                     </div>
                 </div>
@@ -141,11 +154,18 @@
             upload('#room_pic');
         }
     });
-    $("#addForm").on('change', '#room_logo', function (e) {
+    $("#addForm").on('change', '#room_logo1', function (e) {
         if(e.target.files.length==1){
-            $("#room_logo_preview").html('<img src="{{ request.static_url('brms:static/img/boardroom/loader.gif') }}" alt="Uploading...."/>');
+            $("#room_logo1_preview").html('<img src="{{ request.static_url('brms:static/img/boardroom/loader.gif') }}" alt="Uploading...."/>');
 
-            upload('#room_logo');
+            upload('#room_logo1');
+        }
+    });
+    $("#addForm").on('change', '#room_logo2', function (e) {
+        if(e.target.files.length==1){
+            $("#room_logo2_preview").html('<img src="{{ request.static_url('brms:static/img/boardroom/loader.gif') }}" alt="Uploading...."/>');
+
+            upload('#room_logo2');
         }
     });
     $("#addForm").on('change', '#room_btn', function (e) {

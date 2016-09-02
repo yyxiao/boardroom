@@ -147,10 +147,14 @@ def add_br(request):
         if room_pic:
             room_pic = request.session['#room_pic']
             br.picture = IMG_RPATH + br.org_id + '/' + room_pic
-        room_logo = request.POST.get('room_logo', '')
-        if room_logo:
-            room_logo = request.session['#room_logo']
-            br.logo = IMG_RPATH + br.org_id + '/' + room_logo
+        room_logo1 = request.POST.get('room_logo1', '')
+        if room_logo1:
+            room_logo1 = request.session['#room_logo1']
+            br.logo1 = IMG_RPATH + br.org_id + '/' + room_logo1
+        room_logo2 = request.POST.get('room_logo2', '')
+        if room_logo2:
+            room_logo2 = request.session['#room_logo2']
+            br.logo2 = IMG_RPATH + br.org_id + '/' + room_logo2
         room_btn = request.POST.get('room_btn', '')
         if room_btn:
             room_btn = request.session['#room_btn']
@@ -169,8 +173,10 @@ def add_br(request):
 
         if not msg and room_pic:
             move_pic(room_pic, org_id, app_path)
-        if not msg and room_logo:
-            move_pic(room_logo, org_id, app_path)
+        if not msg and room_logo1:
+            move_pic(room_logo1, org_id, app_path)
+        if not msg and room_logo2:
+            move_pic(room_logo2, org_id, app_path)
         if not msg and room_btn:
             move_pic(room_btn, org_id, app_path)
         if not msg and room_bgd:
@@ -250,10 +256,14 @@ def update_br(request):
         if room_pic:
             room_pic = request.session['#room_pic']
             br.picture = IMG_RPATH + str(br.org_id) + '/' + room_pic
-        room_logo = request.POST.get('room_logo', '')
-        if room_logo:
-            room_logo = request.session['#room_logo']
-            br.logo = IMG_RPATH + str(br.org_id) + '/' + room_logo
+        room_logo1 = request.POST.get('room_logo1', '')
+        if room_logo1:
+            room_logo1 = request.session['#room_logo1']
+            br.logo1 = IMG_RPATH + str(br.org_id) + '/' + room_logo1
+        room_logo2 = request.POST.get('room_logo2', '')
+        if room_logo2:
+            room_logo2 = request.session['#room_logo2']
+            br.logo2 = IMG_RPATH + str(br.org_id) + '/' + room_logo2
         room_btn = request.POST.get('room_btn', '')
         if room_btn:
             room_btn = request.session['#room_btn']
@@ -276,11 +286,16 @@ def update_br(request):
                 move_pic(room_pic, org_id, app_path)
             elif old_br.org_id != int(org_id):
                 move_piv_org(old_br.picture, new_br.picture, app_path)
-            if room_logo:
-                delete_pic(old_br.logo, app_path)
-                move_pic(room_logo, org_id, app_path)
+            if room_logo1:
+                delete_pic(old_br.logo1, app_path)
+                move_pic(room_logo1, org_id, app_path)
             elif old_br.org_id != int(org_id):
-                move_piv_org(old_br.logo, new_br.logo, app_path)
+                move_piv_org(old_br.logo1, new_br.logo1, app_path)
+            if room_logo2:
+                delete_pic(old_br.logo2, app_path)
+                move_pic(room_logo2, org_id, app_path)
+            elif old_br.org_id != int(org_id):
+                move_piv_org(old_br.logo2, new_br.logo2, app_path)
             if room_btn:
                 delete_pic(old_br.button_img, app_path)
                 move_pic(room_btn, org_id, app_path)

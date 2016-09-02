@@ -125,8 +125,12 @@ function init() {
             alert('会议数据错误！');
         }
     });
+    // scheduler.attachEvent("onEventSave", function(id, ev){
+    //     alert('111'+d);
+    //
+    // });
     // scheduler.attachEvent("onEventAdded", function(id, ev){
-    //     alert(id);
+    //     alert('222'+d);
     //
     // });
     // scheduler.attachEvent("onDblClick", function(id, ev){
