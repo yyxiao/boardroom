@@ -37,10 +37,10 @@
                                 <option value="">请选择</option>
                             {% endif %}
                             {% for room in rooms %}
-                                {% if meeting and meeting.boardroom_id == room.id %}
-                                    <option value="{{ room.id }}" selected="selected">{{ room.name }}</option>
+                                {% if meeting and meeting.boardroom_id == room.br_id %}
+                                    <option value="{{ room.br_id }}" selected="selected">{{ room.br_name }}</option>
                                 {% else %}
-                                    <option value="{{ room.id }}">{{ room.name }}</option>
+                                    <option value="{{ room.br_id }}">{{ room.br_name }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>

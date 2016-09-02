@@ -14,21 +14,23 @@ from PIL import Image
 from datetime import datetime
 from ..common.constant import IMG_RPATH
 from ..common.paginator import Paginator
-from ..models.model import SysOrg, HasBoardroom
+from ..models.model import SysOrg, HasBoardroom, SysUserOrg
 from ..service.org_service import find_branch_json
 
 logger = logging.getLogger('operator')
 
 
-def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_no=1, show_child=False):
+def find_boardrooms(dbs, user_id, br_id=None, name=None, config=None, org_id=None, page_no=1, show_child=False):
     """
     查询符合条件的办公室，返回列表和分页对象
     :param dbs:
+    :param user_id:
     :param br_id:
     :param name:
     :param config:
     :param org_id:
     :param page_no:
+    :param user_id:
     :param show_child:
     :return:
     """
@@ -45,7 +47,9 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
                            SysOrg.org_name,
                            HasBoardroom.pad_id,
                            HasBoardroom.state)\
-        .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id)
+        .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id)\
+        .outerjoin(SysUserOrg, SysUserOrg.org_id == HasBoardroom.org_id)\
+        .filter(SysUserOrg.user_id == user_id)
 
     if name:
         boardrooms = boardrooms.filter(HasBoardroom.name.like('%' + name + '%'))
@@ -102,14 +106,15 @@ def find_boardrooms(dbs, br_id=None, name=None, config=None, org_id=None, page_n
     return lists, paginator
 
 
-def find_boardroom(dbs, br_id):
+def find_boardroom(dbs, user_id, br_id):
     """
     根据id查找会议室
     :param dbs:
+    :param user_id:
     :param br_id:
     :return:
     """
-    (brs, paginator) = find_boardrooms(dbs, br_id=br_id)
+    (brs, paginator) = find_boardrooms(dbs, user_id, br_id=br_id)
     if len(brs) >= 1:
         return brs[0]
     return None
