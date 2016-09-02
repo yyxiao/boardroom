@@ -57,11 +57,6 @@ def check_available(request):
 @view_config(route_name='list_by_org', renderer='json')
 @request_login
 def list_by_org(request):
-    """
-
-    :param request:
-    :return:
-    """
     if request.method == 'POST':
         dbs = request.dbsession
         org_ids = json.loads(request.POST.get('org_ids', ''))
@@ -80,19 +75,12 @@ def list_by_org(request):
 @view_config(route_name='list_by_br', renderer='json')
 @request_login
 def list_by_br(request):
-    """
-
-    :param request:
-    :return:
-    """
-
     if request.method == 'POST':
         dbs = request.dbsession
-        org_id = int(request.POST.get('org_id', 0))
-        br_id = int(request.POST.get('br_id', 0))
-        user_org_id = request.session['userOrgId']
-
-        meetings = find_meeting_calendar(dbs, user_org_id=user_org_id, org_id=org_id, room_id=br_id)
+        org_ids = json.loads(request.POST.get('org_ids', ''))
+        room_id = int(request.POST.get('room_id', 0))
+        user_id = request.session['userId']
+        meetings = find_meeting_calendar(dbs, user_id=user_id, org_ids=org_ids, room_id=room_id)
         json_str = {
             'resultFlag': 'success',
             'meetings': meetings
@@ -101,33 +89,14 @@ def list_by_br(request):
     return {}
 
 
-@view_config(route_name='list_by_br_new', renderer='json')
-@request_login
-def list_by_br_new(request):
-    """
-
-    :param request:
-    :return:
-    """
-    dbs = request.dbsession
-    org_id = int(request.POST.get('org_id', 0))
-    br_id = int(request.POST.get('br_id', 0))
-    user_org_id = request.session['userOrgId']
-
-    meetings = find_meeting_calendar(dbs, user_org_id=user_org_id, org_id=org_id, room_id=br_id)
-    json_str = {
-        'meetings': meetings
-    }
-    return json_str
-
-
 @view_config(route_name='org_room_list', renderer='json')
 @request_login
 def org_room_list(request):
     dbs = request.dbsession
     user_id = request.session['userId']
-
-    org_room = find_orgs(dbs, user_id=user_id)
+    org_ids = json.loads(request.POST.get('org_ids', ''))
+    room_id = int(request.POST.get('room_id', 0))
+    org_room = find_orgs(dbs, user_id=user_id, org_ids=org_ids, room_id=room_id)
     json_str = {
         'org_room': org_room
     }

@@ -28,7 +28,7 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label form-label paddingR0 paddingL0">会议室</label>
                     <div class="col-sm-8 paddingR0">
-                        <select class="form-control" id="br_id" name="br_id" onchange="load_meeting();">
+                        <select class="form-control" id="room_id" name="room_id" onchange="load_meeting();">
                             <option value="">--请选择会议室--</option>
                         </select>
                     </div>
@@ -66,7 +66,7 @@
 <script src="{{request.static_url('brms:static/dhtmlxscheduler/dhtmlxscheduler_editors.js')}}"></script>
 <script src="{{request.static_url('brms:static/dhtmlxscheduler/dhtmlxscheduler_minical.js')}}"></script>
 <script src="{{request.static_url('brms:static/dhtmlxscheduler/dhtmlxscheduler_recurring.js')}}"></script>
-<script src="{{request.static_url('brms:static/js/booking/book.js')}}"></script>
+<script src="{{request.static_url('brms:static/js/booking/booking.js')}}"></script>
 <script src="{{ request.static_url('brms:static/js/org/org_tree.js') }}"></script>
 <script type="text/javascript">
     var setting = {

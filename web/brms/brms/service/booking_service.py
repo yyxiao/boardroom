@@ -268,27 +268,37 @@ def get_binary(start_time, end_time, start=7, hours=14):
     return binary
 
 
-def find_orgs(dbs, user_id, org_id=None, room_id=None, show_child=False):
+def find_orgs(dbs, user_id, org_ids=None, room_id=None, show_child=False):
     """
     机构会议室树
     :param dbs:
     :param user_id:
-    :param org_id:
+    :param org_ids:
     :param room_id:
     :param show_child:
     :return:
     """
-    orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id)\
-        .outerjoin(SysUser, SysUser.org_id == SysOrg.id)\
-        .filter(SysUser.id == user_id)
-    # .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id))\
-    # .filter(SysUserOrg.user_id == user_id).all()
-    rooms = dbs.query(HasBoardroom.id, HasBoardroom.name, HasBoardroom.org_id)\
-        .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id)\
-        .outerjoin(SysUser, SysUser.org_id == SysOrg.id)\
-        .filter(SysUser.id == user_id)
-    # .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id))\
-    # .filter(SysUserOrg.user_id == user_id).all()
+    orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id)
+    if room_id:
+        orgs = orgs.outerjoin(HasBoardroom, SysOrg.id == HasBoardroom.org_id)\
+            .filter(HasBoardroom.id == room_id)
+    elif org_ids and len(org_ids) > 0:
+        orgs = orgs.filter(SysOrg.id.in_(org_ids))
+    else:
+        orgs = orgs.outerjoin(SysUser, SysUser.org_id == SysOrg.id)\
+            .filter(SysUser.id == user_id)
+
+    rooms = dbs.query(HasBoardroom.id, HasBoardroom.name, HasBoardroom.org_id)
+    if room_id:
+        rooms = rooms.filter(HasBoardroom.id == room_id)
+    elif org_ids and len(org_ids) > 0:
+        rooms = rooms.outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id)\
+            .filter(SysOrg.id.in_(org_ids))
+    else:
+        rooms = rooms.outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id) \
+            .outerjoin(SysUser, SysUser.org_id == SysOrg.id) \
+            .filter(SysUser.id == user_id)
+
     lists = []
     for org in orgs:
         org_id = org.id

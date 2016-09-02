@@ -5,16 +5,16 @@ __author__ = xyy
 __mtime__ = 2016/8/8
 """
 
-from ..common.constant import *
+import json
+import logging
+import transaction
+from sqlalchemy.sql import and_
 from ..models.model import *
+from ..common.constant import *
 from ..common.paginator import Paginator
 from ..common.dateutils import date_now, get_weekday, add_date
 from ..service.booking_service import check_repeat_occupy, add_booking, update_booking, delete_booking
 from ..service.org_service import find_org_ids
-import transaction
-import logging
-from sqlalchemy.sql import and_
-import json
 
 logger = logging.getLogger('operator')
 
@@ -101,61 +101,74 @@ def find_meetings(dbs, user_id=None, user_org_id=None, meeting_name=None, room_n
     return lists, paginator
 
 
-def find_meeting_calendar(dbs, user_org_id=None, start_date=None, end_date=None, org_id=None, room_id=None):
+def find_meeting_calendar(dbs, user_id, org_ids=None, room_id=None):
     """
 
     :param dbs:
-    :param user_org_id:
-    :param start_date:
-    :param end_date:
-    :param org_id:
+    :param user_id:
+    :param org_ids:
     :param room_id:
     :return:
     """
     meetings = dbs.query(HasMeeting.id,
                          HasMeeting.name,
                          HasMeeting.description,
-                         HasMeetBdr.meeting_date,
+                         HasMeeting.start_date,
+                         HasMeeting.end_date,
                          HasMeeting.start_time,
                          HasMeeting.end_time,
+                         HasMeeting.create_user,
+                         HasMeeting.repeat,         # 重复会议的结束类型 no: 无结束时间, 数字:重复次数, 日期: 截止日期
+                         HasMeeting.repeat_date,    # 重复的周天，0～6,如：1,3,5
                          SysUser.user_name,
-                         HasBoardroom.name,
-                         HasBoardroom.id) \
+                         HasMeetBdr.boardroom_id) \
         .outerjoin(SysUser, SysUser.id == HasMeeting.create_user) \
-        .outerjoin(SysOrg, SysUser.org_id == SysOrg.id) \
-        .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id) \
-        .outerjoin(HasBoardroom, HasBoardroom.id == HasMeetBdr.boardroom_id)
-    branches = find_org_ids(dbs, user_org_id)  # 获取当前用户所属机构及下属机构id
-    if user_org_id and branches:
-        meetings = meetings.filter(SysOrg.id.in_(branches))
+        .outerjoin(SysOrg, HasMeeting.org_id == SysOrg.id) \
+        .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id)
+    if org_ids and len(org_ids) > 0:
+        meetings = meetings.filter(SysOrg.id.in_(org_ids))
     if room_id:
         meetings = meetings.filter(HasMeetBdr.boardroom_id == room_id)
-    if not room_id and org_id:
-        meetings = meetings.filter(HasMeeting.org_id == org_id)
 
-    meetint_list = meetings.order_by(HasMeetBdr.meeting_date.desc())
-    results = meetint_list.all()
+    meeting_list = meetings.order_by(HasMeetBdr.meeting_date.desc())
+    results = meeting_list.all()
 
     lists = []
     for obj in results:
         meeting_id = obj[0] if obj[0] else ''
         name = obj[1] if obj[1] else ''
         description = obj[2] if obj[2] else ''
-        meeting_date = obj[3] if obj[3] else ''
-        start_time = obj[4] if obj[4] else ''
-        end_time = obj[5] if obj[5] else ''
-        create_user = obj[6] if obj[6] else ''
-        room_name = obj[7] if obj[7] else ''
-        room_id1 = obj[8] if obj[8] else ''
+        start_date = obj[3] if obj[3] else ''
+        end_date = obj[4] if obj[4] else ''
+        start_time = obj[5] if obj[5] else ''
+        end_time = obj[6] if obj[6] else ''
+        create_user = obj[7] if obj[7] else ''
+        repeat = obj[8] if obj[8] else ''
+        repeat_date = obj[9] if obj[9] else ''
+        user_name = obj[10] if obj[10] else ''
+        room_id = obj[11] if obj[11] else ''
         temp_dict = {
             'id': meeting_id,
+            'event_pid': '0',
+            'event_length': get_event_length(start_time, end_time),      # TODO 夸天会议
             'text': name,
-            'start_date': meeting_date + " " + start_time,
-            'end_date': meeting_date + " " + end_time,
-            'room_id': room_id1
+            'desc': description,
+            'start_date': start_date + " " + start_time,
+            'end_date': end_date + " " + end_time,
+            'rec_pattern': 'week_1___' + repeat_date if repeat else '',
+            'rec_type': 'week_1___' + repeat_date + "#" + repeat if repeat else '',
+            'editable': True if create_user == user_id else False,
+            'user_name': user_name,
+            'room_id': room_id
         }
         lists.append(temp_dict)
     return lists
+
+
+def get_event_length(start_time, end_time):
+    start = int(start_time[0:2]) * 3600 + int(start_time[3:5]) * 60
+    end = int(end_time[0:2]) * 3600 + int(end_time[3:5]) * 60
+    return end - start
 
 
 def add(dbs, meeting, room_id):
