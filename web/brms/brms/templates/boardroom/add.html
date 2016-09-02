@@ -84,7 +84,7 @@
                     <label for="input room_logo" class="col-sm-2 control-label">logo</label>
                     <div class="col-sm-9">
                         <input type="file" name="picture" id="room_logo" />
-                        {% if boardroom and boardroom.picture%}
+                        {% if boardroom and boardroom.logo%}
                             <div id='room_logo_preview'>
                                 <img src="{{ request.static_url('brms:' + boardroom.logo) }}" height="150" width="150"/>
                             </div>
@@ -97,7 +97,7 @@
                     <label for="input room_btn" class="col-sm-2 control-label">按钮图片</label>
                     <div class="col-sm-9">
                         <input type="file" name="picture" id="room_btn" />
-                        {% if boardroom and boardroom.picture%}
+                        {% if boardroom and boardroom.button_img%}
                             <div id='room_btn_preview'>
                                 <img src="{{ request.static_url('brms:' + boardroom.button_img) }}" height="150" width="150"/>
                             </div>
@@ -110,7 +110,7 @@
                     <label for="input room_bgd" class="col-sm-2 control-label">背景图</label>
                     <div class="col-sm-9">
                         <input type="file" name="picture" id="room_bgd" />
-                        {% if boardroom and boardroom.picture%}
+                        {% if boardroom and boardroom.background%}
                             <div id='room_bgd_preview'>
                                 <img src="{{ request.static_url('brms:' + boardroom.background) }}" height="150" width="150"/>
                             </div>
