@@ -5,7 +5,9 @@ __author__ = cuizc
 __mtime__ = 2016-08-08
 """
 
+
 import json
+import copy
 
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
@@ -96,7 +98,10 @@ def upload_pic(request):
     """
     if request.method == 'POST':
         app_path = request.registry.settings['app_path']
+
+        pic_id = request.POST.get('pic_id', '')
         file = request.POST.get('br_pic', '')
+
         save_name = ''
         if file != '':
             upload_name = file.filename
@@ -104,7 +109,7 @@ def upload_pic(request):
             msg = writefile(file.file, save_name, app_path=app_path)
 
             if not msg:
-                request.session[upload_name] = save_name
+                request.session[pic_id] = save_name
         else:
             msg = 'file name is null'
 
@@ -136,18 +141,40 @@ def add_br(request):
         br.org_id = request.POST.get('org_id', 0)
         br.config = request.POST.get('br_config', '')
         br.description = request.POST.get('br_desc', '')
-        pic_name = request.POST.get('br_pic', '')
-        if pic_name:
-            br.picture = request.session[pic_name]
+
+        # 记录各图片路径
+        room_pic = request.POST.get('room_pic', '')
+        if room_pic:
+            room_pic = request.session['#room_pic']
+            br.picture = IMG_RPATH + br.org_id + '/' + room_pic
+        room_logo = request.POST.get('room_logo', '')
+        if room_logo:
+            room_logo = request.session['#room_logo']
+            br.logo = IMG_RPATH + br.org_id + '/' + room_logo
+        room_btn = request.POST.get('room_btn', '')
+        if room_btn:
+            room_btn = request.session['#room_btn']
+            br.button_img = IMG_RPATH + br.org_id + '/' + room_btn
+        room_bgd = request.POST.get('room_bgd', '')
+        if room_bgd:
+            room_bgd = request.session['#room_bgd']
+            br.background = IMG_RPATH + br.org_id + '/' + room_bgd
+
         br.state = request.POST.get('state', 1)
         br.create_time = datetime.now().strftime(datetime_format)
         br.create_user = request.session['userId']
 
-        br_pic = br.picture
         org_id = br.org_id
         msg = add(dbs, br)
-        if not msg and pic_name:
-            move_pic(br_pic, org_id, app_path)
+
+        if not msg and room_pic:
+            move_pic(room_pic, org_id, app_path)
+        if not msg and room_logo:
+            move_pic(room_logo, org_id, app_path)
+        if not msg and room_btn:
+            move_pic(room_btn, org_id, app_path)
+        if not msg and room_bgd:
+            move_pic(room_bgd, org_id, app_path)
 
         json_str = {
             'resultFlag': 'failed' if msg else 'success',
@@ -213,22 +240,57 @@ def update_br(request):
         dbs = request.dbsession
         app_path = request.registry.settings['app_path']
         br = dbs.query(HasBoardroom).filter(HasBoardroom.id == request.POST.get('br_id', 0)).first()
-        old_pic = br.picture
-        old_org = br.org_id
+        old_br = copy.deepcopy(br)
         br.name = request.POST.get('br_name', '')
         br.org_id = request.POST.get('org_id', 0)
         br.config = request.POST.get('br_config', '')
         br.description = request.POST.get('br_desc', '')
-        pic_name = request.POST.get('br_pic', '')
-        if pic_name:
-            br.picture = request.session[pic_name]
+
+        room_pic = request.POST.get('room_pic', '')
+        if room_pic:
+            room_pic = request.session['#room_pic']
+            br.picture = IMG_RPATH + str(br.org_id) + '/' + room_pic
+        room_logo = request.POST.get('room_logo', '')
+        if room_logo:
+            room_logo = request.session['#room_logo']
+            br.logo = IMG_RPATH + str(br.org_id) + '/' + room_logo
+        room_btn = request.POST.get('room_btn', '')
+        if room_btn:
+            room_btn = request.session['#room_btn']
+            br.button_img = IMG_RPATH + str(br.org_id) + '/' + room_btn
+        room_bgd = request.POST.get('room_bgd', '')
+        if room_bgd:
+            room_bgd = request.session['#room_bgd']
+            br.background = IMG_RPATH + str(br.org_id) + '/' + room_bgd
+
         br.state = request.POST.get('state', 1)
-        br_pic = br.picture
         org_id = br.org_id
+        if old_br.org_id != int(org_id):
+            update_pic(old_br, br)
+        new_br = copy.deepcopy(br)
         msg = update(dbs, br)
-        if not msg and pic_name:
-            delete_pic(old_pic, old_org, app_path)
-            move_pic(br_pic, org_id, app_path)
+
+        if not msg:
+            if room_pic:
+                delete_pic(old_br.picture, app_path)
+                move_pic(room_pic, org_id, app_path)
+            elif old_br.org_id != int(org_id):
+                move_piv_org(old_br.picture, new_br.picture, app_path)
+            if room_logo:
+                delete_pic(old_br.logo, app_path)
+                move_pic(room_logo, org_id, app_path)
+            elif old_br.org_id != int(org_id):
+                move_piv_org(old_br.logo, new_br.logo, app_path)
+            if room_btn:
+                delete_pic(old_br.button_img, app_path)
+                move_pic(room_btn, org_id, app_path)
+            elif old_br.org_id != int(org_id):
+                move_piv_org(old_br.button_img, new_br.button_img, app_path)
+            if room_bgd:
+                delete_pic(old_br.background, app_path)
+                move_pic(room_bgd, org_id, app_path)
+            elif old_br.org_id != int(org_id):
+                move_piv_org(old_br.background, new_br.background, app_path)
 
         json_str = {
             'resultFlag': 'failed' if msg else 'success',

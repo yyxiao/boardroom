@@ -67,28 +67,55 @@
                         {% endif %}
                     </div>
                 </div>
-{#                <div class="form-group">#}
-{#                    <label for="input state_add" class="col-sm-2 control-label">状态</label>#}
-{#                    <div class="col-sm-9">#}
-{#                        {% if boardroom %}#}
-{#                            <input name="state_add" type="text" class="form-control" value="{{ boardroom.state }}"#}
-{#                               id="state_add">#}
-{#                        {% else %}#}
-{#                            <input name="state_add" type="text" class="form-control" placeholder="1"#}
-{#                               id="state_add">#}
-{#                        {% endif %}#}
-{#                    </div>#}
-{#                </div>#}
                 <div class="form-group">
-                    <label for="input br_pic_add" class="col-sm-2 control-label">照片</label>
+                    <label for="input room_pic" class="col-sm-2 control-label">照片</label>
                     <div class="col-sm-9">
-                        <input type="file" name="br_pic_add" id="br_pic_add" />
+                        <input type="file" name="picture" id="room_pic" />
                         {% if boardroom and boardroom.picture%}
-                            <div id='preview'>
-                                <img src="{{ request.static_url('brms:static/img/boardroom/org/' + boardroom.picture) }}" height="150" width="150"/>
+                            <div id='room_pic_preview'>
+                                <img src="{{ request.static_url('brms:' + boardroom.picture) }}" height="150" width="150"/>
                             </div>
                         {% else %}
-                            <div id='preview'>
+                            <div id='room_pic_preview'></div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input room_logo" class="col-sm-2 control-label">logo</label>
+                    <div class="col-sm-9">
+                        <input type="file" name="picture" id="room_logo" />
+                        {% if boardroom and boardroom.picture%}
+                            <div id='room_logo_preview'>
+                                <img src="{{ request.static_url('brms:' + boardroom.logo) }}" height="150" width="150"/>
+                            </div>
+                        {% else %}
+                            <div id='room_logo_preview'></div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input room_btn" class="col-sm-2 control-label">按钮图片</label>
+                    <div class="col-sm-9">
+                        <input type="file" name="picture" id="room_btn" />
+                        {% if boardroom and boardroom.picture%}
+                            <div id='room_btn_preview'>
+                                <img src="{{ request.static_url('brms:' + boardroom.button_img) }}" height="150" width="150"/>
+                            </div>
+                        {% else %}
+                            <div id='room_btn_preview'></div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input room_bgd" class="col-sm-2 control-label">背景图</label>
+                    <div class="col-sm-9">
+                        <input type="file" name="picture" id="room_bgd" />
+                        {% if boardroom and boardroom.picture%}
+                            <div id='room_bgd_preview'>
+                                <img src="{{ request.static_url('brms:' + boardroom.background) }}" height="150" width="150"/>
+                            </div>
+                        {% else %}
+                            <div id='room_bgd_preview'></div>
                         {% endif %}
                     </div>
                 </div>
@@ -107,12 +134,32 @@
     </div>
 </div>
 <script>
-    $("#addForm").on('change', '#br_pic_add', function (e) {
+    $("#addForm").on('change', '#room_pic', function (e) {
         if(e.target.files.length==1){
-            {#	    $("#preview").html('');#}
-            $("#preview").html('<img src="{{ request.static_url('brms:static/img/boardroom/loader.gif') }}" alt="Uploading...."/>');
+            $("#room_pic_preview").html('<img src="{{ request.static_url('brms:static/img/boardroom/loader.gif') }}" alt="Uploading...."/>');
 
-            upload();
+            upload('#room_pic');
+        }
+    });
+    $("#addForm").on('change', '#room_logo', function (e) {
+        if(e.target.files.length==1){
+            $("#room_logo_preview").html('<img src="{{ request.static_url('brms:static/img/boardroom/loader.gif') }}" alt="Uploading...."/>');
+
+            upload('#room_logo');
+        }
+    });
+    $("#addForm").on('change', '#room_btn', function (e) {
+        if(e.target.files.length==1){
+            $("#room_btn_preview").html('<img src="{{ request.static_url('brms:static/img/boardroom/loader.gif') }}" alt="Uploading...."/>');
+
+            upload('#room_btn');
+        }
+    });
+    $("#addForm").on('change', '#room_bgd', function (e) {
+        if(e.target.files.length==1){
+            $("#room_bgd_preview").html('<img src="{{ request.static_url('brms:static/img/boardroom/loader.gif') }}" alt="Uploading...."/>');
+
+            upload('#room_bgd');
         }
     });
 </script>

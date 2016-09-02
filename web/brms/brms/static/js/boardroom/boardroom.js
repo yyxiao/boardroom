@@ -57,9 +57,10 @@ function to_add() {
 }
 
 //upload picture
-function upload() {
+function upload(pic_id) {
 	var formData = new FormData();
-	formData.append('br_pic', $('#br_pic_add')[0].files[0]);
+	formData.append('br_pic', $(pic_id)[0].files[0]);
+	formData.append('pic_id', pic_id);
 	$.ajax({
 		type : "POST",
 		url : "/boardroom/br_upload_pic",
@@ -70,9 +71,9 @@ function upload() {
         processData: false,
 		success : function(data) {
 			if (data.resultFlag == "success") {
-				 $("#preview").html('<img src="static/img/boardroom/tmp/'+data.name+'" height="150" width="150"/>');
+				 $(pic_id + "_preview").html('<img src="static/img/boardroom/tmp/'+data.name+'" height="150" width="150"/>');
 			} else {
-				$("#preview").html(data.error_msg);
+				$(pic_id + "_preview").html(data.error_msg);
 			}
 		}
 	});
@@ -86,11 +87,24 @@ function add() {
 	var branch = $.trim($("#branch_add").val());
     var br_config = $.trim($("#br_config_add").val());
 	var br_desc = $.trim($("#br_desc_add").val());
-	var file_path = $.trim($('#br_pic_add').val());
-	if (file_path != '') {
-		var br_pic = file_path.substring(file_path.lastIndexOf('\\')+1 );
+	var room_pic_file = $.trim($('#room_pic').val());
+	var room_logo_file = $.trim($('#room_logo').val());
+	var room_btn_file = $.trim($('#room_btn').val());
+	var room_bgd_file = $.trim($('#room_bgd').val());
+
+	if (room_pic_file != '') {
+		var room_pic = room_pic_file.substring(room_pic_file.lastIndexOf('\\')+1 );
 	}
-	// var state = $.trim($("#state_add").val());
+	if (room_logo_file != '') {
+		var room_logo = room_logo_file.substring(room_logo_file.lastIndexOf('\\')+1 );
+	}
+	if (room_btn_file != '') {
+		var room_btn = room_btn_file.substring(room_btn_file.lastIndexOf('\\')+1 );
+	}
+	if (room_bgd_file != '') {
+		var room_bgd = room_bgd_file.substring(room_bgd_file.lastIndexOf('\\')+1 );
+	}
+
 	if (br_name == '') {
 		$('#br_name_add').focus();
 		$('#br_cue').html("<font color='red'>会议室名称不能为空</font>");
@@ -106,20 +120,18 @@ function add() {
 		$('#br_cue').html("<font color='red'>用户机构不能为空</font>");
 		return false;
 	}
-	// if (state == '') {
-	// 	state = 1;
-	// }
 	$.ajax({
 		type : "POST",
 		url : "/boardroom/add_boardroom",
 		data : {
-			// "br_id" : br_id,
 			"br_name" : br_name,
 			"org_id" : branch,
             "br_config": br_config,
 			"br_desc" : br_desc,
-			"br_pic" : br_pic
-			// "state" : state
+			"room_pic" : room_pic,
+			"room_logo": room_logo,
+			"room_btn": room_btn,
+			"room_bgd": room_bgd
 		},
 		error : function() {
 			redirect_to("/");
@@ -165,11 +177,24 @@ function update() {
 	var branch = $.trim($("#branch_add").val());
     var br_config = $.trim($("#br_config_add").val());
 	var br_desc = $.trim($("#br_desc_add").val());
-	var file_path = $.trim($('#br_pic_add').val());
-	if (file_path != '') {
-		var br_pic = file_path.substring(file_path.lastIndexOf('\\')+1 );
+	var room_pic_file = $.trim($('#room_pic').val());
+	var room_logo_file = $.trim($('#room_logo').val());
+	var room_btn_file = $.trim($('#room_btn').val());
+	var room_bgd_file = $.trim($('#room_bgd').val());
+
+	if (room_pic_file != '') {
+		var room_pic = room_pic_file.substring(room_pic_file.lastIndexOf('\\')+1 );
 	}
-	// var state = $.trim($("#state_add").val());
+	if (room_logo_file != '') {
+		var room_logo = room_logo_file.substring(room_logo_file.lastIndexOf('\\')+1 );
+	}
+	if (room_btn_file != '') {
+		var room_btn = room_btn_file.substring(room_btn_file.lastIndexOf('\\')+1 );
+	}
+	if (room_bgd_file != '') {
+		var room_bgd = room_bgd_file.substring(room_bgd_file.lastIndexOf('\\')+1 );
+	}
+
 	if (br_id == '') {
         $('#user_cue').html("<font color='red'>更新失败,请刷新页面重试</font>");
         return false;
@@ -198,8 +223,10 @@ function update() {
 			"org_id" : branch,
             "br_config": br_config,
 			"br_desc" : br_desc,
-			"br_pic" : br_pic
-			// "state" : state
+			"room_pic" : room_pic,
+			"room_logo": room_logo,
+			"room_btn": room_btn,
+			"room_bgd": room_bgd
 		},
 		error : function() {
 			redirect_to("/");
