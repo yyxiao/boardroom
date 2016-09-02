@@ -6,6 +6,7 @@ __mtime__ = 2016/8/8
 """
 
 import copy
+import json
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from ..common.dateutils import datetime_format
@@ -77,10 +78,11 @@ def add_meeting(request):
     meeting.start_time = request.POST.get('start_time', '')
     meeting.end_time = request.POST.get('end_time', '')
     meeting.org_id = int(request.POST.get('org_id', request.session['userOrgId']))
-    meeting.repeat = REPEAT_YES if request.POST.get('is_repeat', 'false') == 'true' else ''
-    meeting.repeat_date = request.POST.get('weekday[]', '')
+    meeting.repeat = request.POST.get('rec_type', '')
+    meeting.repeat_date = request.POST.get('rec_pattern', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
+    org_ids = json.loads(request.POST.get('org_ids', ''))
     error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
     if not error_msg:
         error_msg = add(dbs, meeting, room_id)
@@ -90,8 +92,10 @@ def add_meeting(request):
             'error_msg': error_msg,
         }
     else:
+        meetings = find_meeting_calendar(dbs, user_id=request.session['userId'], org_ids=org_ids, room_id=room_id)
         json_str = {
             'success': True,
+            'error_msg': meetings,
         }
     return json_str
 

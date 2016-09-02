@@ -3,7 +3,6 @@ function zTreeOnCheck4MB(event, treeId, treeNode) {
     var names = get_orgs("names");
     $('#search_org_name').val(names);
     load_br();
-    init();
     load_meeting();
 }
 
@@ -71,6 +70,8 @@ function init() {
     scheduler.config.last_hour = 21;
     scheduler.config.time_step = 30;
     scheduler.config.readonly_form = true;
+    scheduler.config.lightbox_recurring = 'series';
+    // scheduler.config.server_utc = true;
 
     var org_ids = get_orgs("org_ids");
     var room_id = $.trim($('#room_id').val());
@@ -120,7 +121,7 @@ function init() {
             scheduler.parse(meetings, "json");
         },
         error: function () {
-            alert('会议数据错误！');
+            $.messager.popup('会议数据错误！');
         }
     });
     // scheduler.attachEvent("onEventSave", function(id, ev){
@@ -134,28 +135,45 @@ function init() {
     // scheduler.attachEvent("onDblClick", function(id, ev){
     //     alert(id);
     // });
-    scheduler.attachEvent("onEventChanged", function (id, ev) {
-        debugger;
-        var parms = {pid: id, event: ev.text, startDate: ev.start_date, endDate: ev.end_date};
+    scheduler.attachEvent("onEventSave", function (id, ev) {
         var name = $.trim(ev.text);
-        var desc = $.trim(ev.text);
-        var room_id = $.trim(ev.section_id);
-        var start = new Date(ev.start_date).FormatLocal('yyyy-MM-dd hh:mm');
-        var start_date = start.substring(0, 10);
-        var start_time = start.substring(11, 16);
-        var end = new Date(ev.end_date).pattern('yyyy-MM-dd hh:mm');
-        var end_date = end.substring(0, 10);
-        var end_time = end.substring(11, 16);
-        $.post("/meeting/add", parms, function (data, status) {
-            if (data.result == "SUCCESS") {
-                if (data.success) {
-                    $.messager.popup("新增会议成功！");
-                } else {
-                    var msg = data.error_msg;
-                    $.messager.popup(msg);
+        var desc = ev.desc;
+        var start_date = new Date(ev.start_date).FormatLocal('yyyy-MM-dd hh:mm');
+        var end_date = new Date(ev.end_date).FormatLocal('yyyy-MM-dd hh:mm');
+        // var event_length = ev.event_length;
+        var rec_type = ev.rec_type;
+        var room_id = ev.room_id;
+        $.ajax({
+            type: "POST",
+            async: false,
+            url: '/meeting/add',
+            data: {
+                'name': name,
+                'desc': desc,
+                'start_date': start_date.substring(0, 10),
+                'end_date': end_date.substring(0, 10),
+                'start_time': start_date.substring(11, 16),
+                'end_time': end_date.substring(11, 16),
+                'rec_type': get_rec(rec_type, 1),
+                'rec_pattern': get_rec(rec_type, 0),
+                'room_id': room_id,
+                'org_ids': JSON.stringify(org_ids)
+            },
+            success: function (data) {
+                if (data.success){
+                    var meetings = data.meetings;
+                    scheduler.clearEvents();
+                    scheduler.parse(meetings, "json");
+                    return true;
+                }else{
+                    $.messager.popup(data.error_msg);
                 }
+            },
+            error: function () {
+                $.messager.popup('会议数据错误！');
             }
         });
+
         return true;
     });
 
@@ -212,3 +230,14 @@ Date.prototype.FormatLocal = function (fmt) {
             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
     return fmt;
 };
+
+function get_rec(rec_type, i){
+    if (rec_type == ''){
+        return '';
+    }
+    if (rec_type.indexOf('#') >= 0){
+        var result = rec_type.split('#');
+        return result[i];
+    }
+    return [rec_type, ''][i];
+}

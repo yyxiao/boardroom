@@ -155,11 +155,12 @@ def find_meeting_calendar(dbs, user_id, org_ids=None, room_id=None):
             'desc': description,
             'start_date': start_date + " " + start_time,
             'end_date': end_date + " " + end_time,
-            'rec_pattern': 'week_1___' + repeat_date if repeat else '',
-            'rec_type': 'week_1___' + repeat_date + "#" + repeat if repeat else '',
+            'rec_pattern': repeat_date if repeat_date and repeat else '',
+            'rec_type': (repeat_date + "#" + repeat) if repeat_date and repeat else '',
             'editable': True if create_user == user_id else False,
             'user_name': user_name,
-            'room_id': room_id
+            'room_id': room_id,
+            '': (repeat_date + "#" + repeat) if repeat_date and repeat else ''
         }
         lists.append(temp_dict)
     return lists
