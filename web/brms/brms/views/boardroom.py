@@ -13,7 +13,6 @@ from pyramid.renderers import render_to_response
 from pyramid.response import Response
 from pyramid.view import view_config
 
-from brms.common.constant import BRMS_URL
 from ..common.dateutils import datetime_format
 from ..service.boardroom_service import *
 from ..service.loginutil import request_login
@@ -67,8 +66,8 @@ def boardroom_list(request):
         show_child = request.POST.get('show_child', 'false') == 'true'
         flag = request.POST.get('flag', '')
         page_no = int(request.POST.get('page', ''))
-        (boardrooms, paginator) = find_boardrooms(dbs, user_id, name=name, config=config, org_id=org_id, page_no=page_no,
-                                                  show_child=show_child)
+        (boardrooms, paginator) = find_boardrooms(dbs, user_id, name=name, config=config, org_id=org_id,
+                                                  page_no=page_no, show_child=show_child)
         return render_to_response('boardroom/list.html', locals(), request)
 
     return Response('', 404)
@@ -338,7 +337,7 @@ def room_qrcode(request):
     :return:
     """
     dbs = request.dbsession
-    url = BRMS_URL
+    url = request.registry.settings['brms_pad_url']
     room_id = request.GET.get('room_id', 0)
     user_id = request.session['userId']
     app_path = request.registry.settings['app_path']

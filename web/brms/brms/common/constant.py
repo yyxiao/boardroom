@@ -11,9 +11,6 @@ PAGESIZE = 10   # 每页显示记录数
 STATE_SUCCESS = 200     # 成功
 STATE_ERROR = 999       # 失败
 
-# 服务器地址
-BRMS_URL = 'http://10.11.11.60/app/index'
-
 # 是否重复会议
 REPEAT_YES = 'yes'
 
