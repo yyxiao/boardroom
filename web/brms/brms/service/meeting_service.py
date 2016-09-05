@@ -149,7 +149,7 @@ def find_meeting_calendar(dbs, user_id, org_ids=None, room_id=None):
         room_id = obj[11] if obj[11] else ''
         temp_dict = {
             'id': meeting_id,
-            'event_pid': '0',
+            # 'event_pid': '0',
             'event_length': get_event_length(start_time, end_time),      # TODO 夸天会议
             'text': name,
             'desc': description,
@@ -157,11 +157,12 @@ def find_meeting_calendar(dbs, user_id, org_ids=None, room_id=None):
             'end_date': end_date + " " + end_time,
             'rec_pattern': repeat_date if repeat_date and repeat else '',
             'rec_type': (repeat_date + "#" + repeat) if repeat_date and repeat else '',
-            'editable': True if create_user == user_id else False,
             'user_name': user_name,
             'room_id': room_id,
             '': (repeat_date + "#" + repeat) if repeat_date and repeat else ''
         }
+        if create_user != user_id:
+            temp_dict['readonly'] = True
         lists.append(temp_dict)
     return lists
 
@@ -187,10 +188,9 @@ def add(dbs, meeting, room_id):
         dbs.flush()
         logger.debug("会议添加完毕，meeting_id:" + str(meeting.id))
         if room_id != 0:
-            if meeting.repeat == REPEAT_YES:
-                dates = get_weekday(meeting.start_date, meeting.end_date, int(meeting.repeat_date))
-                result, occupies = check_repeat_occupy(dbs, room_id, meeting.start_time, meeting.end_time,
-                                                       int(meeting.repeat_date), dates=dates)
+            if meeting.repeat != '':
+                dates = get_weekday(meeting.start_date, meeting.end_date, meeting.repeat_date.split('_')[4].split(','))
+                result, occupies = check_repeat_occupy(dbs, room_id, meeting.start_time, meeting.end_time, meeting.repeat_date.split('_')[4].split(','), dates=dates)
                 if result != 0:
                     delete_meeting(dbs, meeting.id, meeting.create_user)
                     return json.dumps(occupies, ensure_ascii=False)

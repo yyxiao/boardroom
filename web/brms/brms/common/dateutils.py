@@ -142,12 +142,12 @@ def get_month_range():
             '2030-10', '2030-11', '2030-12', ]
 
 
-def get_weekday(start_date, end_date, weekday_num):
+def get_weekday(start_date, end_date, weekday_nums):
     '''
     获取一段时间范围内每个周天对应的日期
     :param start_date:
     :param end_date:
-    :param weekday_num: 星期对应数字 0 ～ 6
+    :param weekday_nums: list, 星期对应数字 0 ～ 6
     :return:
     '''
 
@@ -155,11 +155,12 @@ def get_weekday(start_date, end_date, weekday_num):
     edate = datetime.datetime.strptime(end_date, date_pattern1)
 
     weekdays = []
-    if sdate < edate:
-        now_weekday = sdate.weekday()
-        first_date = sdate + datetime.timedelta(days=((weekday_num - now_weekday + 7) % 7))
-        nums = int((edate - first_date).days / 7 + 1)
-        weekdays = list(map(lambda n: (first_date + datetime.timedelta(7 * n)).strftime(date_pattern1), range(nums)))
+    for weekday_num in weekday_nums:
+        if sdate < edate:
+            now_weekday = sdate.weekday()
+            first_date = sdate + datetime.timedelta(days=(((int(weekday_num)+6) % 7 - now_weekday + 7) % 7))
+            nums = int((edate - first_date).days / 7 + 1)
+            weekdays.extend(list(map(lambda n: (first_date + datetime.timedelta(7 * n)).strftime(date_pattern1), range(nums))))
     return weekdays
 
 
