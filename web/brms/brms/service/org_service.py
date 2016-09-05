@@ -339,3 +339,16 @@ def find_org_ids(dbs, user_org_id):
     for rec in orgs:
         branches.append(rec[0])
     return branches
+
+
+def find_org_by_user(dbs, user_id):
+    """
+    :param dbs:
+    :param user_id:
+    :return:
+    """
+    branches = []  # 获取当前用户所属机构及下属机构id
+    user_orgs = dbs.query(SysUserOrg.org_id).filter(SysUserOrg.user_id == user_id).all()
+    for rec in user_orgs:
+        branches.append(rec[0])
+    return branches

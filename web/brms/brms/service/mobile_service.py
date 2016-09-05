@@ -10,8 +10,7 @@ from ..models.model import *
 from ..common.dateutils import date_now, date_pattern1
 from ..service.booking_service import add_booking, update_booking
 from ..service.meeting_service import delete_meeting, add_meeting_bdr
-from ..service.user_service import find_user_by_id
-from ..service.org_service import find_branch_json
+from ..service.org_service import find_org_by_user
 import logging
 import transaction
 
@@ -99,15 +98,14 @@ def mob_find_meetings(dbs, user_id, room_id):
     return lists
 
 
-def mob_find_boardrooms(dbs, user_id, show_child=True):
+def mob_find_boardrooms(dbs, user_id):
     """
     查询符合条件的办公室，返回列表和分页对象
     :param dbs:
     :param user_id:
-    :param show_child:
     :return:
     """
-    user = find_user_by_id(dbs, user_id)
+    branches = find_org_by_user(dbs, user_id)  # 获取当前用户所分配机构id
     # 当前用户可分配会议室
     boardrooms = dbs.query(HasBoardroom.id,
                            HasBoardroom.name,
@@ -119,10 +117,8 @@ def mob_find_boardrooms(dbs, user_id, show_child=True):
                            HasBoardroom.pad_id,
                            HasBoardroom.state)\
         .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id)
-    if show_child:
-        tmp = find_branch_json(dbs, user.org_id)
-        child_org = list(map((lambda x: x['id']), tmp))
-        boardrooms = boardrooms.filter(SysOrg.id.in_(child_org))
+    if branches:
+        boardrooms = boardrooms.filter(HasBoardroom.org_id.in_(branches))
     else:
         boardrooms = boardrooms.outerjoin(SysUser, SysUser.org_id == SysOrg.id)
     boardrooms = boardrooms.filter(SysUser.id == user_id).order_by(HasBoardroom.create_time.desc())
