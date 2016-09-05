@@ -6,12 +6,12 @@ __mtime__ = 2016/8/11
 """
 import base64
 from pyramid.view import view_config
-from ..common.jsonutils import serialize
 from ..service.loginutil import UserTools
 from ..service.pad_service import *
 from ..service.meeting_service import delete_meeting, find_meeting, find_user_period
 from ..service.user_service import user_checking, account_checking
-import transaction
+
+logger = logging.getLogger('operator')
 
 
 @view_config(route_name='padLogin', renderer='json')
@@ -36,6 +36,7 @@ def pad_login(request):
             else:
                 pad, error_msg = find_pad_by_id(dbs, pad_code, user.id, user.org_id)
     update_last_time(dbs, pad_code, 'padLogin')
+    logger.info('padLogin--user_id:' + user_id + ',pad_code:' + pad_code)
     if error_msg:
         json_a = {
             'success': 'false',
@@ -79,6 +80,7 @@ def user_check(request):
                 user_id = user.id
                 error_msg = user_checking(dbs, pad_code, user.id)
     update_last_time(dbs, pad_code, 'userCheck')
+    logger.info('userCheck--user_account:' + user_account + ',pad_code:' + pad_code)
     if error_msg:
         json_a = {
             'success': 'false',
@@ -122,7 +124,8 @@ def account_check(request):
                 max_period = user.max_period
                 user_id = user.id
                 error_msg = account_checking(dbs, pad_code, user.id)
-    update_last_time(dbs, pad_code, 'userCheck')
+    update_last_time(dbs, pad_code, 'accountCheck')
+    logger.info('accountCheck--user_account:' + user_account + ',pad_code:' + pad_code)
     if error_msg:
         json_a = {
             'success': 'false',
@@ -151,6 +154,7 @@ def meeting_list(request):
     else:
         meetings, error_msg = find_meetings(dbs, pad_code)
     update_last_time(dbs, pad_code, 'meetingList')
+    logger.info('meetingList--pad_code:' + pad_code)
     if error_msg:
         json_a = {
             'success': 'false',
@@ -169,6 +173,7 @@ def index(request):
     """
     :return:
     """
+    logger.info('app_index')
     json_a = {
         'success': 'true',
     }
@@ -200,6 +205,7 @@ def pad_add_meeting(request):
         if not error_msg:
             error_msg, meeting_id = add_by_pad(dbs, meeting, pad_code)
     update_last_time(dbs, pad_code, 'addMeeting')
+    logger.info('addMeeting--user_id:' + user_id + ',pad_code:' + pad_code)
     if error_msg:
         json = {
             'success': 'false',
@@ -229,6 +235,7 @@ def del_meeting(request):
     else:
         error_msg = delete_meeting(dbs, meeting_id, user_id)
     update_last_time(dbs, pad_code, 'delMeeting')
+    logger.info('delMeeting--user_id:' + user_id + ',pad_code:' + pad_code + ',meeting_id:' + meeting_id)
     if error_msg:
         json = {
             'success': 'false',
@@ -253,6 +260,7 @@ def pad_update_meeting(request):
     meeting_id = request.POST.get('meeting_id', '')
     pad_code = request.POST.get('pad_code', '')
     update_last_time(dbs, pad_code, 'updateMeeting')
+    logger.info('updateMeeting--user_id:' + user_id + ',pad_code:' + pad_code + ',meeting_id:' + meeting_id)
     if not user_id:
         error_msg = '用户ID不能为空！'
     elif not pad_code:
@@ -316,6 +324,7 @@ def pad_org_list(request):
     else:
         orgs = pad_find_orgs(dbs, user_id)
     update_last_time(dbs, pad_code, 'orgList')
+    logger.info('orgList--user_id:' + user_id + ',pad_code:' + pad_code)
     if error_msg:
         json = {
             'success': 'false',
@@ -349,6 +358,7 @@ def pad_set_room(request):
     else:
         room, error_msg = set_room(dbs, user_id, pad_code, room_id)
     update_last_time(dbs, pad_code, 'setRoom')
+    logger.info('setRoom--user_id:' + user_id + ',pad_code:' + pad_code + ',room_id:' + room_id)
     if error_msg:
         json = {
             'success': 'false',
@@ -382,6 +392,7 @@ def pad_qr_code(request):
     else:
         room, error_msg = set_rooms_by_qrcode(dbs, user_id, pad_code, room_id)
     update_last_time(dbs, pad_code, 'padQrCode')
+    logger.info('padQrCode--user_id:' + user_id + ',pad_code:' + pad_code + ',room_id:' + room_id)
     if error_msg:
         json_a = {
             'success': 'false',
@@ -413,6 +424,7 @@ def pad_clear(request):
     else:
         error_msg = pad_clear_room(dbs, pad_code)
     update_last_time(dbs, pad_code, 'padClear')
+    logger.info('padClear--user_id:' + user_id + ',pad_code:' + pad_code)
     if error_msg:
         json_a = {
             'success': 'false',

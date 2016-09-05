@@ -135,7 +135,7 @@ class SysRoleMenu(Base):
 class SysUser(Base):
     __tablename__ = 'sys_user'                  # 用户表
     id = Column(INT, Sequence('sys_user_id_seq', schema=BRMS_SCHEMA), primary_key=True)        # 用户ID
-    user_account = Column(VARCHAR(32))          # 用户帐号
+    user_account = Column(VARCHAR(32))          # 用户账号
     user_pwd = Column(VARCHAR(32))              # 用户密码
     user_no = Column(VARCHAR(32))               # 用户工号
     user_name = Column(VARCHAR(64))             # 用户名称

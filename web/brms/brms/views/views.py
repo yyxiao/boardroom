@@ -76,7 +76,7 @@ def login(request):
                         request.session['user_name_db'] = user.user_name
                         return HTTPFound(request.route_url("home"))
                     else:
-                        error_msg = '密码错误超过5次，帐号已冻结，次日解冻'
+                        error_msg = '密码错误超过5次，账号已冻结，次日解冻'
                 elif password != user.user_pwd:
                     error_msg = '密码错误'
                     UserTools.count_err(user)

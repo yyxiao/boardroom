@@ -237,12 +237,12 @@ def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, pag
 
 
 def find_org(dbs, org_id):
-    '''
+    """
 
     :param dbs:
     :param org_id:
     :return:
-    '''
+    """
     (orgs, paginator) = find_orgs(dbs, org_id=org_id)
     if len(orgs) >= 1:
         return orgs[0]
@@ -250,12 +250,12 @@ def find_org(dbs, org_id):
 
 
 def find_org_by_id(dbs, org_id):
-    '''
+    """
 
     :param dbs:
     :param org_id:
     :return:
-    '''
+    """
     org = dbs.query(SysOrg).filter(SysOrg.id == org_id).first()
     if org:
         return org
@@ -264,12 +264,12 @@ def find_org_by_id(dbs, org_id):
 
 
 def add(dbs, org):
-    '''
+    """
     添加机构
     :param dbs:
     :param org:
     :return:
-    '''
+    """
     try:
         dbs.add(org)
         dbs.flush()
@@ -286,12 +286,12 @@ def add(dbs, org):
 
 
 def update(dbs, org):
-    '''
+    """
     更新机构信息
     :param dbs:
     :param org:
     :return:
-    '''
+    """
     try:
         with transaction.manager:
             dbs.merge(org)
@@ -303,12 +303,12 @@ def update(dbs, org):
 
 
 def delete(dbs, org_id):
-    '''
+    """
     删除机构
     :param dbs:
     :param org_id:
     :return:
-    '''
+    """
     try:
         with transaction.manager:
             dbs.query(SysOrg).filter(SysOrg.id == org_id).delete()

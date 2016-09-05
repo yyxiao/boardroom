@@ -49,6 +49,7 @@ body{
 	}
 	.table tbody>tr>td{
 		font-weight: 400!important;
+		white-space:nowrap;overflow:hidden;text-overflow: ellipsis;
 	}
 	.full-width{
 		width:100%;

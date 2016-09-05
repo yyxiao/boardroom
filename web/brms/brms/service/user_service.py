@@ -120,7 +120,7 @@ def find_user(dbs, user_id):
 
 def check_user_account(dbs, user_account):
     """
-    判断用户帐号是否已被占用
+    判断用户账号是否已被占用
     :param dbs:
     :param user_account:
     :return:
