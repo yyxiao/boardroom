@@ -15,7 +15,7 @@ from datetime import datetime
 from ..common.constant import IMG_RPATH
 from ..common.paginator import Paginator
 from ..models.model import SysOrg, HasBoardroom, SysUserOrg
-from ..service.org_service import find_branch_json
+from ..service.org_service import find_org_by_user
 
 logger = logging.getLogger('operator')
 
@@ -34,6 +34,7 @@ def find_boardrooms(dbs, user_id, br_id=None, name=None, config=None, org_id=Non
     :param show_child:
     :return:
     """
+    branches = find_org_by_user(dbs, user_id)  # 获取当前用户所分配机构id
     boardrooms = dbs.query(HasBoardroom.id,
                            HasBoardroom.name,
                            HasBoardroom.picture,
@@ -56,12 +57,10 @@ def find_boardrooms(dbs, user_id, br_id=None, name=None, config=None, org_id=Non
     if config:
         boardrooms = boardrooms.filter(HasBoardroom.config.like('%' + config + '%'))
     if org_id:
-        if show_child:
-            tmp = find_branch_json(dbs, org_id)
-            child_org = list(map((lambda x: x['id']), tmp))
-            boardrooms = boardrooms.filter(HasBoardroom.org_id.in_(child_org))
-        else:
-            boardrooms = boardrooms.filter(HasBoardroom.org_id == org_id)
+        boardrooms = boardrooms.filter(HasBoardroom.org_id == org_id)
+    else:
+        if branches:
+            boardrooms = boardrooms.filter(HasBoardroom.org_id.in_(branches))
     if br_id:
         boardrooms = boardrooms.filter(HasBoardroom.id == br_id)
 

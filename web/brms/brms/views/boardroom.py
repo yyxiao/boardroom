@@ -61,8 +61,8 @@ def boardroom_list(request):
         config = request.POST.get('br_config', '')
         org_id = request.POST.get('org_id', '')
         user_id = request.session['userId']
-        if org_id == '':
-            org_id = request.session['userOrgId']
+        # if org_id == '':
+        #     org_id = request.session['userOrgId']
         show_child = request.POST.get('show_child', 'false') == 'true'
         flag = request.POST.get('flag', '')
         page_no = int(request.POST.get('page', ''))

@@ -97,7 +97,6 @@ def mobile_update_user(request):
             'user': {
                 "id": user.id,
                 "org_id": user.org_id,
-                "position": user.position,
                 "position": user.position if user.position else '',
                 "email": user.email if user.email else '',
                 "user_name": user.user_name if user.user_name else '',
@@ -140,12 +139,11 @@ def mobile_room_list(request):
     error_msg = ''
     dbs = request.dbsession
     user_id = request.POST.get('user_id', '')
-    show_child = request.POST.get('show_child', 'false') == 'true'
-    logger.info('mobile_room_list--user_id:' + user_id, ',show_child:' + str(show_child))
+    logger.info('mobile_room_list--user_id:' + user_id)
     if not user_id:
         error_msg = '用户ID不能为空！'
     else:
-        rooms = mob_find_boardrooms(dbs, user_id, show_child)
+        rooms = mob_find_boardrooms(dbs, user_id)
     if error_msg:
         json_a = {
             'status': 'false',

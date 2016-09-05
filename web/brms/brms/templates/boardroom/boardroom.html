@@ -25,6 +25,26 @@
                         <input type="text" class="form-control" id="br_name" name="br_name">
                     </div>
                 </div>
+            </div>
+            <div class="col-md-4 paddingLR0">
+{#                <div class="form-group">#}
+{#                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">机构</label>#}
+{#                    <div class="col-sm-8 paddingR0">#}
+{#                        <input type="text" class="form-control"	id="search_org_name" name="search_org_name" readonly="readonly"#}
+{#                               onclick="org_show();" placeholder="请选择">#}
+{#                        <input type="text" class="hidden" id="search_org_id" name="search_org_id">#}
+{#                        <div class="form-control" style="background-color:white;#}
+{#                        height:300px;overflow: auto;display:none;position: absolute;z-index: 8" id="orgTree">#}
+{#                            <ul id="treeDemo" class="ztree"></ul>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                    <div class="col-sm-7 paddingR0">#}
+{#                        <input type="checkbox" class="checkbox" id="show_child" name="show_child" checked>#}
+{#                        <label for="show_child" class="control-label form-label paddingR0 paddingL0">&nbsp&nbsp显示子机构会议室</label>#}
+{#                    </div>#}
+{#                </div>#}
                 <div class="form-group">
                     <label class="col-sm-4 control-label form-label paddingR0 paddingL0">配置</label>
                     <div class="col-sm-8 paddingR0">
@@ -32,27 +52,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 paddingLR0">
-                <div class="form-group">
-                    <label class="col-sm-4 control-label form-label paddingR0 paddingL0">机构</label>
-                    <div class="col-sm-8 paddingR0">
-                        <input type="text" class="form-control"	id="search_org_name" name="search_org_name" readonly="readonly"
-                               onclick="org_show();" placeholder="请选择">
-                        <input type="text" class="hidden" id="search_org_id" name="search_org_id">
-                        <div class="form-control" style="background-color:white;
-                        height:300px;overflow: auto;display:none;position: absolute;z-index: 8" id="orgTree">
-                            <ul id="treeDemo" class="ztree"></ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="col-md-4 paddingLR0" style='padding-left:0px;'>
-                <div class="form-group">
-                    <div class="col-sm-7 paddingR0">
-                        <input type="checkbox" class="checkbox" id="show_child" name="show_child" checked>
-                        <label for="show_child" class="control-label form-label paddingR0 paddingL0">&nbsp&nbsp显示子机构会议室</label>
-                    </div>
-                </div>
                 <button type="button" style="margin-left: 40px;" class="btn btn-primary" onclick="list(1)">
                     <i class="fa fa-search marginR6"></i>查询
                 </button>
@@ -83,23 +83,23 @@
 <script src="{{ request.static_url('brms:static/js/org/org_tree.js') }}"></script>
 <script src="{{ request.static_url('brms:static/js/lightbox.js')}}"></script>
 <script type="text/javascript">
-    var setting = {
-        check: {
-            enable: true,
-            chkStyle: "radio",
-            radioType: "all"
-        },
-        data: {
-            simpleData: {
-                enable: true
-            }
-        },
-        callback: {
-            onCheck: zTreeOnCheck
-        }
-    };
-    var zNodes ={{ branch_json|safe }};
-    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+{#    var setting = {#}
+{#        check: {#}
+{#            enable: true,#}
+{#            chkStyle: "radio",#}
+{#            radioType: "all"#}
+{#        },#}
+{#        data: {#}
+{#            simpleData: {#}
+{#                enable: true#}
+{#            }#}
+{#        },#}
+{#        callback: {#}
+{#            onCheck: zTreeOnCheck#}
+{#        }#}
+{#    };#}
+{#    var zNodes ={{ branch_json|safe }};#}
+{#    $.fn.zTree.init($("#treeDemo"), setting, zNodes);#}
 </script>
 {% endblock %}
 
