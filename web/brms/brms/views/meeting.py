@@ -64,12 +64,6 @@ def to_add(request):
 def add_meeting(request):
     dbs = request.dbsession
     meeting = HasMeeting()
-    # if pad_code:
-    #     # 查找pad对应的会议室
-    #     board_room = dbs.query(HasBoardroom.id, HasBoardroom.name).\
-    #         outerjoin(HasPad, HasPad.id == HasBoardroom.pad_id).\
-    #         filter(HasPad.pad_code == pad_code)
-    #     if board_room:
     room_id = int(request.POST.get('room_id', 0))
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
@@ -82,7 +76,6 @@ def add_meeting(request):
     meeting.repeat_date = request.POST.get('rec_pattern', '')
     meeting.create_user = request.session['userId']
     meeting.create_time = datetime.now().strftime(datetime_format)
-    org_ids = json.loads(request.POST.get('org_ids', ''))
     error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
     if not error_msg:
         error_msg = add(dbs, meeting, room_id)
@@ -92,10 +85,8 @@ def add_meeting(request):
             'error_msg': error_msg,
         }
     else:
-        meetings = find_meeting_calendar(dbs, user_id=request.session['userId'], org_ids=org_ids, room_id=room_id)
         json_str = {
-            'success': True,
-            'error_msg': meetings,
+            'success': True
         }
     return json_str
 
@@ -107,15 +98,10 @@ def del_meeting(request):
     meeting_id = int(request.POST.get('id', 0))
     user_id = request.session['userId']
     error_msg = delete_meeting(dbs, meeting_id, user_id)
-    if error_msg:
-        json_str = {
-            'success': False,
-            'error_msg': error_msg,
-        }
-    else:
-        json_str = {
-            'success': True,
-        }
+    json_str = {
+        'success': False if error_msg else True,
+        'error_msg': error_msg,
+    }
     return json_str
 
 

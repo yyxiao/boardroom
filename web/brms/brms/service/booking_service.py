@@ -133,7 +133,10 @@ def delete_booking(dbs, room_id, mdate, start_time, end_time):
 
     try:
         # with transaction.manager:
-        dbs.add(occupy)
+        if occupy.code == 0:
+            dbs.delete(occupy)
+        else:
+            dbs.add(occupy)
         # dbs.flush()
         return ''
     except Exception as e:
@@ -141,14 +144,14 @@ def delete_booking(dbs, room_id, mdate, start_time, end_time):
         return '删除占用失败'
 
 
-def check_repeat_occupy(dbs, room_id, start_time, end_time, week_num, start_date=None, end_date=None, dates=None):
+def check_repeat_occupy(dbs, room_id, start_time, end_time, week_nums, start_date=None, end_date=None, dates=None):
     """
     检查重复会议是否冲突
     :param dbs:
     :param room_id:
     :param start_time:
     :param end_time:
-    :param week_num:
+    :param week_nums:
     :param start_date:
     :param end_date:
     :param dates:
@@ -157,7 +160,7 @@ def check_repeat_occupy(dbs, room_id, start_time, end_time, week_num, start_date
                occupies:      冲突日期及冲突信息字典
     """
     if not dates:
-        dates = get_weekday(start_date, end_date, week_num)
+        dates = get_weekday(start_date, end_date, week_nums)
     occupies = {}
     for mdate in dates:
         msg = check_occupy(dbs, room_id, mdate, start_time, end_time)

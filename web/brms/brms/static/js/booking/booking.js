@@ -3,7 +3,7 @@ function zTreeOnCheck4MB(event, treeId, treeNode) {
     var names = get_orgs("names");
     $('#search_org_name').val(names);
     load_br();
-    load_meeting();
+    refresh_calender();
 }
 
 function load_br() {
@@ -49,7 +49,7 @@ function load_br() {
     });
 }
 
-function load_meeting(){
+function refresh_calender(){
     var org_ids = get_orgs("org_ids");
     if (org_ids.length == 0) {
         return ;
@@ -69,9 +69,8 @@ function init() {
     scheduler.config.first_hour = 7;
     scheduler.config.last_hour = 21;
     scheduler.config.time_step = 30;
-    scheduler.config.readonly_form = true;
     scheduler.config.lightbox_recurring = 'series';
-    // scheduler.config.server_utc = true;
+    scheduler.config.collision_limit = 1;
 
     var org_ids = get_orgs("org_ids");
     var room_id = $.trim($('#room_id').val());
@@ -108,6 +107,108 @@ function init() {
     });
 
     scheduler.init('scheduler_here', new Date(), "timeline");
+    load_meetings(org_ids, room_id);
+
+    scheduler.attachEvent("onEventCollision", function(id, ev){
+        $.messager.popup('所选时间段与已有会议冲突，请重新选择时间或会议室！');
+        return true;
+
+    });
+    scheduler.attachEvent("onBeforeEventDelete", function(id){
+        if (id > 1000000000){
+            return true;
+        }
+        var flag = false;
+        $.ajax({
+            type : "POST",
+            url : "/meeting/del",
+            async: false,
+            data : {
+                "id": id
+            },
+            error : function() {
+                $.messager.popup("与服务器通信失败，请稍后重试！");
+                flag = false;
+            },
+            success : function(data) {
+                if (data.success) {
+                    $.messager.popup("删除会议成功！");
+                    flag = true;
+                } else {
+                    $.messager.popup(data.error_msg);
+                    flag = false;
+                }
+            }
+        });
+        return flag;
+    });
+    scheduler.attachEvent("onEventSave", function (id, ev, is_new) {
+        debugger;
+        var name = $.trim(ev.text);
+        var desc = ev.desc;
+        var start_date_time = new Date(ev.start_date).FormatLocal('yyyy-MM-dd hh:mm');
+        var end_date_time = new Date(ev.end_date).FormatLocal('yyyy-MM-dd hh:mm');
+        var repeat_end_date_time = new Date(ev._end_date).FormatLocal('yyyy-MM-dd hh:mm');
+
+        var start_date = start_date_time.substring(0, 10);
+        var start_time = start_date_time.substring(11, 16);
+        var end_date = end_date_time.substring(0, 10);
+        var end_time = end_date_time.substring(11, 16);
+        var rec_type = ev.rec_type;
+        if (rec_type){
+            end_date = repeat_end_date_time.substring(0, 10);
+        }
+        var room_id = ev.room_id;
+        var url = '/meeting/add';
+        if (is_new == null){
+            url = '/meeting/update'
+        }
+        var flag = false;
+        $.ajax({
+            type: "POST",
+            async: false,
+            url: url,
+            data: {
+                'id': id,
+                'name': name,
+                'desc': desc,
+                'start_date': start_date,
+                'end_date': end_date,
+                'start_time': start_time,
+                'end_time': end_time,
+                'rec_type': get_rec(rec_type, 1),
+                'rec_pattern': get_rec(rec_type, 0),
+                'room_id': room_id
+            },
+            success: function (data) {
+                if (data.success){
+                    $.messager.popup('会议预约成功！');
+                    flag = true;
+                }else{
+                    $.messager.popup(data.error_msg);
+                    flag = false;
+                }
+            },
+            error: function () {
+                $.messager.popup('与服务器通信失败！');
+                flag = false;
+            }
+        });
+        return flag;
+    });
+    scheduler.attachEvent("onEventAdded", function(id, ev){
+        if (id <= 1000000000){
+            return true;
+        }
+        scheduler.deleteEvent(id);
+        load_meetings(org_ids, room_id);
+        return true;
+
+    });
+
+}
+
+function load_meetings(org_ids, room_id){
     $.ajax({
         type: "POST",
         async: false,
@@ -124,59 +225,6 @@ function init() {
             $.messager.popup('会议数据错误！');
         }
     });
-    // scheduler.attachEvent("onEventSave", function(id, ev){
-    //     alert('111'+d);
-    //
-    // });
-    // scheduler.attachEvent("onEventAdded", function(id, ev){
-    //     alert('222'+d);
-    //
-    // });
-    // scheduler.attachEvent("onDblClick", function(id, ev){
-    //     alert(id);
-    // });
-    scheduler.attachEvent("onEventSave", function (id, ev) {
-        var name = $.trim(ev.text);
-        var desc = ev.desc;
-        var start_date = new Date(ev.start_date).FormatLocal('yyyy-MM-dd hh:mm');
-        var end_date = new Date(ev.end_date).FormatLocal('yyyy-MM-dd hh:mm');
-        // var event_length = ev.event_length;
-        var rec_type = ev.rec_type;
-        var room_id = ev.room_id;
-        $.ajax({
-            type: "POST",
-            async: false,
-            url: '/meeting/add',
-            data: {
-                'name': name,
-                'desc': desc,
-                'start_date': start_date.substring(0, 10),
-                'end_date': end_date.substring(0, 10),
-                'start_time': start_date.substring(11, 16),
-                'end_time': end_date.substring(11, 16),
-                'rec_type': get_rec(rec_type, 1),
-                'rec_pattern': get_rec(rec_type, 0),
-                'room_id': room_id,
-                'org_ids': JSON.stringify(org_ids)
-            },
-            success: function (data) {
-                if (data.success){
-                    var meetings = data.meetings;
-                    scheduler.clearEvents();
-                    scheduler.parse(meetings, "json");
-                    return true;
-                }else{
-                    $.messager.popup(data.error_msg);
-                }
-            },
-            error: function () {
-                $.messager.popup('会议数据错误！');
-            }
-        });
-
-        return true;
-    });
-
 }
 
 function get_orgs(type){
