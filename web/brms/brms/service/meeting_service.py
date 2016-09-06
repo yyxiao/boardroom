@@ -194,7 +194,7 @@ def add(dbs, meeting, room_id):
                 result, occupies = check_repeat_occupy(dbs, room_id, meeting.start_time, meeting.end_time, meeting.repeat_date.split('_')[4].split(','), dates=dates)
                 if result != 0:
                     delete_meeting(dbs, meeting.id, meeting.create_user)
-                    return json.dumps(occupies, ensure_ascii=False)
+                    return json.dumps(occupies, ensure_ascii=False), 0
             else:
                 dates = [meeting.start_date]
 
@@ -203,12 +203,12 @@ def add(dbs, meeting, room_id):
                 error_msg = add_booking(dbs, room_id, mdate, meeting.start_time, meeting.end_time)
                 if error_msg:
                     delete_meeting(dbs, meeting.id, meeting.create_user)
-                    return error_msg
+                    return error_msg, 0
             logger.debug("会议会议室关联添加完毕")
     except Exception as e:
         logger.error(e)
         error_msg = '新增会议失败，请核对后重试'
-    return error_msg
+    return error_msg, meeting.id
 
 
 def update(dbs, meeting, room_id, old_meeting=None):
