@@ -87,7 +87,7 @@ def find_meetings(dbs, pad_code):
     print("now_day"+now_day+"n_days"+n_days)
     meetings = dbs.query(HasMeeting.id, HasMeeting.name, HasMeeting.description,
                          HasMeeting.start_date, HasMeeting.end_date, HasMeeting.start_time,
-                         HasMeeting.end_time, HasMeeting.create_user, HasMeeting.create_time,
+                         HasMeeting.end_time, HasMeeting.repeat, HasMeeting.create_user, HasMeeting.create_time,
                          SysUser.user_name, SysUser.phone, SysOrg.org_name)\
         .outerjoin(SysUser, HasMeeting.create_user == SysUser.id)\
         .outerjoin(SysOrg, SysUser.org_id == SysOrg.id)\
@@ -95,7 +95,7 @@ def find_meetings(dbs, pad_code):
         .outerjoin(HasBoardroom, HasBoardroom.id == HasMeetBdr.boardroom_id)\
         .outerjoin(HasPad, HasPad.id == HasBoardroom.pad_id)\
         .filter(HasPad.pad_code == pad_code)\
-        .filter(HasMeeting.start_date < n_days).filter(HasMeeting.start_date >= now_day)
+        .filter(HasMeetBdr.meeting_date < n_days).filter(HasMeetBdr.meeting_date >= now_day)
     lists = []
     for meeting in meetings:
         id = meeting.id
@@ -105,6 +105,7 @@ def find_meetings(dbs, pad_code):
         end_date = meeting.end_date
         start_time = meeting.start_time
         end_time = meeting.end_time
+        repeat = meeting.repeat
         create_user = meeting.create_user
         create_time = meeting.create_time
         user_name = meeting.user_name
@@ -114,6 +115,7 @@ def find_meetings(dbs, pad_code):
             'meeting_id': id,
             'meeting_name': name,
             'description': description,
+            'repeat': repeat if repeat else '',
             'start_date': start_date,
             'end_date': end_date,
             'start_time': start_time,
@@ -177,7 +179,7 @@ def update_by_pad(dbs, meeting, pad_code, old_meeting=None):
     :param old_meeting:
     :return:
     """
-    with transaction.manager:
+    with transaction.manager as tx:
         try:
             # 查询padcode对应的boardroom_id
             board = dbs.query(HasBoardroom.id)\
@@ -203,7 +205,7 @@ def update_by_pad(dbs, meeting, pad_code, old_meeting=None):
                 dbs.merge(meet_bdr)
                 error_msg = update_booking(dbs, old_room_id, old_room_id, old_meeting, meeting)
                 if error_msg:
-                    dbs.rollback()
+                    tx.abort()
                 else:
                     dbs.add(meeting)
         except Exception as e:
