@@ -172,7 +172,7 @@ function update() {
 	var id = $("#meeting_id").val()
 	var name = $.trim($("#name").val());
 	var desc = $.trim($("#desc").val());
-	var room_id = $.trim($("#room_add").val());
+	// var room_id = $.trim($("#room_add").val());
 	// var start = $("#start_date").val();
 	// var start_date = start.substring(0,10);
 	// var start_time = start.substring(11,16);
@@ -215,12 +215,12 @@ function update() {
 		data : {
 			"id" : id,
 			"name" : name,
-			"desc" : desc,
+			"desc" : desc
 			// "start_date" : start_date,
 			// "start_time" : start_time,
 			// "end_date" : end_date,
 			// "end_time" : end_time,
-			"room_id" : room_id
+			// "room_id" : room_id
 		},
 		error : function() {
 			$.messager.popup("更新会议失败");
