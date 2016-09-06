@@ -137,11 +137,13 @@ def update_meeting(request):
 
     meeting.name = request.POST.get('name', '')
     meeting.description = request.POST.get('desc', '')
-    meeting.repeat = REPEAT_YES if request.POST.get('is_repeat', 'false') == 'true' else ''
     meeting.start_date = request.POST.get('start_date', '')
     meeting.end_date = request.POST.get('end_date', '')
     meeting.start_time = request.POST.get('start_time', '')
     meeting.end_time = request.POST.get('end_time', '')
+    meeting.org_id = int(request.POST.get('org_id', request.session['userOrgId']))
+    meeting.repeat = request.POST.get('rec_type', '')
+    meeting.repeat_date = request.POST.get('rec_pattern', '')
 
     error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
     if not error_msg:

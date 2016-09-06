@@ -136,7 +136,7 @@ def delete_booking(dbs, room_id, mdate, start_time, end_time):
         if occupy.code == 0:
             dbs.delete(occupy)
         else:
-            dbs.add(occupy)
+            dbs.merge(occupy)
         # dbs.flush()
         return ''
     except Exception as e:
