@@ -44,7 +44,7 @@ class HasMeeting(Base):
     name = Column(VARCHAR(128))                 # 会议名称
     description = Column(VARCHAR(512))          # 会议描述
     org_id = Column(INT)                        # 机构ID
-    repeat = Column(VARCHAR(3))                 # 是否重复会议
+    repeat = Column(VARCHAR(10))                 # 是否重复会议
     repeat_date = Column(VARCHAR(200))          # 重复日期
     start_date = Column(VARCHAR(10))            # 开始日期
     end_date = Column(VARCHAR(10))              # 结束日期
