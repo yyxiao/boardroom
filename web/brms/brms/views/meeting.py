@@ -78,7 +78,7 @@ def add_meeting(request):
     meeting.create_time = datetime.now().strftime(datetime_format)
     error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
     if not error_msg:
-        error_msg = add(dbs, meeting, room_id)
+        error_msg, new_id = add(dbs, meeting, room_id)
     if error_msg:
         json_str = {
             'success': False,
@@ -86,7 +86,8 @@ def add_meeting(request):
         }
     else:
         json_str = {
-            'success': True
+            'success': True,
+            'new_id': new_id
         }
     return json_str
 
