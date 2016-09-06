@@ -32,18 +32,12 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">会议室</label>
                   <div class="col-sm-9">
-                        <select class="form-control" id="room_add" name="room_add">
-                            {% if not meeting %}
-                                <option value="">请选择</option>
+                        {% for room in rooms %}
+                            {% if meeting and meeting.boardroom_id == room.br_id %}
+                                <input name="room_add" type="text" class="form-control" readonly="readonly"
+                                    id="room_add" value="{{room.br_name}}">
                             {% endif %}
-                            {% for room in rooms %}
-                                {% if meeting and meeting.boardroom_id == room.br_id %}
-                                    <option value="{{ room.br_id }}" selected="selected">{{ room.br_name }}</option>
-                                {% else %}
-                                    <option value="{{ room.br_id }}">{{ room.br_name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="form-group">
@@ -59,19 +53,15 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">开始日期</label>
                   <div class="col-sm-9">
-                    <input name="start_date" type="text" class="form-control" id="start_date"
-                    {% if meeting %}
-                    value="{{meeting.start_date}} {{meeting.start_time}}"
-                    {% endif %}>
+                    <input name="start_date" type="text" class="form-control" readonly="readonly"
+                           id="start_date" value="{{meeting.start_date}} {{meeting.start_time}}">
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">结束日期</label>
                   <div class="col-sm-9">
-                  <input name="end_date" type="text" class="form-control" id="end_date"
-                    {% if meeting %}
-                     value="{{meeting.end_date}} {{meeting.end_time}}"
-                    {% endif %}>
+                    <input name="end_date" type="text" class="form-control" readonly="readonly"
+                           id="end_date" value="{{meeting.end_date}} {{meeting.end_time}}">
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -87,26 +77,26 @@
 	</div>
 </div>
 <script>
-    // 当前时间
-    var nowdate = new Date();
-    $("#start_date").datetimepicker({
-        language: 'zh-CN',
-        autoclose: true,
-        todayHighlight: true,
-        format: 'yyyy-mm-dd hh:ii',
-        startDate: nowdate,
-        minView: 0,
-        maxView: 3,
-        minuteStep: 30
-    });
-    $("#end_date").datetimepicker({
-        language: 'zh-CN',
-        autoclose: true,
-        todayHighlight: true,
-        format: 'yyyy-mm-dd hh:ii',
-        startDate: nowdate,
-        minView: 0,
-        maxView: 3,
-        minuteStep: 30
-    });
+{#    // 当前时间#}
+{#    var nowdate = new Date();#}
+{#    $("#start_date").datetimepicker({#}
+{#        language: 'zh-CN',#}
+{#        autoclose: true,#}
+{#        todayHighlight: true,#}
+{#        format: 'yyyy-mm-dd hh:ii',#}
+{#        startDate: nowdate,#}
+{#        minView: 0,#}
+{#        maxView: 3,#}
+{#        minuteStep: 30#}
+{#    });#}
+{#    $("#end_date").datetimepicker({#}
+{#        language: 'zh-CN',#}
+{#        autoclose: true,#}
+{#        todayHighlight: true,#}
+{#        format: 'yyyy-mm-dd hh:ii',#}
+{#        startDate: nowdate,#}
+{#        minView: 0,#}
+{#        maxView: 3,#}
+{#        minuteStep: 30#}
+{#    });#}
 </script>
