@@ -9,36 +9,36 @@ INSERT INTO "brms"."sys_org" ("id", "org_name", "org_type", "parent_id", "org_ma
 SELECT SETVAL('brms.sys_org_id_seq', 2, false);
 
 -- 用户机构初始化
-INSERT INTO "brms"."sys_user_org" ("user_id", "org_id", "create_time", "create_user") VALUES (1, 1, NULL, NULL);
-INSERT INTO "brms"."sys_user_org" ("user_id", "org_id", "create_time", "create_user") VALUES (2, 1, NULL, NULL);
-INSERT INTO "brms"."sys_user_org" ("user_id", "org_id", "create_time", "create_user") VALUES (3, 1, NULL, NULL);
+INSERT INTO "brms"."sys_user_org" ("user_id", "org_id", "create_time", "create_user") VALUES (1, 1, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_user_org" ("user_id", "org_id", "create_time", "create_user") VALUES (2, 1, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_user_org" ("user_id", "org_id", "create_time", "create_user") VALUES (3, 1, '2016-08-31 13:36:39', '1');
 
 -- 角色初始化
-INSERT INTO "brms"."sys_role" ("role_id", "role_name", "role_desc", "create_time", "create_user") VALUES (1, '超级管理员', '超级管理员', NULL, NULL);
-INSERT INTO "brms"."sys_role" ("role_id", "role_name", "role_desc", "create_time", "create_user") VALUES (2, '系统管理员', '系统管理员', NULL, NULL);
-INSERT INTO "brms"."sys_role" ("role_id", "role_name", "role_desc", "create_time", "create_user") VALUES (3, '普通用户', '普通用户', NULL, NULL);
+INSERT INTO "brms"."sys_role" ("role_id", "role_name", "role_desc", "create_time", "create_user") VALUES (1, '超级管理员', '超级管理员', '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role" ("role_id", "role_name", "role_desc", "create_time", "create_user") VALUES (2, '系统管理员', '系统管理员', '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role" ("role_id", "role_name", "role_desc", "create_time", "create_user") VALUES (3, '普通用户', '普通用户', '2016-08-31 13:36:39', '1');
 SELECT SETVAL('brms.sys_role_id_seq', 4, false);
 
 -- 用户角色初始化
-INSERT INTO "brms"."sys_user_role" ("role_id", "user_id", "create_time", "create_user") VALUES (1, 1, NULL, NULL);
-INSERT INTO "brms"."sys_user_role" ("role_id", "user_id", "create_time", "create_user") VALUES (2, 2, NULL, NULL);
-INSERT INTO "brms"."sys_user_role" ("role_id", "user_id", "create_time", "create_user") VALUES (2, 3, NULL, NULL);
+INSERT INTO "brms"."sys_user_role" ("role_id", "user_id", "create_time", "create_user") VALUES (1, 1, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_user_role" ("role_id", "user_id", "create_time", "create_user") VALUES (2, 2, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_user_role" ("role_id", "user_id", "create_time", "create_user") VALUES (2, 3, '2016-08-31 13:36:39', '1');
 
 -- 角色菜单初始化
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 1, NULL, NULL);
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 2, NULL, NULL);
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 3, NULL, NULL);
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 4, NULL, NULL);
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 5, NULL, NULL);
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 6, NULL, NULL);
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 7, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 1, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 2, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 3, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 4, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 5, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 6, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (1, 7, '2016-08-31 13:36:39', '1');
 
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 1, NULL, NULL);
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 2, NULL, NULL);
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 4, NULL, NULL);
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 5, NULL, NULL);
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 6, NULL, NULL);
-INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 7, NULL, NULL);
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 1, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 2, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 4, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 5, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 6, '2016-08-31 13:36:39', '1');
+INSERT INTO "brms"."sys_role_menu" ("role_id", "menu_id", "create_time", "create_user") VALUES (2, 7, '2016-08-31 13:36:39', '1');
 
 
 -- 菜单初始化
