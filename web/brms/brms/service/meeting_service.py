@@ -6,11 +6,11 @@ __mtime__ = 2016/8/8
 """
 
 import json
+import copy
 import logging
 import transaction
 from sqlalchemy.sql import and_
 from ..models.model import *
-from ..common.constant import *
 from ..common.paginator import Paginator
 from ..common.dateutils import date_now, get_weekday, add_date
 from ..service.booking_service import check_repeat_occupy, add_booking, update_booking, delete_booking
@@ -48,7 +48,7 @@ def find_meetings(dbs, user_id=None, user_org_id=None, meeting_name=None, room_n
         .outerjoin(SysUserOrg, and_(SysUserOrg.user_id == SysUser.id, HasMeeting.org_id == SysUserOrg.org_id))\
         .outerjoin(SysOrg, SysUserOrg.org_id == SysOrg.id) \
         .outerjoin(HasMeetBdr,
-                   and_(HasMeetBdr.meeting_id == HasMeeting.id, HasMeetBdr.meeting_date == HasMeeting.start_date)) \
+                   and_(HasMeetBdr.meeting_id == HasMeeting.id, HasMeetBdr.meeting_date == HasMeeting.end_date)) \
         .outerjoin(HasBoardroom, HasBoardroom.id == HasMeetBdr.boardroom_id)\
         .outerjoin(HasPad, HasPad.id == HasBoardroom.pad_id)
     branches = find_org_ids(dbs, user_org_id)               # 获取当前用户所属机构及下属机构id
@@ -161,8 +161,9 @@ def find_meeting_calendar(dbs, user_id, org_ids=None, room_id=None):
             'room_id': room_id,
             '': (repeat_date + "#" + repeat) if repeat_date and repeat else ''
         }
-        if create_user != user_id:
+        if create_user != user_id or temp_dict['rec_type']:
             temp_dict['readonly'] = True
+
         lists.append(temp_dict)
     return lists
 
@@ -255,6 +256,58 @@ def update(dbs, meeting, room_id, old_meeting=None):
             dbs.rollback()
             error_msg = '更新会议失败，请核对后重试'
     return error_msg
+# def update(dbs, meeting, room_id, old_meeting=None):
+#     # with transaction.manager:
+#     try:
+#         rooms = dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == old_meeting.id).all()
+#         for room in rooms:
+#             error_msg = delete_booking(dbs, room.boardroom_id, room.meeting_date, old_meeting.start_time,
+#                                        old_meeting.end_time)
+#             # if error_msg:
+#             #     dbs.rollback()
+#             #     return error_msg
+#             dbs.delete(room)
+#         dbs.flush()
+#         # dbs.rollback()
+#         # return ''
+#         if room_id != 0:
+#             if meeting.repeat != '':
+#                 dates = get_weekday(meeting.start_date, meeting.end_date, meeting.repeat_date.split('_')[4].split(','))
+#                 result, occupies = check_repeat_occupy(dbs, room_id, meeting.start_time, meeting.end_time,
+#                                                        meeting.repeat_date.split('_')[4].split(','), dates=dates)
+#                 if result != 0:
+#                     dates = get_weekday(old_meeting.start_date, old_meeting.end_date,
+#                                         old_meeting.repeat_date.split('_')[4].split(','))
+#                     for mdate in dates:
+#                         add_meeting_bdr(dbs, meeting.id, room_id, mdate, meeting.create_user)
+#                         add_booking(dbs, room_id, mdate, meeting.start_time, meeting.end_time)
+#
+#                     meeting.name = old_meeting.name
+#                     meeting.description = old_meeting.description
+#                     meeting.start_date = old_meeting.start_date
+#                     meeting.end_date = old_meeting.end_date
+#                     meeting.start_time = old_meeting.start_time
+#                     meeting.end_time = old_meeting.end_time
+#                     meeting.org_id = old_meeting.org_id
+#                     meeting.repeat = old_meeting.repeat
+#                     meeting.repeat_date = old_meeting.repeat_date
+#                     dbs.flush()
+#                     error_msg = json.dumps(occupies, ensure_ascii=False)
+#                     return error_msg
+#             else:
+#                 dates = [meeting.start_date]
+#
+#             for mdate in dates:
+#                 add_meeting_bdr(dbs, meeting.id, room_id, mdate, meeting.create_user)
+#                 error_msg = add_booking(dbs, room_id, mdate, meeting.start_time, meeting.end_time)
+#                 # if error_msg:
+#                 #     dbs.rollback()
+#                 #     return error_msg
+#         # dbs.merge(old_meeting)
+#         dbs.flush()
+#     except Exception as e:
+#         logger.error(e)
+#         return '新增会议失败，请核对后重试'
 
 
 def delete_meeting(dbs, meeting_id, user_id):
