@@ -94,7 +94,7 @@ def mob_find_meetings(dbs, user_id, room_id):
             'user_phone': phone,
             'org_name': org_name,
         }
-    lists.append(temp_dict)
+        lists.append(temp_dict)
     return lists
 
 
