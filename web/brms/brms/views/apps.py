@@ -120,6 +120,7 @@ def account_check(request):
                 UserTools.count_err(user)
                 dbs.flush()
             else:
+                pad, error_msg = find_pad_by_id(dbs, pad_code, user.id, user.org_id)
                 # 获取该用户最大可申请期限
                 max_period = user.max_period
                 user_id = user.id
