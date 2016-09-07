@@ -273,8 +273,9 @@ def account_checking(dbs, pad_code, user_id):
     """
     msg = ''
     try:
-        pads = dbs.query(HasPad) \
-            .outerjoin(SysUserOrg, SysUserOrg.org_id == HasPad.org_id) \
+        pads = dbs.query(HasPad)\
+            .outerjoin(HasBoardroom, HasBoardroom.pad_id == HasPad.id) \
+            .outerjoin(SysUserOrg, SysUserOrg.org_id == HasBoardroom.org_id) \
             .outerjoin(SysUser, SysUser.id == SysUserOrg.user_id)
         if user_id:
             pads = pads.filter(SysUser.id == user_id)

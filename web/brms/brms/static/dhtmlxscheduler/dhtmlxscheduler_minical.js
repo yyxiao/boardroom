@@ -132,8 +132,8 @@ scheduler.templates.calendar_month = scheduler.date.date_to_str("%F %Y"), schedu
         var e = "<input class='dhx_readonly' type='text' readonly='true'>",
             t = scheduler.config,
             a = this.date.date_part(scheduler._currentDate()),
-            r = 1440,
-            n = 0;
+            r = 1290,
+            n = 420;
         t.limit_time_select && (n = 60 * t.first_hour,
             r = 60 * t.last_hour + 1), a.setHours(n / 60), e += " <select>";
         for (var i = n; r > i; i += 1 * this.config.time_step) {

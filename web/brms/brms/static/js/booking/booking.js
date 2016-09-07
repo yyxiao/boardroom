@@ -102,7 +102,8 @@ function init() {
                 y_property: "room_id",
                 render: "tree",
                 folder_dy: 20,
-                dy: 60
+                dy: 60,
+                dx: 100
             });
         },
         error: function () {

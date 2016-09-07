@@ -22,7 +22,7 @@
                         <td><input type="checkbox" name="idbox" value="{{ boardroom.br_id }}" onclick="checkbr(this)">
                         </td>
                     {% endif %}
-                    <td>{{ boardroom.br_name }}</td>
+                    <td title="{{ boardroom.br_name }}">{{ boardroom.br_name }}</td>
                     <td>
                         <a class="image-link"
                            href="{{ request.static_url('brms:' + (boardroom.picture if boardroom.picture else 'static/img/boardroom/default.jpg')) }}"
