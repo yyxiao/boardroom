@@ -70,7 +70,7 @@
                 <div class="form-group">
                     <label for="input room_pic" class="col-sm-2 control-label">照片</label>
                     <div class="col-sm-9">
-                        <input type="file" name="picture" id="room_pic" class="file-loading" accept="image/*"/>
+                        <input type="file" name="picture" id="room_pic" />
                         {% if boardroom and boardroom.picture%}
                             <div id='room_pic_preview'>
                                 <img src="{{ request.static_url('brms:' + boardroom.picture) }}" height="150" width="150"/>

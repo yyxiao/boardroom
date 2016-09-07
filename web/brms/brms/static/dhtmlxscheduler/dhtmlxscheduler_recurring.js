@@ -527,7 +527,7 @@ scheduler.config.occurrence_timestamp_in_utc = !1, scheduler.config.recurring_wo
 
     }
     return a
-}, scheduler.config.repeat_date = "%m.%d.%Y", scheduler.config.lightbox.sections = [{
+}, scheduler.config.repeat_date = "%Y.%m.%d", scheduler.config.lightbox.sections = [{
     name: "description",
     height: 130,
     map_to: "text",

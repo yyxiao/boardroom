@@ -172,13 +172,13 @@ function update() {
 	var id = $("#meeting_id").val()
 	var name = $.trim($("#name").val());
 	var desc = $.trim($("#desc").val());
-	// var room_id = $.trim($("#room_add").val());
-	// var start = $("#start_date").val();
-	// var start_date = start.substring(0,10);
-	// var start_time = start.substring(11,16);
-	// var end = $("#end_date").val();
-	// var end_date = end.substring(0,10);
-	// var end_time = end.substring(11,16);
+	var room_id = $.trim($("#room_add").val());
+	var start = $("#start_date").val();
+	var start_date = start.substring(0,10);
+	var start_time = start.substring(11,16);
+	var end = $("#end_date").val();
+	var end_date = end.substring(0,10);
+	var end_time = end.substring(11,16);
 	if (name == '') {
 		$('#name').focus();
 		$('#meeting_cue').html("<font color='red'>会议主题不能为空</font>");
@@ -215,12 +215,12 @@ function update() {
 		data : {
 			"id" : id,
 			"name" : name,
-			"desc" : desc
-			// "start_date" : start_date,
-			// "start_time" : start_time,
-			// "end_date" : end_date,
-			// "end_time" : end_time,
-			// "room_id" : room_id
+			"desc" : desc,
+			"start_date" : start_date,
+			"start_time" : start_time,
+			"end_date" : end_date,
+			"end_time" : end_time,
+			"room_id" : room_id
 		},
 		error : function() {
 			$.messager.popup("更新会议失败");

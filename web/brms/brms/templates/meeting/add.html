@@ -34,8 +34,10 @@
                   <div class="col-sm-9">
                         {% for room in rooms %}
                             {% if meeting and meeting.boardroom_id == room.br_id %}
-                                <input name="room_add" type="text" class="form-control" readonly="readonly"
-                                    id="room_add" value="{{room.br_name}}">
+                                <input type="text" class="form-control" readonly="readonly"
+                                     value="{{room.br_name}}">
+                                <input name="room_add" type="hidden"
+                                    id="room_add" value="{{room.br_id}}">
                             {% endif %}
                         {% endfor %}
                     </div>
