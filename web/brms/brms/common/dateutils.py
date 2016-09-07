@@ -156,7 +156,7 @@ def get_weekday(start_date, end_date, weekday_nums):
 
     weekdays = []
     for weekday_num in weekday_nums:
-        if sdate < edate:
+        if sdate <= edate:
             now_weekday = sdate.weekday()
             first_date = sdate + datetime.timedelta(days=(((int(weekday_num)+6) % 7 - now_weekday + 7) % 7))
             nums = int((edate - first_date).days / 7 + 1)
