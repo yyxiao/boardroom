@@ -138,9 +138,9 @@ function get_orgs(type){
     var nodes = treeObj.getCheckedNodes(true);
     var i=0;
     if (type == "names"){
-        var org_names = "";
-        for(i=0;i<nodes.length;i++){
-            org_names += nodes[i].name + ",";
+        var org_names = nodes[0].name;
+        for(i=1;i<nodes.length;i++){
+            org_names += "," + nodes[i].name;
         }
         return org_names;
     }
