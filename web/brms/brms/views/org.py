@@ -157,7 +157,7 @@ def update_org(request):
 @request_login
 def delete_org(request):
     """
-
+    删除机构，同时删除机构下的用户，pad，用户授权中的本机构
     :param request:
     :return:
     """

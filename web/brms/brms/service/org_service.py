@@ -8,7 +8,7 @@ __mtime__ = 2016-08-09
 import transaction
 import logging
 from sqlalchemy.orm import aliased
-from ..models.model import SysOrg, SysUser, SysUserOrg
+from ..models.model import SysOrg, SysUser, SysUserOrg, HasPad, SysUserRole
 from ..common.dateutils import date_now
 from ..common.paginator import Paginator
 
@@ -304,15 +304,27 @@ def update(dbs, org):
 
 def delete(dbs, org_id):
     """
-    删除机构
+    删除机构，同时删除机构下用户、pad、用户的机构授权、用户的角色授权、其他用户对此机构的授权
     :param dbs:
     :param org_id:
     :return:
     """
     try:
-        with transaction.manager:
-            dbs.query(SysOrg).filter(SysOrg.id == org_id).delete()
+        with transaction.manager as tm:
+            children = dbs.query(SysOrg).filter(SysOrg.parent_id == org_id).all()
+            if children:
+                tm.abort()
+                return '请先删除此机构的子机构！'
+            dbs.query(HasPad).filter(HasPad.org_id == org_id).delete()
             dbs.query(SysUserOrg).filter(SysUserOrg.org_id == org_id).delete()
+            users = dbs.query(SysUser).filter(SysUser.org_id == org_id).all()
+            if users:
+                for user in users:
+                    dbs.query(SysUserOrg).filter(SysUserOrg.user_id == user.id).delete()
+                    dbs.query(SysUserRole).filter(SysUserRole.user_id == user.id).delete()
+                    dbs.delete(user)
+            dbs.query(SysOrg).filter(SysOrg.id == org_id).delete()
+
             dbs.flush()
         return ''
     except Exception as e:
