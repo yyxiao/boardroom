@@ -123,10 +123,7 @@ def booking_include(config):
 
 def mobile_include(config):
     config.add_route('mobile_login', '/login')
-    config.add_route('mobile_org_list', '/orgList')
     config.add_route('mobile_meeting_list', '/meetingList')
     config.add_route('mobile_add_meeting', '/addMeeting')
-    config.add_route('mobile_del_meeting', '/delMeeting')
-    config.add_route('mobile_update_meeting', '/updateMeeting')
     config.add_route('mobile_room_list', '/roomList')
     config.add_route('mobile_update_user', '/updateUser')
