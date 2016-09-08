@@ -208,3 +208,25 @@ def mobile_add_meeting(request):
             'error_msg': ''
         }
     return json_str
+
+
+@view_config(route_name='mobile_user_meeting_list', renderer='json')
+def mobile_user_meeting_list(request):
+    """
+    返回用户3天内会议列表
+    :param request:
+    :return:
+    """
+    if request.method == 'POST':
+        dbs = request.dbsession
+        user_id = request.POST.get('user_id', '')
+        if user_id:
+            meetings = mob_find_meetings(dbs, user_id)
+            json_str = {
+                'status': True,
+                'meeting': meetings,
+                'error_msg': ''
+            }
+            return json_str
+    return {}
+
