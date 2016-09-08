@@ -92,16 +92,15 @@ function init() {
                 name: "timeline",
                 x_unit: "minute",
                 x_date: "%H:%i",
-                x_step: 30,
-                x_size: 28,
-                x_start: 14,
-                x_length: 48,
+                x_step: 60,
+                x_size: 14,
+                x_start: 7,
+                x_length: 24,
                 y_unit: elements,
                 y_property: "room_id",
                 render: "tree",
                 folder_dy: 20,
-                dy: 60,
-                dx: 100
+                dy: 60
             });
         },
         error: ajax_error
