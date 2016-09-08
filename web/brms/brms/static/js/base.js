@@ -5,6 +5,15 @@ function redirect_to(url){
 	window.location = url
 }
 
+function ajax_error (XMLHttpRequest, status, errorThrown) {
+    if (status == 'error'){
+        $.messager.popup('登陆状态已失效，请重新登陆！');
+        setTimeout( function(){
+            redirect_to("/");
+        }, 1500 )
+    }
+}
+
 /*
  * 输入字符串是否含非法字符
  */

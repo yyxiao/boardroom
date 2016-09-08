@@ -154,9 +154,7 @@ function add() {
 			"position" : position
 			// "state" : state
 		},
-		error : function() {
-			redirect_to("/");
-		},
+		error : ajax_error,
 		success : function(data) {
 			if (data.resultFlag == "success") {
 				$("#addModal").modal('hide');
@@ -292,9 +290,7 @@ function update() {
 			"position" : position
 			// "state" : state
 		},
-		error : function() {
-			redirect_to("/");
-		},
+		error : ajax_error,
 		success : function(data) {
 			if (data.resultFlag == "success") {
 				$("#addModal").modal('hide');
@@ -323,9 +319,7 @@ function del() {
 				data : {
 					"id" : idbox.val()
 				},
-				error : function() {
-					redirect_to("/");
-				},
+				error : ajax_error,
 				success : function(data) {
 					if (data.resultFlag == 'success') {
 						$.messager.popup("用户删除成功！");
@@ -427,9 +421,7 @@ function user_setting() {
 			"passwd_old" : pwd_old,
 			"passwd_new" : pwd_new1
 		},
-		error : function() {
-			redirect_to("/");
-		},
+		error : ajax_error,
 		success : function(data) {
 			if (data.resultFlag == "success") {
 				$.messager.popup('更新用户信息成功！');

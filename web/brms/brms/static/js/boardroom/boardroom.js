@@ -75,7 +75,8 @@ function upload(pic_id) {
 			} else {
 				$(pic_id + "_preview").html(data.error_msg);
 			}
-		}
+		},
+		error : ajax_error
 	});
 }
 /*
@@ -138,9 +139,7 @@ function add() {
 			"room_btn": room_btn,
 			"room_bgd": room_bgd
 		},
-		error : function() {
-			redirect_to("/");
-		},
+		error : ajax_error,
 		success : function(data) {
 			if (data.resultFlag == "success") {
 				$("#addModal").modal('hide');
@@ -238,9 +237,7 @@ function update() {
 			"room_btn": room_btn,
 			"room_bgd": room_bgd
 		},
-		error : function() {
-			redirect_to("/");
-		},
+		error : ajax_error,
 		success : function(data) {
 			if (data.resultFlag == "success") {
 				$("#addModal").modal('hide');
@@ -269,9 +266,7 @@ function del() {
 				data : {
 					"br_id" : idbox.val()
 				},
-				error : function() {
-					redirect_to("/");
-				},
+				error : ajax_error,
 				success : function(data) {
 					if (data.resultFlag == "success") {
 						$("#addModal").modal('hide');

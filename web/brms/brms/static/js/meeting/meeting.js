@@ -129,19 +129,17 @@ function add() {
 			// "end_time" : end_time,
 			"room_id" : room_id
 		},
-		error : function() {
-			$.messager.popup("新增会议失败");
-		},
+		error : data,
 		success : function(data) {
 			if (data.success) {
 				$("#addModal").modal('hide');
 				$.messager.popup("新增会议成功！");
 				list(1)
 			}else{
-				var msg = data.error_msg
+				var msg = data.error_msg;
 				$.messager.popup(msg);
 			}
-		},
+		}
 	})
 }
 /*
@@ -222,19 +220,17 @@ function update() {
 			"end_time" : end_time,
 			"room_id" : room_id
 		},
-		error : function() {
-			$.messager.popup("更新会议失败");
-		},
+		error : ajax_error,
 		success : function(data) {
 			if (data.success) {
 				$("#addModal").modal('hide');
 				$.messager.popup("更新会议成功！");
 				list(1)
 			}else {
-				var msg = data.error_msg
+				var msg = data.error_msg;
 				$.messager.popup(msg);
 			}
-		},
+		}
 	})
 }
 /*
@@ -243,30 +239,28 @@ function update() {
 function del() {
 	var idbox = $("input[name='idbox']:checked");
 	if (idbox.length > 0) {
-		$.messager.model = { 
-		        ok:{ text: "确定" },
-		        cancel: { text: "取消"}
-		      };
-		$.messager.confirm("提示", "你确定要删除该会议吗？", function() { 
+		$.messager.model = {
+			ok: {text: "确定"},
+			cancel: {text: "取消"}
+		};
+		$.messager.confirm("提示", "你确定要删除该会议吗？", function () {
 			$.ajax({
-				type : "POST",
-				url : "/meeting/del",
-				data : {
-					"id" : idbox.val()
+				type: "POST",
+				url: "/meeting/del",
+				data: {
+					"id": idbox.val()
 				},
-				error : function() {
-					$.messager.popup("删除会议失败");
-				},
-				success : function(data) {
+				error: ajax_error,
+				success: function (data) {
 					if (data.success) {
 						$.messager.popup("删除会议成功！");
 						list(1)
-					}else {
+					} else {
 						$.messager.popup(data.error_msg);
 					}
-				},
+				}
 			})
-	      });
+		});
 	} else {
 		$.messager.popup("请先选择一个会议");
 	}
