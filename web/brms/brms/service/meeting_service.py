@@ -13,8 +13,8 @@ from sqlalchemy.sql import and_
 from ..models.model import *
 from ..common.paginator import Paginator
 from ..common.dateutils import date_now, get_weekday, add_date
-from ..service.booking_service import check_repeat_occupy, add_booking, update_booking, delete_booking
-from ..service.org_service import find_org_ids
+from ..service.booking_service import check_repeat_occupy, add_booking, delete_booking
+from ..service.org_service import find_org_ids, find_parent_org
 
 logger = logging.getLogger('operator')
 
@@ -101,15 +101,20 @@ def find_meetings(dbs, user_id=None, user_org_id=None, meeting_name=None, room_n
     return lists, paginator
 
 
-def find_meeting_calendar(dbs, user_id, org_ids=None, room_id=None):
+def find_meeting_calendar(dbs, user_id, org_ids, room_id, user_org_id):
     """
 
     :param dbs:
     :param user_id:
     :param org_ids:
     :param room_id:
+    :param user_org_id:
     :return:
     """
+
+    user_parent_org_id = find_parent_org(dbs, user_org_id)
+    if user_org_id != user_parent_org_id:
+        org_ids.append(user_org_id)
     meetings = dbs.query(HasMeeting.id,
                          HasMeeting.name,
                          HasMeeting.description,

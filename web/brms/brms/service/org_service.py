@@ -117,6 +117,9 @@ def find_branch_json_4booking(dbs, user_id, user_org_id):
     :param user_org_id:
     :return:
     """
+    user_parent_org_id = find_parent_org(dbs, user_org_id)
+    if user_org_id != user_parent_org_id:
+        user_org_id = user_parent_org_id
     user_orgs = dbs.query(SysUserOrg.org_id)\
         .outerjoin(SysOrg, SysOrg.id == SysUserOrg.org_id)\
         .filter(SysUserOrg.user_id == user_id, SysOrg.org_type == '0').all()
@@ -210,7 +213,7 @@ def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, pag
     results, paginator = Paginator(orgs, page_no).to_dict()
     lists = []
     for obj in results:
-        id = obj[0] if obj[0] else ''
+        obj_id = obj[0] if obj[0] else ''
         org_name = obj[1] if obj[1] else ''
         org_type = obj[2] if obj[2] else ''
         parent_name = obj[3] if obj[3] else ''
@@ -221,7 +224,7 @@ def find_orgs(dbs, org_name=None, parent_id=None, address=None, org_id=None, pag
         user_name = obj[8] if obj[8] else ''
         create_time = obj[9] if obj[9] else ''
         temp_dict = {
-            'id': id,
+            'id': obj_id,
             'org_name': org_name,
             'org_type': org_type,
             'parent_name': parent_name,
@@ -364,3 +367,11 @@ def find_org_by_user(dbs, user_id):
     for rec in user_orgs:
         branches.append(rec[0])
     return branches
+
+
+def find_parent_org(dbs, org_id):
+    org = dbs.query(SysOrg).filter(SysOrg.id == org_id).first()
+    if org.org_type == '0':
+        return org_id
+    else:
+        return find_parent_org(dbs, org.parent_id)
