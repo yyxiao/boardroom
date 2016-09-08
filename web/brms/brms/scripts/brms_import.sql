@@ -5,7 +5,7 @@ INSERT INTO "brms"."sys_user" ("id", "user_account", "user_pwd", "user_no", "use
 SELECT SETVAL('brms.sys_user_id_seq', 4, false);
 
 -- 机构初始化
-INSERT INTO "brms"."sys_org" ("id", "org_name", "org_type", "parent_id", "org_manager", "phone", "address", "org_seq", "state", "create_time", "create_user", "update_time") VALUES (1, '海银金控', NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO "brms"."sys_org" ("id", "org_name", "org_type", "parent_id", "org_manager", "phone", "address", "org_seq", "state", "create_time", "create_user", "update_time") VALUES ('1', '海银金控', '0', '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 SELECT SETVAL('brms.sys_org_id_seq', 2, false);
 
 -- 用户机构初始化
