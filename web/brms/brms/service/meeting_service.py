@@ -223,6 +223,10 @@ def update(dbs, meeting, room_id, old_meeting=None):
     with transaction.manager as tm:
         try:
             rooms = dbs.query(HasMeetBdr).filter(HasMeetBdr.meeting_id == old_meeting.id).all()
+            date_time = datetime.now().strftime('%Y-%m-%d')
+            if meeting.start_date < date_time or meeting.end_date < date_time:
+                error_msg = '该会议已过期'
+            return error_msg
             # 删除旧的会议室预定信息
             for room in rooms:
                 error_msg = delete_booking(dbs, room.boardroom_id, room.meeting_date, old_meeting.start_time,
@@ -273,14 +277,18 @@ def delete_meeting(dbs, meeting_id, user_id):
             if not meeting:
                 error_msg = '该会议不是该用户创建，请查询后操作。'
             else:
-                for room in rooms:
-                    error_msg = delete_booking(dbs, room.boardroom_id, room.meeting_date, meeting.start_time,
-                                               meeting.end_time)
-                    if error_msg:
-                        dbs.rollback()
-                        return error_msg
-                    dbs.delete(room)
-                dbs.delete(meeting)
+                date_time = datetime.now().strftime('%Y-%m-%d')
+                if meeting.start_date < date_time or meeting.end_date < date_time:
+                    error_msg = '该会议已过期'
+                else:
+                    for room in rooms:
+                        error_msg = delete_booking(dbs, room.boardroom_id, room.meeting_date, meeting.start_time,
+                                                   meeting.end_time)
+                        if error_msg:
+                            dbs.rollback()
+                            return error_msg
+                        dbs.delete(room)
+                    dbs.delete(meeting)
     except Exception as e:
         logger.error(e)
         error_msg = '删除会议失败，请核对后重试'

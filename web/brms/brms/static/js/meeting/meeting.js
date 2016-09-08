@@ -231,7 +231,8 @@ function update() {
 				$.messager.popup("更新会议成功！");
 				list(1)
 			}else {
-				$.messager.popup("更新会议失败");
+				var msg = data.error_msg
+				$.messager.popup(msg);
 			}
 		},
 	})

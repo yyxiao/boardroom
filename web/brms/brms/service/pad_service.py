@@ -320,7 +320,10 @@ def set_room(dbs, user_id, pad_code, room_id):
         room.pad_id = pad.id
         # room.create_user = user_id
         # room.create_time = date_now()
-        dbs.add(room)
+        dbs.merge(room)
+        dbs.flush()
+        pad.org_id = room.org_id
+        dbs.merge(pad)
         dbs.flush()
         if room:
             room_dict = {
@@ -373,7 +376,7 @@ def set_rooms_by_qrcode(dbs, user_id, pad_code, room_id):
                 pad.create_user = user_id
                 pad.create_time = date_now()
                 pad.last_time = date_now()
-                pad.org_id = user.org_id
+                pad.org_id = room.org_id
                 dbs.add(pad)
                 dbs.flush()
             # 设置pad绑定会议室
