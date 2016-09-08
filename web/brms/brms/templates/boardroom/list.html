@@ -7,9 +7,6 @@
                 {% endif %}
                 <th width="90">会议室名称</th>
                 <th width="100">会议室照片</th>
-{#                <th width="100">logo</th>#}
-{#                <th width="100">按钮图标</th>#}
-{#                <th width="100">背景图片</th>#}
                 <th width="350">配置</th>
                 <th width="200">描述</th>
                 <th width="100">所属机构</th>
@@ -32,33 +29,6 @@
                                  height="70" width="90" alt="" title="点击图片查看大图"/>
                         </a>
                     </td>
-{#                    <td>#}
-{#                        <a class="image-link"#}
-{#                           href="{{ request.static_url('brms:' + (boardroom.logo if boardroom.logo else 'static/img/boardroom/default.jpg')) }}"#}
-{#                           data-lightbox="image">#}
-{#                            <img class="image"#}
-{#                                 src="{{ request.static_url('brms:' + (boardroom.logo if boardroom.logo else 'static/img/boardroom/default.jpg')) }}"#}
-{#                                 height="70" width="90" alt="" title="点击图片查看大图"/>#}
-{#                        </a>#}
-{#                    </td>#}
-{#                    <td>#}
-{#                        <a class="image-link"#}
-{#                           href="{{ request.static_url('brms:' + (boardroom.button_img if boardroom.button_img else 'static/img/boardroom/default.jpg')) }}"#}
-{#                           data-lightbox="image">#}
-{#                            <img class="image"#}
-{#                                 src="{{ request.static_url('brms:' + (boardroom.button_img if boardroom.button_img else 'static/img/boardroom/default.jpg')) }}"#}
-{#                                 height="70" width="90" alt="" title="点击图片查看大图"/>#}
-{#                        </a>#}
-{#                    </td>#}
-{#                    <td>#}
-{#                        <a class="image-link"#}
-{#                           href="{{ request.static_url('brms:' + (boardroom.background if boardroom.background else 'static/img/boardroom/default.jpg')) }}"#}
-{#                           data-lightbox="image">#}
-{#                            <img class="image"#}
-{#                                 src="{{ request.static_url('brms:' + (boardroom.background if boardroom.background else 'static/img/boardroom/default.jpg')) }}"#}
-{#                                 height="70" width="90" alt="" title="点击图片查看大图"/>#}
-{#                        </a>#}
-{#                    </td>#}
                     <td title="{{ boardroom.config }}">{{ boardroom.config }}</td>
                     <td title="{{ boardroom.description }}">{{ boardroom.description }}</td>
                     <td>{{ boardroom.org_name }}</td>
