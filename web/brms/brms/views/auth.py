@@ -14,7 +14,6 @@ from ..service.menu_service import find_menu_json_check
 from ..service.role_service import role_menu
 from ..service.loginutil import request_login
 from ..common.dateutils import date_now
-from ..models.model import SysUser
 
 
 @view_config(route_name='to_auth')

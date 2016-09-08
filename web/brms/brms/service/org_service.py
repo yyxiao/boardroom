@@ -81,7 +81,7 @@ def find_branch_json_check(dbs, user_id, user_now=None):
     :return:
     """
     branches = []
-    orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id).all()
+    orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id).filter(SysOrg.org_type == '0').all()
     # 当前的登录用户可分配的机构
     user_orgs = dbs.query(SysUserOrg.org_id).filter(SysUserOrg.user_id == user_now).all()
     user_org_list = []

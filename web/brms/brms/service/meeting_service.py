@@ -231,7 +231,7 @@ def update(dbs, meeting, room_id, old_meeting=None):
             date_time = datetime.now().strftime('%Y-%m-%d')
             if meeting.start_date < date_time or meeting.end_date < date_time:
                 error_msg = '该会议已过期'
-            return error_msg
+                return error_msg
             # 删除旧的会议室预定信息
             for room in rooms:
                 error_msg = delete_booking(dbs, room.boardroom_id, room.meeting_date, old_meeting.start_time,
@@ -262,7 +262,7 @@ def update(dbs, meeting, room_id, old_meeting=None):
             dbs.merge(meeting)
         except Exception as e:
             logger.error(e)
-            return '新增会议失败，请核对后重试'
+            return '修改会议失败，请核对后重试'
 
 
 def delete_meeting(dbs, meeting_id, user_id):
