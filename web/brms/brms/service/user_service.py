@@ -10,7 +10,7 @@ import logging
 from ..models.model import *
 from ..common.paginator import Paginator
 from ..common.dateutils import date_now
-from .org_service import find_branch_json
+from .org_service import find_branch_json, find_parent_org
 
 logger = logging.getLogger('operator')
 
@@ -161,7 +161,8 @@ def add(dbs, user, role_id=None, create_user=None):
         # 如果用户是在部门下面，则赋予用户父机构中第一个类型不是部门
         org_id = find_parent_org(dbs, user.org_id)
         if org_id != user.org_id:
-            sys_user_parent_org = SysUserOrg(user_id=user.id, org_id=org_id, create_user=create_user, create_time=date_now())
+            sys_user_parent_org = SysUserOrg(user_id=user.id, org_id=org_id, create_user=create_user,
+                                             create_time=date_now())
             dbs.add(sys_user_parent_org)
         sys_user_org = SysUserOrg(user_id=user.id, org_id=user.org_id, create_user=create_user, create_time=date_now())
         dbs.add(sys_user_org)
@@ -323,13 +324,5 @@ def user_org(dbs, user_id, create_user, org_list, now):
 
 
 def find_user_role(dbs, user_id):
-    user_role = dbs.query(SysUserRole).filter(SysUserRole.user_id == user_id).first();
+    user_role = dbs.query(SysUserRole).filter(SysUserRole.user_id == user_id).first()
     return user_role
-
-
-def find_parent_org(dbs, org_id):
-    org = dbs.query(SysOrg).filter(SysOrg.id == org_id).first()
-    if org.org_type == '0':
-        return org_id
-    else:
-        return find_parent_org(dbs, org.parent_id)

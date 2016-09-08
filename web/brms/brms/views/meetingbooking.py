@@ -81,7 +81,8 @@ def list_by_br(request):
         org_ids = json.loads(request.POST.get('org_ids', ''))
         room_id = int(request.POST.get('room_id', 0))
         user_id = request.session['userId']
-        meetings = find_meeting_calendar(dbs, user_id=user_id, org_ids=org_ids, room_id=room_id)
+        user_org_id = request.session['userOrgId']
+        meetings = find_meeting_calendar(dbs, user_id, org_ids, room_id, user_org_id)
         json_str = {
             'resultFlag': 'success',
             'meetings': meetings
