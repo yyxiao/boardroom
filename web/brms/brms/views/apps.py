@@ -112,9 +112,13 @@ def account_check(request):
         error_msg = '用户账号不能为空'
     else:
         with transaction.manager:
-            user = dbs.query(SysUser).filter(SysUser.user_account == user_account).first()
+            user = dbs.query(SysUser)\
+                .outerjoin(SysUserRole, SysUserRole.user_id == SysUser.id)\
+                .filter(SysUser.user_account == user_account)\
+                .filter(SysUserRole.role_id != 3)\
+                .first()
             if not user:
-                error_msg = '用户不存在'
+                error_msg = '管理员不存在'
             elif password != user.user_pwd:
                 error_msg = '密码错误'
                 UserTools.count_err(user)
