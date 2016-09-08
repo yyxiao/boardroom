@@ -62,23 +62,31 @@ def to_add(request):
 @view_config(route_name='add_meeting', renderer='json')
 @request_login
 def add_meeting(request):
-    dbs = request.dbsession
-    meeting = HasMeeting()
-    room_id = int(request.POST.get('room_id', 0))
-    meeting.name = request.POST.get('name', '')
-    meeting.description = request.POST.get('desc', '')
-    meeting.start_date = request.POST.get('start_date', '')
-    meeting.end_date = request.POST.get('end_date', '')
-    meeting.start_time = request.POST.get('start_time', '')
-    meeting.end_time = request.POST.get('end_time', '')
-    meeting.org_id = int(request.POST.get('org_id', request.session['userOrgId']))
-    meeting.repeat = request.POST.get('rec_type', '')
-    meeting.repeat_date = request.POST.get('rec_pattern', '')
-    meeting.create_user = request.session['userId']
-    meeting.create_time = datetime.now().strftime(datetime_format)
-    error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
-    if not error_msg:
-        error_msg, new_id = add(dbs, meeting, room_id)
+    start_date = request.POST.get('start_date', '')
+    end_date = request.POST.get('end_date', '')
+    start_time = request.POST.get('start_time', '')
+    end_time = request.POST.get('end_time', '')
+    now = datetime.now().strftime(datetime_format)
+    if now > (start_date + ' ' + start_time) or now > (end_date + ' ' + end_time):
+        error_msg = '开始时间和结束时间不能小于当前时间！'
+    else:
+        dbs = request.dbsession
+        meeting = HasMeeting()
+        room_id = int(request.POST.get('room_id', 0))
+        meeting.name = request.POST.get('name', '')
+        meeting.description = request.POST.get('desc', '')
+        meeting.start_date = start_date
+        meeting.end_date = end_date
+        meeting.start_time = start_time
+        meeting.end_time = end_time
+        meeting.org_id = int(request.POST.get('org_id', request.session['userOrgId']))
+        meeting.repeat = request.POST.get('rec_type', '')
+        meeting.repeat_date = request.POST.get('rec_pattern', '')
+        meeting.create_user = request.session['userId']
+        meeting.create_time = datetime.now().strftime(datetime_format)
+        error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
+        if not error_msg:
+            error_msg, new_id = add(dbs, meeting, room_id)
     if error_msg:
         json_str = {
             'success': False,
