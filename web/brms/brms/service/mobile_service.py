@@ -56,7 +56,7 @@ def find_org_rooms(dbs, user_id):
     return lists
 
 
-def mob_find_meetings(dbs, user_id, room_id):
+def mob_find_meetings(dbs, user_id, room_id, meeting_id=None):
     meetings = dbs.query(HasMeeting.id, HasMeeting.name, HasMeeting.description,
                          HasMeeting.start_date, HasMeeting.end_date, HasMeeting.start_time,
                          HasMeeting.end_time, HasMeeting.create_user, HasMeeting.create_time,
@@ -64,8 +64,12 @@ def mob_find_meetings(dbs, user_id, room_id):
         .outerjoin(SysUser, HasMeeting.create_user == SysUser.id) \
         .outerjoin(SysOrg, SysUser.org_id == SysOrg.id) \
         .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id)\
-        .outerjoin(HasBoardroom, HasMeetBdr.boardroom_id == HasBoardroom.id)\
-        .filter(HasBoardroom.id == room_id).all()
+        .outerjoin(HasBoardroom, HasMeetBdr.boardroom_id == HasBoardroom.id)
+
+    if meeting_id:
+        meetings = meetings.filter(HasMeeting.id == meeting_id)
+
+    meetings = meetings.filter(HasBoardroom.id == room_id).all()
     lists = []
     for meeting in meetings:
         id = meeting.id

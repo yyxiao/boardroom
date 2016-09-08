@@ -5,13 +5,14 @@ __author__ = xyy
 __mtime__ = 2016/8/31
 """
 import base64
+from datetime import datetime
 from pyramid.view import view_config
-from ..common.dateutils import date_now
+from ..common.dateutils import date_now, datetime_format
 from ..common.jsonutils import serialize
 from ..common.password import get_password, DEFAULT_PASSWORD
 from ..service.loginutil import UserTools
 from ..service.mobile_service import *
-from ..service.meeting_service import delete_meeting, find_meeting, find_user_period
+from ..service.meeting_service import add, find_meeting, find_user_period
 from ..service.user_service import find_user_by_id, update
 import transaction
 
@@ -23,6 +24,7 @@ def mobile_login(request):
     error_msg = ''
     dbs = request.dbsession
     user_account = request.POST.get('user_account', '')
+    meeting_date = request.POST.get('meeting_date', datetime.now().strftime(date_pattern1))
     password = base64.encodebytes(request.POST.get('password', '').encode()).decode('utf-8').replace('\n', '')
     logger.info('mobile_login--user_account:' + user_account)
     with transaction.manager:
@@ -155,3 +157,54 @@ def mobile_room_list(request):
             'rooms': rooms
         }
     return json_a
+
+
+@view_config(route_name='mobile_add_meeting', renderer='json')
+def mobile_add_meeting(request):
+    """
+    手机端添加会议
+    :param request:
+    :return:
+    """
+
+    dbs = request.dbsession
+    user_id = request.POST.get('user_id', '')
+    meeting = HasMeeting()
+
+    start_date = request.POST.get('start_date', '')
+    end_date = request.POST.get('end_date', '')
+    room_id = request.POST.get('room_id')
+    meeting_id = ''
+    if start_date and end_date:
+        meeting.name = request.POST.get('meeting_name', '')
+        meeting.description = request.POST.get('description', '')
+        meeting.start_date = start_date[0:10]
+        meeting.start_time = start_date[11:16]
+        meeting.end_date = end_date[0:10]
+        meeting.end_time = end_date[11:16]
+
+        org_id = dbs.query(SysUser.org_id).filter(SysUser.id == user_id)
+        meeting.org_id = org_id
+        meeting.repeat = ''
+        meeting.repeat_date = ''
+        meeting.create_user = user_id
+        meeting.create_time = datetime.now().strftime(datetime_format)
+        error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
+        if not error_msg:
+            error_msg, meeting_id = add(dbs, meeting, room_id)
+    else:
+        error_msg = '开始时间和结束时间不能为空'
+    if error_msg:
+        json_str = {
+            'status': False,
+            'meeting': '',
+            'error_msg': error_msg
+        }
+    else:
+        meeting_dict = mob_find_meetings(dbs, None, room_id, meeting_id)[0]
+        json_str = {
+            'status': True,
+            'meeting': meeting_dict,
+            'error_msg': ''
+        }
+    return json_str
