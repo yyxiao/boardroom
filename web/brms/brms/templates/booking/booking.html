@@ -118,10 +118,7 @@
             data : {
                 "id": id
             },
-            error : function() {
-                $.messager.popup("与服务器通信失败，请稍后重试！");
-                flag = false;
-            },
+            error: ajax_error,
             success : function(data) {
                 if (data.success) {
                     $.messager.popup("删除会议成功！");
@@ -140,9 +137,12 @@
         var desc = ev.desc;
         var start_date_time = new Date(ev.start_date).FormatLocal('yyyy-MM-dd hh:mm');
         var end_date_time = new Date(ev.end_date).FormatLocal('yyyy-MM-dd hh:mm');
-        var repeat_end_date_time = new Date(ev._end_date).FormatLocal('yyyy-MM-dd hh:mm');
-
+        if(compare_date(start_date_time, end_date_time)){
+            $.messager.popup('开始时间不能大于结束时间！');
+            return false;
+        }
         var start_date = start_date_time.substring(0, 10);
+        var repeat_end_date_time = new Date(ev._end_date).FormatLocal('yyyy-MM-dd hh:mm');
         var start_time = start_date_time.substring(11, 16);
         var end_date = end_date_time.substring(0, 10);
         var end_time = end_date_time.substring(11, 16);
@@ -184,10 +184,7 @@
                     flag = false;
                 }
             },
-            error: function () {
-                $.messager.popup('与服务器通信失败！');
-                flag = false;
-            }
+            error: ajax_error
         });
         return flag;
     });

@@ -24,9 +24,7 @@ function load_br() {
         url: '/booking/list_by_org',
         dataType: "json",
         data: {"org_ids": JSON.stringify(org_ids)},
-        error: function () {
-            $.messager.popup('与服务器通信失败，请稍后重试！');
-        },
+        error: ajax_error,
         success: function (data) {
             if (data.resultFlag == 'success') {
                 document.getElementById('room_id').innerHTML = '';
@@ -106,9 +104,7 @@ function init() {
                 dx: 100
             });
         },
-        error: function () {
-            alert('机构会议室数据错误！');
-        }
+        error: ajax_error
     });
 
     scheduler.init('scheduler_here', new Date(), "timeline");
@@ -128,9 +124,7 @@ function load_meetings(org_ids, room_id){
             var meetings = data.meetings;
             scheduler.parse(meetings, "json");
         },
-        error: function () {
-            $.messager.popup('会议数据错误！');
-        }
+        error: ajax_error
     });
 }
 
@@ -195,4 +189,9 @@ function get_rec(rec_type, i){
         return result[i];
     }
     return [rec_type, ''][i];
+}
+
+function compare_date(d1,d2)
+{
+    return ((new Date(d1.replace(/-/g, "\/"))) > (new Date(d2.replace(/-/g, "\/"))));
 }

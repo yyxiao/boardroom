@@ -102,9 +102,7 @@ function add() {
 			"address" : address
 			// "state" : state
 		},
-		error : function() {
-			redirect_to("/");
-		},
+		error : ajax_error,
 		success : function(data) {
 			if (data.resultFlag == "success") {
 				$("#addModal").modal('hide');
@@ -189,9 +187,7 @@ function update() {
 			"address" : address
 			// "state" : state
 		},
-		error : function() {
-			redirect_to("/");
-		},
+		error : ajax_error,
 		success : function(data) {
 			if (data.resultFlag == "success") {
 				$("#addModal").modal('hide');
@@ -220,9 +216,7 @@ function del() {
 				data : {
 					"org_id" : idbox.val()
 				},
-				error : function() {
-					redirect_to("/");
-				},
+				error : ajax_error,
 				success : function(data) {
 					if (data.resultFlag == "success") {
 						$("#addModal").modal('hide');

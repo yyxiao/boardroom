@@ -1,4 +1,4 @@
-list(1)
+list(1);
 /*
  * list terminal
  */
@@ -19,12 +19,12 @@ function list(page) {
  * find a page
  */
 function page() {
-	var pageNo = $("#pageNo").val()
+	var pageNo = $("#pageNo").val();
 	if (isNaN(pageNo) || pageNo == ''){
-		$.messager.popup('错误的页码，请重新输入')
+		$.messager.popup('错误的页码，请重新输入');
 		return false
 	}
-	list(pageNo)
+	list(pageNo);
 }
 /*
  * uncheck other terminal
@@ -79,9 +79,7 @@ function add() {
 			"pad_code" : pad_code,
 			"room_id" : room_id
 		},
-		error : function() {
-			$.messager.popup("新增终端失败");
-		},
+		error : ajax_error,
 		success : function(data) {
 			if (data.success == "true") {
 				$("#addModal").modal('hide');
@@ -89,10 +87,10 @@ function add() {
 				list(1)
 			}
 			else{
-				var msg = data.error_msg
+				var msg = data.error_msg;
 				$.messager.popup(msg);
 			}
-		},
+		}
 	})
 }
 /*
@@ -120,7 +118,7 @@ function to_update() {
  * update terminal
  */
 function update() {
-	var id = $("#terminal_id").val()
+	var id = $("#terminal_id").val();
 	var pad_code = $.trim($("#pad_code").val());
 	var room_id = $.trim($("#room_id").val());
 	if (pad_code == '') {
@@ -146,16 +144,14 @@ function update() {
 			"pad_code" : pad_code,
 			"room_id" : room_id
 		},
-		error : function() {
-			$.messager.popup("更新终端失败");
-		},
+		error : ajax_error,
 		success : function(data) {
 			if (data.success) {
 				$("#addModal").modal('hide');
 				$.messager.popup("更新终端成功！");
 				list(1)
 			}
-		},
+		}
 	})
 }
 /*
@@ -175,15 +171,13 @@ function del() {
 				data : {
 					"id" : idbox.val()
 				},
-				error : function() {
-					$.messager.popup("删除终端失败");
-				},
+				error : ajax_error,
 				success : function(data) {
 					if (data.success) {
 						$.messager.popup("删除终端成功！");
 						list(1)
 					}
-				},
+				}
 			})
 	      });
 	} else {

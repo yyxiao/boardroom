@@ -96,11 +96,13 @@ def login(request):
 
 
 @view_config(route_name='logout')
-@request_login
 def logout(request):
-    del(request.session['userAccount'])
-    del(request.session['userId'])
-    del (request.session['userOrgId'])
-    del(request.session['user_name_db'])
-    del(request.session['loginUserSession'])
+    try:
+        del(request.session['userAccount'])
+        del(request.session['userId'])
+        del(request.session['userOrgId'])
+        del(request.session['user_name_db'])
+        del(request.session['loginUserSession'])
+    except:
+        pass
     return HTTPFound(request.route_url('login'))
