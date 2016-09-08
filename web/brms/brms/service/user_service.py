@@ -158,8 +158,13 @@ def add(dbs, user, role_id=None, create_user=None):
     try:
         dbs.add(user)
         dbs.flush()
+        # 如果用户是在部门下面，则赋予用户父机构中第一个类型不是部门
+        org_id = find_parent_org(dbs, user.org_id)
+        if org_id != user.org_id:
+            sys_user_parent_org = SysUserOrg(user_id=user.id, org_id=org_id, create_user=create_user, create_time=date_now())
+            dbs.add(sys_user_parent_org)
         sys_user_org = SysUserOrg(user_id=user.id, org_id=user.org_id, create_user=create_user, create_time=date_now())
-        dbs.merge(sys_user_org)
+        dbs.add(sys_user_org)
         if role_id != '' and role_id != 0:
             user_role = SysUserRole()
             user_role.user_id = user.id
@@ -186,10 +191,15 @@ def update(dbs, user, role_id=None, org_id=None, create_user=None):
     try:
         with transaction.manager:
             if org_id and org_id != '' and org_id != 0:
-                sys_user_org = dbs.query(SysUserOrg).filter(SysUserOrg.user_id == user.id,
-                                                            SysUserOrg.org_id == user.org_id).first()
-                sys_user_org.org_id = org_id
-                dbs.merge(sys_user_org)
+                dbs.query(SysUserOrg).filter(SysUserOrg.user_id == user.id).delete()
+                porg_id = find_parent_org(dbs, org_id)
+                if porg_id != org_id:
+                    sys_user_parent_org = SysUserOrg(user_id=user.id, org_id=org_id, create_user=create_user,
+                                                     create_time=date_now())
+                    dbs.add(sys_user_parent_org)
+                sys_user_org = SysUserOrg(user_id=user.id, org_id=user.org_id, create_user=create_user,
+                                          create_time=date_now())
+                dbs.add(sys_user_org)
                 user.org_id = org_id
             dbs.merge(user)
             if role_id and role_id != '' and role_id != 0:
@@ -316,3 +326,10 @@ def find_user_role(dbs, user_id):
     user_role = dbs.query(SysUserRole).filter(SysUserRole.user_id == user_id).first();
     return user_role
 
+
+def find_parent_org(dbs, org_id):
+    org = dbs.query(SysOrg).filter(SysOrg.id == org_id).first()
+    if org.org_type == '0':
+        return org_id
+    else:
+        return find_parent_org(dbs, org.parent_id)
