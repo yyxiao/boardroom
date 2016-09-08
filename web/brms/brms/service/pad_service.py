@@ -86,7 +86,7 @@ def find_meetings(dbs, pad_code):
     n_days = n_days.strftime(date_pattern1)
     print("now_day"+now_day+"n_days"+n_days)
     meetings = dbs.query(HasMeeting.id, HasMeeting.name, HasMeeting.description,
-                         HasMeeting.start_date, HasMeeting.end_date, HasMeeting.start_time,
+                         HasMeetBdr.meeting_date, HasMeeting.start_time,
                          HasMeeting.end_time, HasMeeting.repeat, HasMeeting.create_user, HasMeeting.create_time,
                          SysUser.user_name, SysUser.phone, SysOrg.org_name)\
         .outerjoin(SysUser, HasMeeting.create_user == SysUser.id)\
@@ -101,8 +101,8 @@ def find_meetings(dbs, pad_code):
         id = meeting.id
         name = meeting.name
         description = meeting.description
-        start_date = meeting.start_date
-        end_date = meeting.end_date
+        start_date = meeting.meeting_date
+        end_date = meeting.meeting_date
         start_time = meeting.start_time
         end_time = meeting.end_time
         repeat = meeting.repeat
