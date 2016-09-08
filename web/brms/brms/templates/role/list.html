@@ -16,10 +16,10 @@
 				<td><input type="checkbox" name="idbox"
 					value="{{role.role_id}}" onclick="checkrole(this)"></td>
 				<td>{{role.role_id}}</td>
-				<td>{{role.role_name}}</td>
-                <td>{{role.role_desc}}</td>
-                <td>{{role.create_user}}</td>
-                <td>{{role.create_time}}</td>
+				<td title="{{role.role_name}}">{{role.role_name}}</td>
+                <td title="{{role.role_desc}}">{{role.role_desc}}</td>
+                <td title="{{role.create_user}}">{{role.create_user}}</td>
+                <td title="{{role.create_time}}">{{role.create_time}}</td>
 			</tr>
 			{% endfor %}
         </tbody>
