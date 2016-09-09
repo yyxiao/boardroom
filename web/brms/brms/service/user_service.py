@@ -200,7 +200,7 @@ def update(dbs, user, role_id=None, org_id=None, create_user=None):
                     dbs.add(sys_user_parent_org)
                 sys_user_org = SysUserOrg(user_id=user.id, org_id=user.org_id, create_user=create_user,
                                           create_time=date_now())
-                dbs.add(sys_user_org)
+                dbs.merge(sys_user_org)
                 user.org_id = org_id
             dbs.merge(user)
             if role_id and role_id != '' and role_id != 0:

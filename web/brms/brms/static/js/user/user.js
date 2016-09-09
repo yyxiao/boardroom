@@ -117,9 +117,10 @@ function add() {
         $('#max_period_add').value = 7;
         max_period = 7;
     }
-    if (max_period > 30 || max_period < 1) {
+    if (max_period > 90 || max_period < 1) {
         $('#max_period').focus();
-        $('#user_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
+        $('#user_cue').html("<font color='red'>预约期限范围为1～90天(默认为7天)</font>")
+		return false;
     }
 	if(phone!=''){
 		var phonePat=/^([0-9-].*)$/;
@@ -252,9 +253,10 @@ function update() {
         $('#max_period_add').value = 7;
         max_period = 7;
     }
-    if (max_period > 30 || max_period < 1) {
+    if (max_period > 90 || max_period < 1) {
         $('#max_period').focus();
-        $('#user_cue').html("<font color='red'>预约期限范围为1～30天(默认为7天)</font>")
+        $('#user_cue').html("<font color='red'>预约期限范围为1～90天(默认为7天)</font>")
+		return false;
     }
 	if(phone!=''){
 		var phonePat=/^([0-9-].*)$/;
@@ -297,7 +299,7 @@ function update() {
 				$.messager.popup('更新用户成功！');
 				listUser(1)
 			} else {
-				$.messager.popup('更新用户失败');
+				$.messager.popup(data.error_msg);
 			}
 		}
 	})
