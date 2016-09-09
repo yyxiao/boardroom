@@ -282,8 +282,8 @@ def delete_meeting(dbs, meeting_id, user_id):
             if not meeting:
                 error_msg = '该会议不是该用户创建，请查询后操作。'
             else:
-                date_time = datetime.now().strftime('%Y-%m-%d')
-                if meeting.start_date < date_time or meeting.end_date < date_time:
+                now = date_now()
+                if now > (meeting.start_date + ' ' + meeting.start_time) or now > (meeting.end_date + ' ' + meeting.end_time):
                     error_msg = '该会议已过期'
                 else:
                     for room in rooms:
