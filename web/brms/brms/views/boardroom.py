@@ -16,7 +16,7 @@ from pyramid.view import view_config
 from ..common.dateutils import datetime_format
 from ..service.boardroom_service import *
 from ..service.loginutil import request_login
-from ..service.org_service import find_branch, find_branch_json
+from ..service.org_service import find_branch, find_branch_json, find_branch_json_4booking
 
 
 @view_config(route_name='to_brs_info')
@@ -28,8 +28,9 @@ def boardroom_info(request):
     :return:
     """
     dbs = request.dbsession
+    user_id = request.session['userId']
     user_org_id = request.session['userOrgId']
-    branch_json = json.dumps(find_branch_json(dbs, user_org_id, '0'))
+    branch_json = json.dumps(find_branch_json_4booking(dbs, user_id, user_org_id))
     return render_to_response('boardroom/boardroom_info.html', locals(), request)
 
 
@@ -42,8 +43,9 @@ def to_boardrooms(request):
     :return:
     """
     dbs = request.dbsession
+    user_id = request.session['userId']
     user_org_id = request.session['userOrgId']
-    branch_json = json.dumps(find_branch_json(dbs, user_org_id, '0'))
+    branch_json = json.dumps(find_branch_json_4booking(dbs, user_id, user_org_id))
     return render_to_response('boardroom/boardroom.html', locals(), request)
 
 
@@ -83,8 +85,9 @@ def to_add_br(request):
     """
 
     dbs = request.dbsession
+    user_id = request.session['userId']
     user_org_id = request.session['userOrgId']
-    branches = find_branch(dbs, user_org_id, '0')
+    branches = find_branch_json_4booking(dbs, user_id, user_org_id, tree=False)
     return render_to_response('boardroom/add.html', locals(), request)
 
 
@@ -228,7 +231,7 @@ def to_update_br(request):
     dbs = request.dbsession
     user_org_id = request.session['userOrgId']
     user_id = request.session['userId']
-    branches = find_branch(dbs, user_org_id, '0')
+    branches = find_branch_json_4booking(dbs, user_id, user_org_id, tree=False)
     br_id = request.POST.get('br_id')
     boardroom = find_boardroom(dbs, user_id, br_id)
     return render_to_response('boardroom/add.html', locals(), request)

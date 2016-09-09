@@ -109,12 +109,13 @@ def find_branch_json_check(dbs, user_id, user_now=None):
     return branches
 
 
-def find_branch_json_4booking(dbs, user_id, user_org_id):
+def find_branch_json_4booking(dbs, user_id, user_org_id, tree=True):
     """
     获取机构树
     :param dbs:
     :param user_id:
     :param user_org_id:
+    :param tree:
     :return:
     """
     user_parent_org_id = find_parent_org(dbs, user_org_id)
@@ -138,8 +139,9 @@ def find_branch_json_4booking(dbs, user_id, user_org_id):
         if org[0] == user_org_id:
             branch['checked'] = True
         org_dict[org[0]] = branch
-    for org_id in orgs_ids:
-        find_parents(dbs, org_dict[org_id]['pId'], org_dict, is_open=(org_id == user_org_id))
+    if tree:
+        for org_id in orgs_ids:
+            find_parents(dbs, org_dict[org_id]['pId'], org_dict, is_open=(org_id == user_org_id))
 
     return [v for k, v in org_dict.items()]
 

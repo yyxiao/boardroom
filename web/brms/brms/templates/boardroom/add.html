@@ -34,10 +34,10 @@
                                 <option value="">请选择</option>
                             {% endif %}
                             {% for branch in branches %}
-                                {% if boardroom and boardroom.org_id == branch.org_id %}
-                                    <option value="{{ branch.org_id }}" selected="selected">{{ branch.org_name }}</option>
+                                {% if boardroom and boardroom.org_id == branch.id %}
+                                    <option value="{{ branch.id }}" selected="selected">{{ branch.name }}</option>
                                 {% else %}
-                                    <option value="{{ branch.org_id }}">{{ branch.org_name }}</option>
+                                    <option value="{{ branch.id }}">{{ branch.name }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
