@@ -82,7 +82,7 @@ def date_now():
 def get_next_date(sdate):
     ddate = datetime.datetime.strptime(sdate, date_pattern1)
     rdate = ddate + datetime.timedelta(days=1)
-    return rdate.strftime(date_pattern)
+    return rdate.strftime(date_pattern1)
 
 
 # 获取前一天, 日期格式为:yyyyMMdd

@@ -7,6 +7,7 @@ __mtime__ = 2016/8/8
 
 import copy
 import json
+import transaction
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from ..common.dateutils import datetime_format
@@ -136,27 +137,38 @@ def to_update_calender(request):
 @view_config(route_name='update_meeting', renderer='json')
 @request_login
 def update_meeting(request):
-    dbs = request.dbsession
-    meeting_id = int(request.POST.get('id', 0))
+    start_date = request.POST.get('start_date', '')
+    end_date = request.POST.get('end_date', '')
+    start_time = request.POST.get('start_time', '')
+    end_time = request.POST.get('end_time', '')
+    now = datetime.now().strftime(datetime_format)
+    if now > (start_date + ' ' + start_time) or now > (end_date + ' ' + end_time):
+        error_msg = '开始时间和结束时间不能小于当前时间！'
+    else:
+        dbs = request.dbsession
+        meeting_id = int(request.POST.get('id', 0))
 
-    room_id = int(request.POST.get('room_id', 0))
-    meeting = find_meeting(dbs, meeting_id)
+        room_id = int(request.POST.get('room_id', 0))
+        with transaction.manager as tm:
+            meeting = find_meeting(dbs, meeting_id)
 
-    old_meeting = copy.deepcopy(meeting)
+            old_meeting = copy.deepcopy(meeting)
 
-    meeting.name = request.POST.get('name', '')
-    meeting.description = request.POST.get('desc', '')
-    meeting.start_date = request.POST.get('start_date', '')
-    meeting.end_date = request.POST.get('end_date', '')
-    meeting.start_time = request.POST.get('start_time', '')
-    meeting.end_time = request.POST.get('end_time', '')
-    meeting.org_id = int(request.POST.get('org_id', request.session['userOrgId']))
-    meeting.repeat = request.POST.get('rec_type', '')
-    meeting.repeat_date = request.POST.get('rec_pattern', '')
+            meeting.name = request.POST.get('name', '')
+            meeting.description = request.POST.get('desc', '')
+            meeting.start_date = request.POST.get('start_date', '')
+            meeting.end_date = request.POST.get('end_date', '')
+            meeting.start_time = request.POST.get('start_time', '')
+            meeting.end_time = request.POST.get('end_time', '')
+            meeting.org_id = int(request.POST.get('org_id', request.session['userOrgId']))
+            meeting.repeat = request.POST.get('rec_type', '')
+            meeting.repeat_date = request.POST.get('rec_pattern', '')
 
-    error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
-    if not error_msg:
-        error_msg = update(dbs, meeting, room_id, old_meeting=old_meeting)
+            error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
+            if not error_msg:
+                error_msg = update(dbs, meeting, room_id, old_meeting=old_meeting)
+            else:
+                tm.abort()
     if error_msg:
         json_str = {
             'success': False,

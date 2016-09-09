@@ -6,8 +6,9 @@ __mtime__ = 2016/8/31
 """
 
 from datetime import datetime, timedelta
+from sqlalchemy import and_
 from ..models.model import *
-from ..common.dateutils import date_now, date_pattern1
+from ..common.dateutils import date_now, get_next_date
 from ..service.booking_service import add_booking, update_booking
 from ..service.meeting_service import delete_meeting, add_meeting_bdr
 from ..service.org_service import find_org_by_user
@@ -56,7 +57,7 @@ def find_org_rooms(dbs, user_id):
     return lists
 
 
-def mob_find_meetings(dbs, user_id, room_id, meeting_id=None):
+def mob_find_meetings(dbs, user_id=None, room_id=None, meeting_id=None):
     meetings = dbs.query(HasMeeting.id, HasMeeting.name, HasMeeting.description,
                          HasMeeting.start_date, HasMeeting.end_date, HasMeeting.start_time,
                          HasMeeting.end_time, HasMeeting.create_user, HasMeeting.create_time,
@@ -66,10 +67,17 @@ def mob_find_meetings(dbs, user_id, room_id, meeting_id=None):
         .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id)\
         .outerjoin(HasBoardroom, HasMeetBdr.boardroom_id == HasBoardroom.id)
 
+    if user_id:
+        # 取此用户3天内的会议
+        today = date_now()[0:10]
+        day_after_tomorrow = get_next_date(get_next_date(today))
+        meetings = meetings.filter(and_(HasMeeting.create_user == user_id, HasMeeting.start_date >= today,
+                                        HasMeeting.start_date <= day_after_tomorrow))
     if meeting_id:
         meetings = meetings.filter(HasMeeting.id == meeting_id)
-
-    meetings = meetings.filter(HasBoardroom.id == room_id).all()
+    if room_id:
+        meetings = meetings.filter(HasBoardroom.id == room_id)
+    meetings = meetings.all()
     lists = []
     for meeting in meetings:
         id = meeting.id
