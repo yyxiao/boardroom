@@ -84,7 +84,7 @@ def find_meetings(dbs, pad_code):
     delta = timedelta(days=3)
     n_days = datetime.now() + delta
     n_days = n_days.strftime(date_pattern1)
-    print("now_day"+now_day+"n_days"+n_days)
+    # print("now_day"+now_day+"n_days"+n_days)
     meetings = dbs.query(HasMeeting.id, HasMeeting.name, HasMeeting.description,
                          HasMeetBdr.meeting_date, HasMeeting.start_time,
                          HasMeeting.end_time, HasMeeting.repeat, HasMeeting.create_user, HasMeeting.create_time,
