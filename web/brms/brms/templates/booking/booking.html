@@ -137,13 +137,15 @@
         var desc = ev.desc;
         var start_date_time = new Date(ev.start_date).FormatLocal('yyyy-MM-dd hh:mm');
         var end_date_time = new Date(ev.end_date).FormatLocal('yyyy-MM-dd hh:mm');
-        var start_date = start_date_time.substring(0, 10);
+        var repeat_start_date_time = new Date(ev._start_date).FormatLocal('yyyy-MM-dd hh:mm');
         var repeat_end_date_time = new Date(ev._end_date).FormatLocal('yyyy-MM-dd hh:mm');
+        var start_date = start_date_time.substring(0, 10);
         var start_time = start_date_time.substring(11, 16);
         var end_date = end_date_time.substring(0, 10);
         var end_time = end_date_time.substring(11, 16);
         var rec_type = ev.rec_type;
         if (rec_type){
+            start_date = repeat_start_date_time.substring(0, 10);
             end_date = repeat_end_date_time.substring(0, 10);
         }
         var room_id = ev.room_id;
