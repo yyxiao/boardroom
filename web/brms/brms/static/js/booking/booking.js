@@ -73,6 +73,7 @@ function init() {
     scheduler.config.drag_in = false;
     scheduler.config.drag_move = false;
     scheduler.config.drag_resize= false;
+    scheduler.config.repeat_precise = true;
 
     var org_ids = get_orgs("org_ids");
     var room_id = $.trim($('#room_id').val());

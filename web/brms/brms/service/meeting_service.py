@@ -159,7 +159,7 @@ def find_meeting_calendar(dbs, user_id, org_ids, room_id, user_org_id):
             'text': name,
             'desc': description,
             'start_date': start_date + " " + start_time,
-            'end_date': end_date + " " + end_time,
+            'end_date': end_date + " " + start_time,   # 用结束时间的话会多出一次子会议
             'rec_pattern': repeat_date if repeat_date and repeat else '',
             'rec_type': (repeat_date + "#" + repeat) if repeat_date and repeat else '',
             'user_name': user_name,
