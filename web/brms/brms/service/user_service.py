@@ -66,6 +66,9 @@ def find_users(dbs, org_id=None, user_account=None, user_name=None, role_name=No
     if user_id:
         users = users.filter(SysUser.id == user_id)
 
+    # 过滤超级管理员
+    users = users.filter(SysUser.id != 1)
+
     user_list = users.order_by(SysUser.create_time.desc())
     results, paginator = Paginator(user_list, page_no).to_dict()
     lists = []
@@ -225,6 +228,8 @@ def delete(dbs, user_id):
     :param user_id:
     :return:
     """
+    if user_id == 1:
+        return '超级管理员不能删除！'
     try:
         with transaction.manager:
             dbs.query(SysUser).filter(SysUser.id == user_id).delete()

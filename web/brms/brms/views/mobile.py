@@ -66,10 +66,15 @@ def mobile_update_user(request):
     error_msg = ''
     dbs = request.dbsession
     user_id = request.POST.get('user_id', 0)
+    if user_id == 1:
+        return {
+            'status': 'false',
+            'error_msg': '无权修改此用户信息！'
+        }
     user = find_user_by_id(dbs, user_id)
     logger.info('mobile_update_user--user_id:' + user_id)
     if user.user_pwd != get_password(request.POST.get('passwd_old', '')):
-        msg = '原密码错误！'
+        error_msg = '原密码错误！'
     else:
         if request.POST.get('passwd_new'):
             user.user_pwd = get_password(request.POST.get('passwd_new', ''))
