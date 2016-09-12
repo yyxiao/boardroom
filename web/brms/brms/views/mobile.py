@@ -223,10 +223,9 @@ def mobile_add_meeting(request):
             'error_msg': error_msg
         }
     else:
-        meeting_dict = mob_find_meetings(dbs, None, room_id, meeting_id)[0]
+        meeting_dict = mob_find_meeting(dbs, meeting_id)
         json_str = {
             'status': True,
-            'error_msg': error_msg,
             'meeting': meeting_dict,
             'error_msg': ''
         }
@@ -236,18 +235,24 @@ def mobile_add_meeting(request):
 @view_config(route_name='mobile_user_meeting_list', renderer='json')
 def mobile_user_meeting_list(request):
     """
-    返回用户3天内会议列表
+    返回用户会议列表
     :param request:
     :return:
     """
     if request.method == 'POST':
         dbs = request.dbsession
         user_id = request.POST.get('user_id', '')
+        start_date = request.POST.get('start_date', '')
+        end_date = request.POST.get('end_date', '')
         error_msg = ''
         if not user_id:
             error_msg = '用户ID不能为空！'
+        elif not start_date:
+            error_msg = '开始时间不能为空！'
+        elif not end_date:
+            error_msg = '结束时间不能为空！'
         else:
-            meetings = mob_find_meetings(dbs, user_id)
+            meetings = mob_find_user_meetings(dbs, user_id, start_date, end_date)
     if error_msg:
         json_str = {
             'status': False,
