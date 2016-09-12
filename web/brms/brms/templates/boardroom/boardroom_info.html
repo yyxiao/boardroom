@@ -101,6 +101,10 @@
     };
     var zNodes ={{ branch_json|safe }};
     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+    var nodes = treeObj.getCheckedNodes(true);
+    $('#search_org_name').val(nodes[0].name);
+    $("#search_org_id").val(nodes[0].id);
 </script>
 {% endblock %}
 
