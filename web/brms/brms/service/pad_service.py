@@ -384,6 +384,8 @@ def set_rooms_by_qrcode(dbs, user_id, pad_code, room_id):
             if room1:  # 清除以前会议室pad_id数据
                 room1.pad_id = 0
                 dbs.add(room1)
+                pad.org_id = room.org_id
+                dbs.add(pad)
             room.pad_id = pad.id
             dbs.add(room)
             dbs.flush()
