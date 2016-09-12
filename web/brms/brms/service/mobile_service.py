@@ -237,7 +237,7 @@ def mob_find_user_meetings(dbs, user_id=None, start_date=None, end_date=None):
                          HasMeeting.start_date, HasMeeting.end_date, HasMeeting.start_time,
                          HasMeeting.end_time, HasMeeting.create_user, HasMeeting.create_time,
                          SysUser.user_name, SysUser.phone, SysOrg.org_name, SysOrg.id,
-                         HasMeetBdr.boardroom_id, HasBoardroom.name, HasMeetBdr.meeting_date, HasMeeting.repeat) \
+                         HasMeetBdr.boardroom_id, HasBoardroom.name, HasMeetBdr.meeting_date, HasMeeting.repeat_date) \
         .outerjoin(SysUser, HasMeeting.create_user == SysUser.id) \
         .outerjoin(SysOrg, SysUser.org_id == SysOrg.id) \
         .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id)\
