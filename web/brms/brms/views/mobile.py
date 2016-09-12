@@ -5,9 +5,8 @@ __author__ = xyy
 __mtime__ = 2016/8/31
 """
 import base64
-from datetime import datetime
 from pyramid.view import view_config
-from ..common.dateutils import date_now, datetime_format
+from ..common.dateutils import date_now, datetime_format, date_pattern1
 from ..common.jsonutils import serialize
 from ..common.password import get_password, DEFAULT_PASSWORD
 from ..service.loginutil import UserTools
@@ -21,23 +20,27 @@ logger = logging.getLogger('operator')
 
 @view_config(route_name='mobile_login', renderer='json')
 def mobile_login(request):
+    """
+    登录
+    :param request:
+    :return:
+    """
     error_msg = ''
     dbs = request.dbsession
     user_account = request.POST.get('user_account', '')
     meeting_date = request.POST.get('meeting_date', datetime.now().strftime(date_pattern1))
     password = base64.encodebytes(request.POST.get('password', '').encode()).decode('utf-8').replace('\n', '')
     logger.info('mobile_login--user_account:' + user_account)
-    with transaction.manager:
-        user = dbs.query(SysUser).filter(SysUser.user_account == user_account).first()
-        if not user:
-            error_msg = '用户不存在'
-        elif password != user.user_pwd:
-            error_msg = '密码错误'
-            UserTools.count_err(user)
-            dbs.flush()
-        else:
-            # 获取该用户最大可申请期限
-            org_rooms = find_org_rooms(dbs, user.id)
+    user = dbs.query(SysUser).filter(SysUser.user_account == user_account).first()
+    if not user:
+        error_msg = '用户不存在'
+    elif password != user.user_pwd:
+        error_msg = '密码错误'
+        UserTools.count_err(user)
+        dbs.flush()
+    else:
+        # 获取该用户最大可申请期限
+        org_rooms = find_org_rooms(dbs, user.id, meeting_date)
     if error_msg:
         json_a = {
             'status': 'false',
@@ -117,6 +120,11 @@ def mobile_update_user(request):
 
 @view_config(route_name='mobile_meeting_list', renderer='json')
 def mobile_meeting_list(request):
+    """
+    获取会议列表
+    :param request:
+    :return:
+    """
     error_msg = ''
     dbs = request.dbsession
     user_id = request.POST.get('user_id', '')
@@ -143,6 +151,11 @@ def mobile_meeting_list(request):
 
 @view_config(route_name='mobile_room_list', renderer='json')
 def mobile_room_list(request):
+    """
+    获取会议室列表
+    :param request:
+    :return:
+    """
     error_msg = ''
     dbs = request.dbsession
     user_id = request.POST.get('user_id', '')

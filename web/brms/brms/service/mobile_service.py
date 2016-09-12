@@ -18,11 +18,12 @@ import transaction
 logger = logging.getLogger('operator')
 
 
-def find_org_rooms(dbs, user_id):
+def find_org_rooms(dbs, user_id, meeting_date):
     """
     获取可分配的机构
     :param dbs:
     :param user_id:
+    :param meeting_date:
     :return:
     """
     orgs = dbs.query(SysOrg.id, SysOrg.org_name, SysOrg.parent_id)\
@@ -32,6 +33,15 @@ def find_org_rooms(dbs, user_id):
         .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id)\
         .outerjoin(SysUserOrg, (SysUserOrg.org_id == SysOrg.id)) \
         .filter(SysUserOrg.user_id == user_id).all()
+    meetings = dbs.query(HasMeeting.id, HasMeeting.name, HasMeeting.description, HasMeetBdr.boardroom_id,
+                         HasMeetBdr.meeting_date, HasMeeting.start_time,
+                         HasMeeting.end_time, HasMeeting.repeat, HasMeeting.create_user, HasMeeting.create_time,
+                         SysUser.user_name, SysUser.phone, SysOrg.org_name)\
+        .outerjoin(SysUser, HasMeeting.create_user == SysUser.id)\
+        .outerjoin(SysOrg, SysUser.org_id == SysOrg.id)\
+        .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id)\
+        .outerjoin(HasBoardroom, HasBoardroom.id == HasMeetBdr.boardroom_id)\
+        .filter(HasMeetBdr.meeting_date == meeting_date).all()
     lists = []
     for org in orgs:
         org_id = org.id
@@ -39,12 +49,45 @@ def find_org_rooms(dbs, user_id):
         parent_id = org.parent_id
         room_list = []
         for room in rooms:
+            meeting_list = []
+            for meeting in meetings:
+                if meeting.boardroom_id == room.id:
+                    id = meeting.id
+                    name = meeting.name
+                    description = meeting.description
+                    start_date = meeting.meeting_date
+                    end_date = meeting.meeting_date
+                    start_time = meeting.start_time
+                    end_time = meeting.end_time
+                    repeat = meeting.repeat
+                    create_user = meeting.create_user
+                    create_time = meeting.create_time
+                    user_name = meeting.user_name
+                    phone = meeting.phone
+                    org_name = meeting.org_name
+                    temp_dict = {
+                        'meeting_id': id,
+                        'meeting_name': name,
+                        'description': description,
+                        'repeat': repeat if repeat else '',
+                        'start_date': start_date,
+                        'end_date': end_date,
+                        'start_time': start_time,
+                        'end_time': end_time,
+                        'create_user': create_user,
+                        'create_time': create_time,
+                        'user_name': user_name,
+                        'user_phone': phone,
+                        'org_name': org_name,
+                    }
+                    meeting_list.append(temp_dict)
             # 将会议室拼入公司机构list
             if org_id == room.org_id:
                 room_dict = {
                     'id': room.id,
                     'name': room.name,
-                    'org_id': org_id
+                    'org_id': org_id,
+                    'meetings': meeting_list
                 }
                 room_list.append(room_dict)
         temp_dict = {
@@ -58,6 +101,14 @@ def find_org_rooms(dbs, user_id):
 
 
 def mob_find_meetings(dbs, user_id=None, room_id=None, meeting_id=None):
+    """
+    获取3天会议列表
+    :param dbs:
+    :param user_id:
+    :param room_id:
+    :param meeting_id:
+    :return:
+    """
     meetings = dbs.query(HasMeeting.id, HasMeeting.name, HasMeeting.description,
                          HasMeeting.start_date, HasMeeting.end_date, HasMeeting.start_time,
                          HasMeeting.end_time, HasMeeting.create_user, HasMeeting.create_time,
