@@ -159,11 +159,11 @@ def find_meeting_calendar(dbs, user_id, org_ids, room_id, user_org_id):
             'desc': description,
             'start_date': start_date + " " + start_time,
             'end_date': end_date + " " + end_time,
-            'rec_pattern': repeat_date if repeat_date and repeat else '',
-            'rec_type': (repeat_date + "#" + repeat) if repeat_date and repeat else '',
+            'rec_pattern': repeat_date if repeat_date else '',
+            'rec_type': (repeat_date + "#" + repeat) if repeat_date else '',
             'user_name': user_name,
             'room_id': room_id,
-            '': (repeat_date + "#" + repeat) if repeat_date and repeat else ''
+            '': (repeat_date + "#" + repeat) if repeat_date else ''
         }
         if create_user != user_id:  # or temp_dict['rec_type']:
             temp_dict['readonly'] = True
@@ -194,12 +194,13 @@ def add(dbs, meeting, room_id, dates=None):
         dbs.flush()
         logger.debug("会议添加完毕，meeting_id:" + str(meeting.id))
         if room_id != 0:
-            if meeting.repeat != '':
+            if meeting.repeat_date != '':
                 if not dates:
                     dates = get_weekday(meeting.start_date, meeting.end_date,
-                                        meeting.repeat_date.split('_')[4].split(','))
+                                        meeting.repeat_date.split('_')[4].split(','), meeting.repeat)
                 result, occupies = check_repeat_occupy(dbs, room_id, meeting.start_time, meeting.end_time,
-                                                       meeting.repeat_date.split('_')[4].split(','), dates=dates)
+                                                       meeting.repeat_date.split('_')[4].split(','), dates=dates,
+                                                       repeat=meeting.repeat)
                 if result != 0:
                     delete_meeting(dbs, meeting.id, meeting.create_user)
                     return json.dumps(occupies, ensure_ascii=False), 0
@@ -246,12 +247,13 @@ def update(dbs, meeting, room_id, old_meeting=None, dates=None):
                 dbs.delete(room)
             # 添加新的会议室预定信息
             if room_id != 0:
-                if meeting.repeat != '':
+                if meeting.repeat_date != '':
                     if not dates:
                         dates = get_weekday(meeting.start_date, meeting.end_date,
-                                            meeting.repeat_date.split('_')[4].split(','))
+                                            meeting.repeat_date.split('_')[4].split(','), meeting.repeat)
                     result, occupies = check_repeat_occupy(dbs, room_id, meeting.start_time, meeting.end_time,
-                                                           meeting.repeat_date.split('_')[4].split(','), dates=dates)
+                                                           meeting.repeat_date.split('_')[4].split(','), dates=dates,
+                                                           repeat=meeting.repeat)
                     if result != 0:
                         tm.abort()
                         error_msg = json.dumps(occupies, ensure_ascii=False)

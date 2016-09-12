@@ -144,7 +144,7 @@ def delete_booking(dbs, room_id, mdate, start_time, end_time):
         return '删除占用失败'
 
 
-def check_repeat_occupy(dbs, room_id, start_time, end_time, week_nums, start_date=None, end_date=None, dates=None):
+def check_repeat_occupy(dbs, room_id, start_time, end_time, week_nums, start_date=None, end_date=None, dates=None, repeat=None):
     """
     检查重复会议是否冲突
     :param dbs:
@@ -155,12 +155,13 @@ def check_repeat_occupy(dbs, room_id, start_time, end_time, week_nums, start_dat
     :param start_date:
     :param end_date:
     :param dates:
+    :param repeat:
     :return:   result: 0      没有冲突
                        other  有
                occupies:      冲突日期及冲突信息字典
     """
     if not dates:
-        dates = get_weekday(start_date, end_date, week_nums)
+        dates = get_weekday(start_date, end_date, week_nums, repeat)
     occupies = {}
     for mdate in dates:
         msg = check_occupy(dbs, room_id, mdate, start_time, end_time)
@@ -170,7 +171,7 @@ def check_repeat_occupy(dbs, room_id, start_time, end_time, week_nums, start_dat
     return result, occupies
 
 
-def add_repeat_booking(dbs, room_id, start_time, end_time, week_num, start_date, end_date, dates=None):
+def add_repeat_booking(dbs, room_id, start_time, end_time, week_num, start_date, end_date, dates=None, repeat=None):
     """
     添加重复会议
     :param dbs:
@@ -181,13 +182,14 @@ def add_repeat_booking(dbs, room_id, start_time, end_time, week_num, start_date,
     :param start_date:
     :param end_date:
     :param dates:
+    :param repeat:
     :return:
     """
 
     if not dates:
-        dates = get_weekday(start_date, end_date, week_num)
+        dates = get_weekday(start_date, end_date, week_num, repeat)
 
-    result, occupies = check_repeat_occupy(dbs, room_id, start_time, end_time, week_num, dates=dates)
+    result, occupies = check_repeat_occupy(dbs, room_id, start_time, end_time, week_num, dates=dates, repeat=repeat)
     if result != 0:
         result = '会议室预约有冲突'
         return result, occupies
