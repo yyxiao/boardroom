@@ -49,6 +49,7 @@ def mobile_login(request):
     else:
         json_a = {
             'status': 'true',
+            'error_msg': error_msg,
             'org_rooms': org_rooms,
             'user': {
                 "id": user.id,
@@ -104,6 +105,7 @@ def mobile_update_user(request):
     else:
         json_a = {
             'status': 'true',
+            'error_msg': error_msg,
             'user': {
                 "id": user.id,
                 "org_id": user.org_id,
@@ -144,6 +146,7 @@ def mobile_meeting_list(request):
     else:
         json_a = {
             'status': 'true',
+            'error_msg': error_msg,
             'meetings': meetings
         }
     return json_a
@@ -172,6 +175,7 @@ def mobile_room_list(request):
     else:
         json_a = {
             'status': 'true',
+            'error_msg': error_msg,
             'rooms': rooms
         }
     return json_a
@@ -222,6 +226,7 @@ def mobile_add_meeting(request):
         meeting_dict = mob_find_meetings(dbs, None, room_id, meeting_id)[0]
         json_str = {
             'status': True,
+            'error_msg': error_msg,
             'meeting': meeting_dict,
             'error_msg': ''
         }
@@ -238,13 +243,22 @@ def mobile_user_meeting_list(request):
     if request.method == 'POST':
         dbs = request.dbsession
         user_id = request.POST.get('user_id', '')
-        if user_id:
+        error_msg = ''
+        if not user_id:
+            error_msg = '用户ID不能为空！'
+        else:
             meetings = mob_find_meetings(dbs, user_id)
-            json_str = {
-                'status': True,
-                'meeting': meetings,
-                'error_msg': ''
-            }
-            return json_str
-    return {}
+    if error_msg:
+        json_str = {
+            'status': False,
+            'meeting': '',
+            'error_msg': error_msg
+        }
+    else:
+        json_str = {
+            'status': True,
+            'meeting': meetings,
+            'error_msg':error_msg
+        }
+    return json_str
 
