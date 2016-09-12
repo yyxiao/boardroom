@@ -141,8 +141,17 @@ scheduler.templates.calendar_month = scheduler.date.date_to_str("%F %Y"), schedu
             e += "<option value='" + i + "'>" + d + "</option>", a = this.date.add(a, this.config.time_step, "minute")
         }
         e += "</select>";
+        var e1 = "<input class='dhx_readonly' type='text' readonly='true' type='hidden' style='display: none'>",
+            a1 = this.date.date_part(scheduler._currentDate());
+        t.limit_time_select && (n = 60 * t.first_hour,
+            r = 60 * t.last_hour + 1), a1.setHours(n / 60), e1 += " <select>";
+        for (var i1 = n; r > i1; i1 += 1 * this.config.time_step) {
+            var d1 = this.templates.time_picker(a1);
+            e1 += "<option value='" + i1 + "'>" + d1 + "</option>", a1 = this.date.add(a1, this.config.time_step, "minute")
+        }
+        e1 += "</select>";
         scheduler.config.full_day;
-        return "<div style='height:30px;padding-top:0; font-size:inherit;' class='dhx_section_time'>" + e + "<span style='font-weight:normal; font-size:10pt;'> &nbsp;&ndash;&nbsp; </span>" + e + "</div>"
+        return "<div style='height:30px;padding-top:0; font-size:inherit;' class='dhx_section_time'>" + e + "<span style='font-weight:normal; font-size:10pt;'> &nbsp;&ndash;&nbsp; </span>" + e1 + "</div>"
     },
     set_value: function(e, t, a) {
         function r(e, t, a) {
