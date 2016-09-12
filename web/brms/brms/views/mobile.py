@@ -239,20 +239,19 @@ def mobile_user_meeting_list(request):
     :param request:
     :return:
     """
-    if request.method == 'POST':
-        dbs = request.dbsession
-        user_id = request.POST.get('user_id', '')
-        start_date = request.POST.get('start_date', '')
-        end_date = request.POST.get('end_date', '')
-        error_msg = ''
-        if not user_id:
-            error_msg = '用户ID不能为空！'
-        elif not start_date:
-            error_msg = '开始时间不能为空！'
-        elif not end_date:
-            error_msg = '结束时间不能为空！'
-        else:
-            meetings = mob_find_user_meetings(dbs, user_id, start_date, end_date)
+    dbs = request.dbsession
+    user_id = request.POST.get('user_id', '')
+    start_date = request.POST.get('start_date', '')
+    end_date = request.POST.get('end_date', '')
+    error_msg = ''
+    if not user_id:
+        error_msg = '用户ID不能为空！'
+    elif not start_date:
+        error_msg = '开始时间不能为空！'
+    elif not end_date:
+        error_msg = '结束时间不能为空！'
+    else:
+        meetings = mob_find_user_meetings(dbs, user_id, start_date, end_date)
     if error_msg:
         json_str = {
             'status': False,
@@ -267,3 +266,34 @@ def mobile_user_meeting_list(request):
         }
     return json_str
 
+
+@view_config(route_name='mobile_org_meeting_list', renderer='json')
+def mobile_org_meeting_list(request):
+    """
+    返回机构会议列表
+    :param request:
+    :return:
+    """
+    dbs = request.dbsession
+    org_id = request.POST.get('org_id', '')
+    meeting_date = request.POST.get('meeting_date', '')
+    error_msg = ''
+    if not org_id:
+        error_msg = '机构ID不能为空！'
+    elif not meeting_date:
+        error_msg = '会议时间不能为空！'
+    else:
+        meetings = mob_find_org_meetings(dbs, org_id, meeting_date)
+    if error_msg:
+        json_str = {
+            'status': False,
+            'meeting': '',
+            'error_msg': error_msg
+        }
+    else:
+        json_str = {
+            'status': True,
+            'meeting': meetings,
+            'error_msg':error_msg
+        }
+    return json_str

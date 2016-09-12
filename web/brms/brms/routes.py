@@ -128,3 +128,4 @@ def mobile_include(config):
     config.add_route('mobile_room_list', '/roomList')
     config.add_route('mobile_update_user', '/updateUser')
     config.add_route('mobile_user_meeting_list', '/userMeetingList')
+    config.add_route('mobile_org_meeting_list', '/orgRoomList')
