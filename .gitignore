@@ -63,3 +63,5 @@ __pycache__/
 
 # development file
 web/brms/development.ini
+web/brms/brms/static/img/boardroom/org/
+web/brms/brms/static/img/boardroom/tmp/
