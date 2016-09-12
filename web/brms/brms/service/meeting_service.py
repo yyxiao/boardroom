@@ -48,7 +48,7 @@ def find_meetings(dbs, user_id=None, user_org_id=None, meeting_name=None, room_n
         .outerjoin(SysUserOrg, and_(SysUserOrg.user_id == SysUser.id, HasMeeting.org_id == SysUserOrg.org_id))\
         .outerjoin(SysOrg, SysUserOrg.org_id == SysOrg.id) \
         .outerjoin(HasMeetBdr,
-                   and_(HasMeetBdr.meeting_id == HasMeeting.id, HasMeetBdr.meeting_date == HasMeeting.end_date)) \
+                   and_(HasMeetBdr.meeting_id == HasMeeting.id, HasMeetBdr.meeting_date == HasMeeting.start_date)) \
         .outerjoin(HasBoardroom, HasBoardroom.id == HasMeetBdr.boardroom_id)\
         .outerjoin(HasPad, HasPad.id == HasBoardroom.pad_id)
     branches = find_org_ids(dbs, user_org_id)               # 获取当前用户所属机构及下属机构id
