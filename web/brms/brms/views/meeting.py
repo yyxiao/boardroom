@@ -5,9 +5,6 @@ __author__ = xyy
 __mtime__ = 2016/8/8
 """
 
-import copy
-import json
-import transaction
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from ..common.dateutils import datetime_format
@@ -68,6 +65,7 @@ def add_meeting(request):
     start_time = request.POST.get('start_time', '')
     end_time = request.POST.get('end_time', '')
     now = datetime.now().strftime(datetime_format)
+    new_id = ''
     if now > (start_date + ' ' + start_time) or now > (end_date + ' ' + end_time):
         error_msg = '开始时间和结束时间不能小于当前时间！'
     else:
@@ -85,9 +83,15 @@ def add_meeting(request):
         meeting.repeat_date = request.POST.get('rec_pattern', '')
         meeting.create_user = request.session['userId']
         meeting.create_time = datetime.now().strftime(datetime_format)
+        dates = None
+        if meeting.repeat:
+            dates = get_weekday(meeting.start_date, meeting.end_date,
+                                meeting.repeat_date.split('_')[4].split(','))
+            dates.sort()
+            meeting.end_date = dates[-1]
         error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
         if not error_msg:
-            error_msg, new_id = add(dbs, meeting, room_id)
+            error_msg, new_id = add(dbs, meeting, room_id, dates)
     if error_msg:
         json_str = {
             'success': False,
@@ -149,6 +153,7 @@ def update_meeting(request):
         meeting_id = int(request.POST.get('id', 0))
 
         room_id = int(request.POST.get('room_id', 0))
+        dates = None
         with transaction.manager as tm:
             meeting = find_meeting(dbs, meeting_id)
 
@@ -163,10 +168,14 @@ def update_meeting(request):
             meeting.org_id = int(request.POST.get('org_id', request.session['userOrgId']))
             meeting.repeat = request.POST.get('rec_type', '')
             meeting.repeat_date = request.POST.get('rec_pattern', '')
-
+            if meeting.repeat:
+                dates = get_weekday(meeting.start_date, meeting.end_date,
+                                    meeting.repeat_date.split('_')[4].split(','))
+                dates.sort()
+                meeting.end_date = dates[-1]
             error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
             if not error_msg:
-                error_msg = update(dbs, meeting, room_id, old_meeting=old_meeting)
+                error_msg = update(dbs, meeting, room_id, old_meeting, dates)
             else:
                 tm.abort()
     if error_msg:

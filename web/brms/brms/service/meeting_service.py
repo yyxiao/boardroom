@@ -6,7 +6,6 @@ __mtime__ = 2016/8/8
 """
 
 import json
-import copy
 import logging
 import transaction
 from sqlalchemy.sql import and_
@@ -155,11 +154,11 @@ def find_meeting_calendar(dbs, user_id, org_ids, room_id, user_org_id):
         temp_dict = {
             'id': meeting_id,
             # 'event_pid': '0',
-            'event_length': get_event_length(start_time, end_time),      # TODO 夸天会议
+            'event_length': get_event_length(start_time, end_time),
             'text': name,
             'desc': description,
             'start_date': start_date + " " + start_time,
-            'end_date': end_date + " " + start_time,   # 用结束时间的话会多出一次子会议
+            'end_date': end_date + " " + end_time,
             'rec_pattern': repeat_date if repeat_date and repeat else '',
             'rec_type': (repeat_date + "#" + repeat) if repeat_date and repeat else '',
             'user_name': user_name,
@@ -179,12 +178,13 @@ def get_event_length(start_time, end_time):
     return end - start
 
 
-def add(dbs, meeting, room_id):
+def add(dbs, meeting, room_id, dates=None):
     """
     PC添加会议
     :param dbs:
     :param meeting:
-    :param room_id
+    :param room_id:
+    :param dates:
     :return:
     """
     error_msg = ''
@@ -195,8 +195,11 @@ def add(dbs, meeting, room_id):
         logger.debug("会议添加完毕，meeting_id:" + str(meeting.id))
         if room_id != 0:
             if meeting.repeat != '':
-                dates = get_weekday(meeting.start_date, meeting.end_date, meeting.repeat_date.split('_')[4].split(','))
-                result, occupies = check_repeat_occupy(dbs, room_id, meeting.start_time, meeting.end_time, meeting.repeat_date.split('_')[4].split(','), dates=dates)
+                if not dates:
+                    dates = get_weekday(meeting.start_date, meeting.end_date,
+                                        meeting.repeat_date.split('_')[4].split(','))
+                result, occupies = check_repeat_occupy(dbs, room_id, meeting.start_time, meeting.end_time,
+                                                       meeting.repeat_date.split('_')[4].split(','), dates=dates)
                 if result != 0:
                     delete_meeting(dbs, meeting.id, meeting.create_user)
                     return json.dumps(occupies, ensure_ascii=False), 0
@@ -216,13 +219,14 @@ def add(dbs, meeting, room_id):
     return error_msg, meeting.id
 
 
-def update(dbs, meeting, room_id, old_meeting=None):
+def update(dbs, meeting, room_id, old_meeting=None, dates=None):
     """
     会议更新
     :param dbs:
     :param meeting:
     :param room_id:
     :param old_meeting:
+    :param dates:
     :return:
     """
     with transaction.manager as tm:
@@ -243,7 +247,9 @@ def update(dbs, meeting, room_id, old_meeting=None):
             # 添加新的会议室预定信息
             if room_id != 0:
                 if meeting.repeat != '':
-                    dates = get_weekday(meeting.start_date, meeting.end_date, meeting.repeat_date.split('_')[4].split(','))
+                    if not dates:
+                        dates = get_weekday(meeting.start_date, meeting.end_date,
+                                            meeting.repeat_date.split('_')[4].split(','))
                     result, occupies = check_repeat_occupy(dbs, room_id, meeting.start_time, meeting.end_time,
                                                            meeting.repeat_date.split('_')[4].split(','), dates=dates)
                     if result != 0:
@@ -283,7 +289,8 @@ def delete_meeting(dbs, meeting_id, user_id):
                 error_msg = '该会议不是该用户创建，请查询后操作。'
             else:
                 now = date_now()
-                if now > (meeting.start_date + ' ' + meeting.start_time) or now > (meeting.end_date + ' ' + meeting.end_time):
+                if now > (meeting.start_date + ' ' + meeting.start_time) or now > (
+                        meeting.end_date + ' ' + meeting.end_time):
                     error_msg = '该会议已过期'
                 else:
                     for room in rooms:
