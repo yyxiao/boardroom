@@ -4,7 +4,7 @@
 __author__ = xyy
 __mtime__ = 2016/8/8
 """
-
+import copy
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from ..common.dateutils import datetime_format
@@ -84,9 +84,9 @@ def add_meeting(request):
         meeting.create_user = request.session['userId']
         meeting.create_time = datetime.now().strftime(datetime_format)
         dates = None
-        if meeting.repeat:
+        if meeting.repeat_date:
             dates = get_weekday(meeting.start_date, meeting.end_date,
-                                meeting.repeat_date.split('_')[4].split(','))
+                                meeting.repeat_date.split('_')[4].split(','), meeting.repeat)
             dates.sort()
             meeting.end_date = dates[-1]
         error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
@@ -168,9 +168,9 @@ def update_meeting(request):
             meeting.org_id = int(request.POST.get('org_id', request.session['userOrgId']))
             meeting.repeat = request.POST.get('rec_type', '')
             meeting.repeat_date = request.POST.get('rec_pattern', '')
-            if meeting.repeat:
+            if meeting.repeat_date:
                 dates = get_weekday(meeting.start_date, meeting.end_date,
-                                    meeting.repeat_date.split('_')[4].split(','))
+                                    meeting.repeat_date.split('_')[4].split(','), meeting.repeat)
                 dates.sort()
                 meeting.end_date = dates[-1]
             error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, meeting.create_user)
