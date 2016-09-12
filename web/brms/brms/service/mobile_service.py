@@ -298,58 +298,64 @@ def mob_find_org_meetings(dbs, org_id=None, meeting_date=None):
     :param meeting_date:
     :return:
     """
+    rooms = dbs.query(HasBoardroom.id, HasBoardroom.name, HasBoardroom.org_id) \
+        .outerjoin(SysOrg, SysOrg.id == HasBoardroom.org_id) \
+        .filter(SysOrg.id == org_id).all()
+
     meetings = dbs.query(HasMeeting.id, HasMeeting.name, HasMeeting.description,
                          HasMeeting.start_date, HasMeeting.end_date, HasMeeting.start_time,
                          HasMeeting.end_time, HasMeeting.create_user, HasMeeting.create_time,
                          SysUser.user_name, SysUser.phone, SysOrg.org_name, SysOrg.id,
-                         HasMeetBdr.boardroom_id, HasBoardroom.name, HasMeetBdr.meeting_date, HasMeeting.repeat) \
+                         HasMeetBdr.boardroom_id, HasBoardroom.name, HasMeetBdr.meeting_date, HasMeeting.repeat_date) \
         .outerjoin(SysUser, HasMeeting.create_user == SysUser.id) \
         .outerjoin(SysOrg, SysUser.org_id == SysOrg.id) \
         .outerjoin(HasMeetBdr, HasMeetBdr.meeting_id == HasMeeting.id)\
-        .outerjoin(HasBoardroom, HasMeetBdr.boardroom_id == HasBoardroom.id)
-
-    if user_id:
-        # 取此用户3天内的会议
-        # today = date_now()[0:10]
-        # day_after_tomorrow = get_next_date(get_next_date(today))
-        meetings = meetings.filter(and_(HasMeeting.create_user == user_id, HasMeetBdr.meeting_date >= start_date,
-                                        HasMeetBdr.meeting_date <= end_date))
-    meetings = meetings.all()
+        .outerjoin(HasBoardroom, HasMeetBdr.boardroom_id == HasBoardroom.id)\
+        .filter(and_(SysOrg.id == org_id, HasMeetBdr.meeting_date == meeting_date)).all()
     lists = []
-    for meeting in meetings:
-        id = meeting[0]
-        name = meeting[1]
-        description = meeting[2]
-        start_date = meeting[3]
-        end_date = meeting[15]
-        start_time = meeting[15]
-        end_time = meeting[6]
-        create_user = meeting[7]
-        create_time = meeting[8]
-        user_name = meeting[9]
-        phone = meeting[10]
-        org_name = meeting[11]
-        org_id = meeting[12]
-        room_id = meeting[13]
-        room_name = meeting[14]
-        repeat = meeting[16]
-        temp_dict = {
-            'meeting_id': id,
-            'meeting_name': name,
-            'description': description,
-            'start_date': start_date,
-            'end_date': end_date,
-            'start_time': start_time,
-            'end_time': end_time,
-            'create_user': create_user,
-            'create_time': create_time,
-            'user_name': user_name,
-            'user_phone': phone,
-            'org_name': org_name,
-            'org_id': org_id,
-            'room_id': room_id,
-            'room_name': room_name,
-            'repeat': repeat if repeat else ''
+    for room in rooms:
+        meeting_list = []
+        for meeting in meetings:
+            if meeting.boardroom_id == room.id:
+                id = meeting[0]
+                name = meeting[1]
+                description = meeting[2]
+                start_date = meeting[3]
+                end_date = meeting[15]
+                start_time = meeting[15]
+                end_time = meeting[6]
+                create_user = meeting[7]
+                create_time = meeting[8]
+                user_name = meeting[9]
+                phone = meeting[10]
+                org_name = meeting[11]
+                org_id = meeting[12]
+                room_id = meeting[13]
+                room_name = meeting[14]
+                repeat = meeting[16]
+                temp_dict = {
+                    'meeting_id': id,
+                    'meeting_name': name,
+                    'description': description,
+                    'start_date': start_date,
+                    'end_date': end_date,
+                    'start_time': start_time,
+                    'end_time': end_time,
+                    'create_user': create_user,
+                    'create_time': create_time,
+                    'user_name': user_name,
+                    'user_phone': phone,
+                    'org_name': org_name,
+                    'org_id': org_id,
+                    'room_id': room_id,
+                    'room_name': room_name,
+                    'repeat': repeat if repeat else ''
+                }
+                meeting_list.append(temp_dict)
+        room_dict = {
+            'room_id': room.id,
+            'room_name': room.name,
+            'meetings': meeting_list
         }
-        lists.append(temp_dict)
+        lists.append(room_dict)
     return lists

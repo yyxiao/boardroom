@@ -11,9 +11,8 @@ from ..common.jsonutils import serialize
 from ..common.password import get_password, DEFAULT_PASSWORD
 from ..service.loginutil import UserTools
 from ..service.mobile_service import *
-from ..service.meeting_service import add, find_meeting, find_user_period
+from ..service.meeting_service import add, find_user_period
 from ..service.user_service import find_user_by_id, update
-import transaction
 
 logger = logging.getLogger('operator')
 
@@ -283,17 +282,17 @@ def mobile_org_meeting_list(request):
     elif not meeting_date:
         error_msg = '会议时间不能为空！'
     else:
-        meetings = mob_find_org_meetings(dbs, org_id, meeting_date)
+        rooms = mob_find_org_meetings(dbs, org_id, meeting_date)
     if error_msg:
         json_str = {
             'status': False,
-            'meeting': '',
+            'rooms': '',
             'error_msg': error_msg
         }
     else:
         json_str = {
             'status': True,
-            'meeting': meetings,
+            'rooms': rooms,
             'error_msg':error_msg
         }
     return json_str
