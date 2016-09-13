@@ -74,6 +74,8 @@ function init() {
     scheduler.config.drag_move = false;
     scheduler.config.drag_resize= false;
     scheduler.config.repeat_precise = true;
+    scheduler.config.event_duration = 60;
+    scheduler.config.auto_end_date = true;
 
     var org_ids = get_orgs("org_ids");
     var room_id = $.trim($('#room_id').val());
@@ -108,6 +110,12 @@ function init() {
     });
 
     scheduler.init('scheduler_here', new Date(), "timeline");
+    load_meetings(org_ids, room_id);
+}
+
+function reload_meeting(){
+    var org_ids = get_orgs("org_ids");
+    var room_id = $.trim($('#room_id').val());
     load_meetings(org_ids, room_id);
 }
 

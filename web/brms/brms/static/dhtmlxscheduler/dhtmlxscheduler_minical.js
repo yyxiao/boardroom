@@ -141,7 +141,7 @@ scheduler.templates.calendar_month = scheduler.date.date_to_str("%F %Y"), schedu
             e += "<option value='" + i + "'>" + d + "</option>", a = this.date.add(a, this.config.time_step, "minute")
         }
         e += "</select>";
-        var e1 = "<input class='dhx_readonly' type='text' readonly='true' type='hidden' style='display: none'>",
+        var e1 = "<input class='dhx_readonly' type='text' readonly='true' style='display:none'>",
             a1 = this.date.date_part(scheduler._currentDate());
         t.limit_time_select && (n = 60 * t.first_hour,
             r = 60 * t.last_hour + 1), a1.setHours(n / 60), e1 += " <select>";
@@ -193,7 +193,7 @@ scheduler.templates.calendar_month = scheduler.date.date_to_str("%F %Y"), schedu
         }
         if (scheduler.config.event_duration && scheduler.config.auto_end_date) {
             var u = function() {
-                n = scheduler.date.add(d[0]._date, l[0].value, "minute"), i = new Date(n.getTime() + 60 * scheduler.config.event_duration * 1e3), d[1].value = scheduler.templates.calendar_time(i), d[1]._date = scheduler.date.date_part(new Date(i)), l[1].value = 60 * i.getHours() + i.getMinutes()
+                n = scheduler.date.add(d[0]._date, l[0].value, "minute"), i = new Date(n.getTime() + 60 * scheduler.config.event_duration * 1e3), d[1].value = scheduler.templates.calendar_time(i), d[1]._date = scheduler.date.date_part(new Date(i));// l[1].value = 60 * i.getHours() + i.getMinutes()
             };
             l[0].onchange = u
         }
@@ -229,4 +229,5 @@ scheduler.templates.calendar_month = scheduler.date.date_to_str("%F %Y"), schedu
 }, scheduler.attachEvent("onEventCancel", function() {
     scheduler.destroyCalendar(null, !0)
 });
+
 //# sourceMappingURL=../sources/ext/dhtmlxscheduler_minical.js.map

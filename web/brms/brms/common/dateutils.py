@@ -159,19 +159,17 @@ def get_weekday(start_date, end_date, weekday_nums, repeat=None):
         edate += datetime.timedelta(days=1)
 
     weekdays = []
-    day_delta = 0
-    if len(weekday_nums) == 1:
-        day_delta = 7
-    while sdate < edate:
-        for weekday_num in weekday_nums:
-            if sdate <= edate:
-                now_weekday = sdate.weekday()
-                sdate += datetime.timedelta(days=(((int(weekday_num)+6) % 7 - now_weekday + 7) % 7))
-                if sdate < edate:
-                    weekdays.append(sdate.strftime(date_pattern1))
-                    sdate += datetime.timedelta(days=day_delta)
-                else:
-                    break
+
+    for weekday_num in weekday_nums:
+        tmp_date = sdate
+        while tmp_date < edate:
+            now_weekday = tmp_date.weekday()
+            tmp_date += datetime.timedelta(days=(((int(weekday_num)+6) % 7 - now_weekday + 7) % 7))
+            if tmp_date < edate:
+                weekdays.append(tmp_date.strftime(date_pattern1))
+                tmp_date += datetime.timedelta(days=7)
+            else:
+                break
     return weekdays
 
 
