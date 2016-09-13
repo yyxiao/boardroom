@@ -89,7 +89,9 @@ def add_org(request):
         org.state = request.POST.get('state', 1)
         org.create_time = datetime.now().strftime(datetime_format)
         org.create_user = request.session['userId']
-        msg = add(dbs, org)
+        msg = check_org_name(dbs, org_name=request.POST.get('org_name', ''), parent_id=request.POST.get('parent_id', 0))
+        if not msg:
+            msg = add(dbs, org)
         json1 = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
@@ -127,6 +129,8 @@ def update_org(request):
         dbs = request.dbsession
         org_id = request.POST.get('org_id', 0)
         org = find_org_by_id(dbs, org_id)
+        old_org_name = org.org_name
+        old_org_parent = str(org.parent_id)
         if not org_id:
             msg = '更新失败，请刷新页面后重试'
         else:
@@ -140,11 +144,20 @@ def update_org(request):
             org.parent_id = request.POST.get('parent_id', 0)
             org.org_type = request.POST.get('org_type', '0')
             org.org_manager = request.POST.get('org_manager', '')
+            org_name = request.POST.get('org_name', '')
+            parent_id = request.POST.get('parent_id', 0)
             org.phone = request.POST.get('phone', '')
             org.address = request.POST.get('address', '')
             org.state = request.POST.get('state', 1)
             org.update_time = datetime.now().strftime(datetime_format)
-            msg = update(dbs, org)
+            if old_org_name == org_name and old_org_parent == parent_id:
+                msg = update(dbs, org)
+            else:
+                # 检查是否重复
+                msg = check_org_name(dbs, org_name=request.POST.get('org_name', ''),
+                                     parent_id=request.POST.get('parent_id', 0))
+                if not msg:
+                    msg = update(dbs, org)
         json1 = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg

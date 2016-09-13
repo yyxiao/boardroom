@@ -268,6 +268,22 @@ def find_org_by_id(dbs, org_id):
         return None
 
 
+def check_org_name(dbs, org_name, parent_id):
+    """
+    判断机构名称是否已被占用
+    :param dbs:
+    :param org_name:
+    :param parent_id
+    :return:
+    """
+    if not org_name:
+        return "机构名称不能为空"
+
+    org = dbs.query(SysOrg).filter(SysOrg.org_name == org_name, SysOrg.parent_id == parent_id).first()
+
+    return "机构名称重复" if org else ""
+
+
 def add(dbs, org):
     """
     添加机构
