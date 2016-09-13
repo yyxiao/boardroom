@@ -31,7 +31,7 @@ def index(request):
         except:
             return HTTPFound(request.route_url('login'))
 
-        logger.info('[access] \"' + user_account + '\" access index.')
+        logger.info('[access] ip:' + request.client_addr + '\"' + user_account + '\" access index.')
 
         dbs = request.dbsession
         sys_menu_list = get_user_menu(dbs, user_id)
@@ -75,7 +75,7 @@ def login(request):
                         request.session['userOrgId'] = user.org_id
                         request.session['user_name_db'] = user.user_name
 
-                        logger.info('[login] \"' + user_name + '\" login success.')
+                        logger.info('[login] ip:' + request.client_addr + '\"' + user_name + '\" login success.')
                         return HTTPFound(request.route_url("home"))
                     else:
                         error_msg = '密码错误超过5次，账号已冻结，次日解冻'
@@ -89,14 +89,14 @@ def login(request):
                     request.session['userOrgId'] = user.org_id
                     request.session['user_name_db'] = user.user_name
 
-                    logger.info('[login] \"' + user_name + '\" login success.')
+                    logger.info('[login] ip:' + request.client_addr + '\"' + user_name + '\" login success.')
 
                     return HTTPFound(request.route_url("home"))
 
         if error_msg:
             request.session['error_msg'] = error_msg
 
-            logger.info('[login] \"'+user_name+'\" login failed. error_msg: '+error_msg)
+            logger.info('[login] ip:' + request.client_addr + '\"'+user_name+'\" login failed. error_msg: '+error_msg)
             return render_to_response('login.html', locals(), request)
     else:
         return render_to_response('login.html', {}, request)
@@ -111,7 +111,7 @@ def logout(request):
         del(request.session['userOrgId'])
         del(request.session['user_name_db'])
         del(request.session['loginUserSession'])
-        logger.info('[logout] \"' + user + '\" logout.')
+        logger.info('[logout] ip:' + request.client_addr + '\"' + user + '\" logout.')
     except:
         pass
     return HTTPFound(request.route_url('login'))

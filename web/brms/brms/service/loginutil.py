@@ -17,7 +17,7 @@ def request_login(func):
     def _request_login(request):
         try:
             user_name = request.session['userAccount']
-            logger.info('[access] \"' + user_name + '\" accessed '+request.path)
+            logger.info('[access] ip:' + request.client_addr + '\"' + user_name + '\" accessed '+request.path)
         except:
             return Response(status=404)
         return func(request)
