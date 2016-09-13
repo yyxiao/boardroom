@@ -109,7 +109,6 @@
         var lightbox = scheduler.getLightbox();
         lightbox.childNodes[1].childNodes[0].childNodes[1].childNodes[0].maxLength=30;
         lightbox.childNodes[1].childNodes[1].childNodes[1].childNodes[0].maxLength=100;
-        scheduler.__recurring_template = lightbox;
         return true;
     });
     scheduler.attachEvent("onBeforeEventDelete", function(id){
