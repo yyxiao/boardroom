@@ -8,6 +8,7 @@ __mtime__ = 2016-08-08
 
 import json
 import copy
+import logging
 
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
@@ -16,7 +17,10 @@ from pyramid.view import view_config
 from ..common.dateutils import datetime_format
 from ..service.boardroom_service import *
 from ..service.loginutil import request_login
-from ..service.org_service import find_branch, find_branch_json, find_branch_json_4booking
+from ..service.org_service import find_branch_json_4booking
+
+
+logger = logging.getLogger('operator')
 
 
 @view_config(route_name='to_brs_info')
@@ -113,6 +117,8 @@ def upload_pic(request):
 
             if not msg:
                 request.session[pic_id] = save_name
+                logger.info('[upload] ip:' + request.client_addr + ' \"' + request.session[
+                    'userAccount'] + '\" upload pic' + save_name)
         else:
             msg = 'file name is null'
 
@@ -136,9 +142,9 @@ def add_br(request):
     """
 
     if request.method == 'POST':
+
         app_path = request.registry.settings['app_path']
         dbs = request.dbsession
-
         br = HasBoardroom()
         br.name = request.POST.get('br_name', '')
         br.org_id = request.POST.get('org_id', 0)
@@ -191,6 +197,9 @@ def add_br(request):
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
+        logger.info(
+            '[upload] ip:' + request.client_addr + ' \"' + request.session['userAccount'] + '\" add boardroom ' +
+            ('failed' if msg else 'success'))
         return json_str
 
     return {}
