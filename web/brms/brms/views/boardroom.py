@@ -172,7 +172,9 @@ def add_br(request):
         br.create_user = request.session['userId']
 
         org_id = br.org_id
-        msg = add(dbs, br)
+        msg = check_brm_name(dbs, room_name=request.POST.get('br_name', ''), org_id=request.POST.get('org_id', 0))
+        if not msg:
+            msg = add(dbs, br)
 
         if not msg and room_pic:
             move_pic(room_pic, org_id, app_path)

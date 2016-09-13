@@ -119,6 +119,21 @@ def find_boardroom(dbs, user_id, br_id):
     return None
 
 
+def check_brm_name(dbs, room_name, org_id):
+    """
+    :param dbs:
+    :param room_name:
+    :param org_id
+    :return:
+    """
+    if not room_name:
+        return "会议室名称不能为空"
+
+    room = dbs.query(HasBoardroom).filter(HasBoardroom.name == room_name, HasBoardroom.org_id == org_id).first()
+
+    return "会议室名称重复" if room else ""
+
+
 def add(dbs, boardroom):
     """
     添加会议室到数据库
