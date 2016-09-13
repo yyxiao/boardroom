@@ -176,9 +176,6 @@
             success: function (data) {
                 if (data.success){
                     $.messager.popup('会议预约成功！');
-{#                    if(is_new){#}
-{#                        scheduler.changeEventId(id, data.new_id);#}
-{#                    }#}
                     flag = true;
                 }else{
                     $.messager.popup(data.error_msg);
@@ -193,12 +190,14 @@
         if (id <= 1000000000){
             return true;
         }
-        var org_ids = get_orgs("org_ids");
-        var room_id = $.trim($('#room_id').val());
         scheduler.deleteEvent(id);
-        load_meetings(org_ids, room_id);
+        reload_meeting();
         return true;
 
+    });
+    scheduler.attachEvent("onEventChanged", function(id, ev){
+        reload_meeting();
+        return true;
     });
 </script>
 {% endblock %}
