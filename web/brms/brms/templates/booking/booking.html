@@ -89,10 +89,9 @@
 
     var zNodes ={{ branch_json|safe }};
     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-
     scheduler.config.lightbox.sections = [
         {name: "会议名称", height: 30, map_to: "text", type: "textarea", focus: true},
-        {name: "会议描述", height: 130, map_to: "desc", type: "textarea", focus: true},
+        {name: "会议描述", height: 130, map_to: "desc", type: "textarea"},
         {name: "会议室", height: 23, type: "timeline", options: null, map_to: "room_id"},
         {name: "recurring", type: "recurring", map_to: "", button: "recurring"},
         {name: "time", height: 72, type: "calendar_time", map_to: "auto"}
@@ -105,6 +104,13 @@
         $.messager.popup('所选时间段与已有会议冲突，请重新选择时间或会议室！');
         return true;
 
+    });
+    scheduler.attachEvent('onBeforeLightbox', function(id){
+        var lightbox = scheduler.getLightbox();
+        lightbox.childNodes[1].childNodes[0].childNodes[1].childNodes[0].maxLength=30;
+        lightbox.childNodes[1].childNodes[1].childNodes[1].childNodes[0].maxLength=100;
+        scheduler.__recurring_template = lightbox;
+        return true;
     });
     scheduler.attachEvent("onBeforeEventDelete", function(id){
         if (id > 1000000000){
