@@ -253,7 +253,16 @@ def update_br(request):
         app_path = request.registry.settings['app_path']
         br = dbs.query(HasBoardroom).filter(HasBoardroom.id == request.POST.get('br_id', 0)).first()
         old_br = copy.deepcopy(br)
-        br.name = request.POST.get('br_name', '')
+        new_name = request.POST.get('br_name', '')
+        if old_br.name != new_name:
+            msg = check_brm_name(dbs, room_name=request.POST.get('br_name', ''), org_id=request.POST.get('org_id', 0))
+            if not msg:
+                br.name = new_name
+            else:
+                return {
+                        'resultFlag': 'failed',
+                        'error_msg': msg
+                    }
         br.org_id = request.POST.get('org_id', 0)
         br.config = request.POST.get('br_config', '')
         br.description = request.POST.get('br_desc', '')

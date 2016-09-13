@@ -172,11 +172,12 @@ def mob_find_meeting(dbs, meeting_id):
     return meeting_dict
 
 
-def mob_find_boardrooms(dbs, user_id):
+def mob_find_boardrooms(dbs, user_id, org_id):
     """
     查询符合条件的办公室，返回列表和分页对象
     :param dbs:
     :param user_id:
+    :param org_id:
     :return:
     """
     branches = find_org_by_user(dbs, user_id)  # 获取当前用户所分配机构id
@@ -195,6 +196,9 @@ def mob_find_boardrooms(dbs, user_id):
         boardrooms = boardrooms.filter(HasBoardroom.org_id.in_(branches))
     else:
         boardrooms = boardrooms.outerjoin(SysUser, SysUser.org_id == SysOrg.id)
+    if org_id:
+        boardrooms = boardrooms.filter(HasBoardroom.org_id == org_id)
+
     boardrooms = boardrooms.filter(SysUser.id == user_id).order_by(HasBoardroom.create_time.desc())
     lists = []
     for obj in boardrooms:
