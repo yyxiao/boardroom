@@ -7,16 +7,18 @@ __mtime__ = '2016-08-03'
 """
 
 import base64
-
+import logging
 import transaction
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render_to_response
 from pyramid.view import view_config
 
-from brms.service.loginutil import request_login, UserTools
+from brms.service.loginutil import UserTools
 from ..models.model import SysUser
 from ..common.dateutils import get_welcome
 from ..service.menu_service import get_user_menu
+
+logger = logging.getLogger('operator')
 
 
 @view_config(route_name='home')
@@ -25,8 +27,11 @@ def index(request):
     if 'loginUserSession' not in request.session:
         try:
             user_id = request.session['userId']
+            user_account = request.session['userAccount']
         except:
             return HTTPFound(request.route_url('login'))
+
+        logger.info('[access] \"' + user_account + '\" access index.')
 
         dbs = request.dbsession
         sys_menu_list = get_user_menu(dbs, user_id)
@@ -36,12 +41,6 @@ def index(request):
         }
         request.session['loginUserSession'] = login_user_session
     return render_to_response('index.html', locals(), request)
-
-
-@view_config(route_name='reset_pwd')
-def reset_pwd(request):
-    # TODO
-    return render_to_response('reset_pwd.html', locals(), request)
 
 
 @view_config(route_name='login')
@@ -56,6 +55,7 @@ def login(request):
 
         dbs = request.dbsession
         user_name = request.params['userName']
+
         password = base64.encodestring(request.params['password'].encode()).decode('utf-8').replace('\n', '')
         error_msg = None
         user = None
@@ -74,6 +74,8 @@ def login(request):
                         request.session['userId'] = user.id
                         request.session['userOrgId'] = user.org_id
                         request.session['user_name_db'] = user.user_name
+
+                        logger.info('[login] \"' + user_name + '\" login success.')
                         return HTTPFound(request.route_url("home"))
                     else:
                         error_msg = '密码错误超过5次，账号已冻结，次日解冻'
@@ -86,10 +88,15 @@ def login(request):
                     request.session['userId'] = user.id
                     request.session['userOrgId'] = user.org_id
                     request.session['user_name_db'] = user.user_name
+
+                    logger.info('[login] \"' + user_name + '\" login success.')
+
                     return HTTPFound(request.route_url("home"))
 
         if error_msg:
             request.session['error_msg'] = error_msg
+
+            logger.info('[login] \"'+user_name+'\" login failed. error_msg: '+error_msg)
             return render_to_response('login.html', locals(), request)
     else:
         return render_to_response('login.html', {}, request)
@@ -98,11 +105,13 @@ def login(request):
 @view_config(route_name='logout')
 def logout(request):
     try:
+        user = request.session['userAccount']
         del(request.session['userAccount'])
         del(request.session['userId'])
         del(request.session['userOrgId'])
         del(request.session['user_name_db'])
         del(request.session['loginUserSession'])
+        logger.info('[logout] \"' + user + '\" logout.')
     except:
         pass
     return HTTPFound(request.route_url('login'))

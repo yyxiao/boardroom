@@ -5,17 +5,20 @@ __title__ = ''
 __author__ = 'cuizc'
 __mtime__ = ''
 """
+import logging
 from datetime import datetime
-from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
+from ..common.dateutils import datetime_format
+
+logger = logging.getLogger('operator')
 
 
 def request_login(func):
     def _request_login(request):
         try:
             user_name = request.session['userAccount']
+            logger.info('[access] \"' + user_name + '\" accessed '+request.path)
         except:
-            # return HTTPFound(request.route_url('login'))
             return Response(status=404)
         return func(request)
 
@@ -33,11 +36,14 @@ class UserTools(object):
         user.err_count += 1
         if user.err_count >= 5:
             user.unlock_time = get_unlock_time()
+            logger.info('[login] \"' + user.user_account + '\" locked. unlock time: ' + user.unlock_time.strftime(
+                datetime_format))
 
     @staticmethod
     def unlock(user):
         if compare_date(user.unlock_time):
             user.err_count = 0
+            logger.info('[login] \"' + user.user_account + '\" unlocked.')
             return True
         return False
 
