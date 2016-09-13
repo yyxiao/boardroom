@@ -86,7 +86,6 @@ def mob_find_meetings(dbs, user_id=None, room_id=None, meeting_id=None):
         .outerjoin(HasBoardroom, HasMeetBdr.boardroom_id == HasBoardroom.id)
 
     if user_id:
-        # 取此用户3天内的会议
         today = date_now()[0:10]
         day_after_tomorrow = get_next_date(get_next_date(today))
         meetings = meetings.filter(and_(HasMeeting.create_user == user_id, HasMeeting.start_date >= today,

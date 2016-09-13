@@ -11,7 +11,7 @@ from ..common.jsonutils import serialize
 from ..common.password import get_password, DEFAULT_PASSWORD
 from ..service.loginutil import UserTools
 from ..service.mobile_service import *
-from ..service.meeting_service import add, find_user_period
+from ..service.meeting_service import add, find_user_period, find_meeting
 from ..service.user_service import find_user_by_id, update
 
 logger = logging.getLogger('operator')
@@ -215,6 +215,54 @@ def mobile_add_meeting(request):
             error_msg, meeting_id = add(dbs, meeting, room_id)
     else:
         error_msg = '开始时间和结束时间不能为空'
+    if error_msg:
+        json_str = {
+            'status': False,
+            'meeting': '',
+            'error_msg': error_msg
+        }
+    else:
+        meeting_dict = mob_find_meeting(dbs, meeting_id)
+        json_str = {
+            'status': True,
+            'meeting': meeting_dict,
+            'error_msg': ''
+        }
+    return json_str
+
+
+@view_config(route_name='mobile_update_meeting', renderer='json')
+def mobile_update_meeting(request):
+    """
+    手机端更新会议
+    :param request:
+    :return:
+    """
+    dbs = request.dbsession
+    user_id = int(request.POST.get('user_id', 0))
+    meeting_id = int(request.POST.get('meeting_id', 0))
+    meeting = find_meeting(dbs, meeting_id)
+
+    if meeting.repeat_date:
+        error_msg = '重复会议不可修改，请到pc端修改！'
+    else:
+        start_date = request.POST.get('start_date', '')
+        end_date = request.POST.get('end_date', '')
+        room_id = request.POST.get('room_id')
+        meeting_id = ''
+        if start_date and end_date:
+            meeting.name = request.POST.get('meeting_name', '')
+            meeting.description = request.POST.get('description', '')
+            meeting.start_date = start_date[0:10]
+            meeting.start_time = start_date[11:16]
+            meeting.end_date = end_date[0:10]
+            meeting.end_time = end_date[11:16]
+
+            error_msg = find_user_period(dbs, meeting.start_date, meeting.end_date, user_id)
+            if not error_msg:
+                error_msg, meeting_id = add(dbs, meeting, room_id)
+        else:
+            error_msg = '开始时间和结束时间不能为空'
     if error_msg:
         json_str = {
             'status': False,
