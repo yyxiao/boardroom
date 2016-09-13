@@ -28,7 +28,7 @@ def mobile_login(request):
     dbs = request.dbsession
     user_account = request.POST.get('user_account', '')
     meeting_date = request.POST.get('meeting_date', datetime.now().strftime(date_pattern1))
-    password = base64.encodebytes(request.POST.get('password', '').encode()).decode('utf-8').replace('\n', '')
+    password = request.POST.get('password', '')   # base64.encodebytes(request.POST.get('password', '').encode()).decode('utf-8').replace('\n', '')
     logger.info('mobile_login--user_account:' + user_account)
     user = dbs.query(SysUser).filter(SysUser.user_account == user_account).first()
     if not user:
