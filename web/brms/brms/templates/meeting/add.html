@@ -46,9 +46,9 @@
                   <label class="col-sm-2 control-label">滚动文字</label>
                   <div class="col-sm-9">
                     {% if meeting %}
-                    <input name="desc" type="text" class="form-control" id="desc" maxlength="100" value="{{meeting.description}}">
+                    <input name="desc" type="text" class="form-control" id="desc" maxlength="20" value="{{meeting.description}}">
                     {% else %}
-                    <input name="desc" type="text" class="form-control" id="desc" maxlength="100">
+                    <input name="desc" type="text" class="form-control" id="desc" maxlength="20">
                     {% endif %}
                   </div>
                 </div>
