@@ -161,11 +161,12 @@ def mobile_room_list(request):
     error_msg = ''
     dbs = request.dbsession
     user_id = request.POST.get('user_id', '')
+    org_id = request.POST.get('org_id', '')
     logger.info('mobile_room_list--user_id:' + user_id)
     if not user_id:
         error_msg = '用户ID不能为空！'
     else:
-        rooms = mob_find_boardrooms(dbs, user_id)
+        rooms = mob_find_boardrooms(dbs, user_id, org_id)
     if error_msg:
         json_a = {
             'status': 'false',
