@@ -10,7 +10,7 @@ from ..common.paginator import Paginator
 import transaction
 import logging
 
-logger = logging.getLogger('operator')
+logger = logging.getLogger(__name__)
 
 
 def find_roles(dbs, role_name=None, page_no=1, filter_sys=False):

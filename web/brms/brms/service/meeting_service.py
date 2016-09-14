@@ -15,7 +15,7 @@ from ..common.dateutils import date_now, get_weekday, add_date
 from ..service.booking_service import check_repeat_occupy, add_booking, delete_booking
 from ..service.org_service import find_org_ids, find_parent_org
 
-logger = logging.getLogger('operator')
+logger = logging.getLogger(__name__)
 
 
 def find_meetings(dbs, user_id=None, user_org_id=None, meeting_name=None, room_name=None, start_date=None,

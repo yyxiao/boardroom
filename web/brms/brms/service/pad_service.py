@@ -13,7 +13,7 @@ from ..service.meeting_service import delete_meeting, add_meeting_bdr
 import logging
 import transaction
 
-logger = logging.getLogger('operator')
+logger = logging.getLogger(__name__)
 
 
 def find_pad_by_id(dbs, pad_code, create_user, org_id):
