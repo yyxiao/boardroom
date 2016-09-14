@@ -8,7 +8,6 @@ __mtime__ = 2016-08-08
 
 import json
 import copy
-import logging
 
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
@@ -18,9 +17,7 @@ from ..common.dateutils import datetime_format
 from ..service.boardroom_service import *
 from ..service.loginutil import request_login
 from ..service.org_service import find_branch_json_4booking
-
-
-logger = logging.getLogger('operator')
+from ..service.log_service import HyLog
 
 
 @view_config(route_name='to_brs_info')
@@ -74,6 +71,7 @@ def boardroom_list(request):
         page_no = int(request.POST.get('page', ''))
         (boardrooms, paginator) = find_boardrooms(dbs, user_id, name=name, config=config, org_id=org_id,
                                                   page_no=page_no, show_child=show_child)
+        HyLog.log_research(request.client_addr, request.session['userAccount'], '', 'boardroom')
         return render_to_response('boardroom/list.html', locals(), request)
 
     return Response('', 404)
@@ -117,8 +115,8 @@ def upload_pic(request):
 
             if not msg:
                 request.session[pic_id] = save_name
-                logger.info('[upload] ip:' + request.client_addr + ' \"' + request.session[
-                    'userAccount'] + '\" upload pic' + save_name)
+                HyLog.log_add(request.client_addr, request.session['userAccount'], save_name, 'upload_pic')
+
         else:
             msg = 'file name is null'
 
@@ -197,9 +195,9 @@ def add_br(request):
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
-        logger.info(
-            '[upload] ip:' + request.client_addr + ' \"' + request.session['userAccount'] + '\" add boardroom ' +
-            ('failed' if msg else 'success'))
+        HyLog.log_add(request.client_addr, request.session['userAccount'],
+                      'org:' + org_id + ' ' + request.POST.get('br_name', '') + ' failed' if msg else 'success',
+                      'boardroom')
         return json_str
 
     return {}
@@ -221,6 +219,8 @@ def delete_br(request):
 
         msg = delete(dbs, br_id, app_path)
 
+        HyLog.log_delete(request.client_addr, request.session['userAccount'],
+                         request.POST.get('br_id') + ' failed' if msg else 'success', 'boardroom')
         json_str = {
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
@@ -335,6 +335,8 @@ def update_br(request):
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
+        HyLog.log_update(request.client_addr, request.session['userAccount'],
+                         request.POST.get('br_id') + ' failed' if msg else 'success', 'boardroom')
 
         return json_str
 
