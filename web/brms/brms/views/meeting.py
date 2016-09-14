@@ -11,6 +11,7 @@ from ..common.dateutils import datetime_format
 from ..service.meeting_service import *
 from ..service.loginutil import request_login
 from ..service.boardroom_service import find_boardrooms
+from ..service.log_service import HyLog
 
 
 @view_config(route_name='to_meeting')
@@ -45,6 +46,7 @@ def list_meeting(request):
     page_no = int(request.POST.get('page', '1'))
     (meetings, paginator) = find_meetings(dbs, create_user, user_org_id, meeting_name, room_name, start_date,
                                           end_date, page_no=page_no)
+    HyLog.log_research(request.client_addr, request.session['userAccount'], '', 'meeting')
     return render_to_response('meeting/list.html', locals(), request)
 
 
@@ -102,6 +104,7 @@ def add_meeting(request):
             'success': True,
             'new_id': new_id
         }
+        HyLog.log_add(request.client_addr, request.session['userAccount'], 'add '+str(new_id), 'meeting')
     return json_str
 
 
@@ -116,10 +119,13 @@ def del_meeting(request):
         'success': False if error_msg else True,
         'error_msg': error_msg,
     }
+    if not error_msg:
+        HyLog.log_delete(request.client_addr, request.session['userAccount'], str(meeting_id) + ' success.', 'meeting')
     return json_str
 
 
 @view_config(route_name='to_update_meeting')
+@request_login
 def to_update(request):
     dbs = request.dbsession
     meeting_id = int(request.POST.get('id', 0))
@@ -187,6 +193,7 @@ def update_meeting(request):
         json_str = {
             'success': True,
         }
+        HyLog.log_update(request.client_addr, request.session['userAccount'],)
     return json_str
 
 

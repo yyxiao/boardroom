@@ -13,6 +13,7 @@ from ..service.user_service import *
 from ..service.org_service import find_branch, find_branch_json
 from ..service.role_service import find_roles
 from ..service.loginutil import request_login
+from ..service.log_service import HyLog
 from ..common.dateutils import datetime_format
 
 
@@ -53,7 +54,8 @@ def list_user(request):
         page = int(request.POST.get('page', 1))
 
         (users, paginator) = find_users(dbs, org_id, user_account, user_name, role_name, page, show_child=show_child)
-
+        HyLog.log_research(request.client_addr, request.session['userAccount'],
+                           ';'.join([str(org_id), user_account, user_name, role_name]), 'user')
         return render_to_response('user/list.html', locals(), request)
 
     return Response('', 404)
@@ -84,7 +86,6 @@ def add_user(request):
     """
     if request.method == 'POST':
         dbs = request.dbsession
-        # TODO 判断用户名是否重复
         user_account = request.POST.get('user_account', '')
         msg = check_user_account(dbs, user_account)
         if not msg:
@@ -96,7 +97,7 @@ def add_user(request):
             user.email = request.POST.get('email', '')
             user.max_period = request.POST.get('max_period', 7)
             user.user_type = request.POST.get('user_type', 0)
-            user.org_id = request.POST.get('org_id', 0)             # TODO org_id 不能为空
+            user.org_id = request.POST.get('org_id', 0)
             user.position = request.POST.get('position', '')
             user.create_time = datetime.now().strftime(datetime_format)
             user.create_user = request.session['userId']
@@ -110,6 +111,8 @@ def add_user(request):
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
+        if not msg:
+            HyLog.log_add(request.client_addr, request.session['userAccount'], user_account+' success', 'user')
         return json_str
 
     return {}
@@ -162,6 +165,9 @@ def update_user(request):
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
+        if not msg:
+            HyLog.log_update(request.client_addr, request.session['userAccount'],
+                             request.POST.get('user_id', '') + ' success', 'user')
         return json_str
 
     return {}
@@ -183,7 +189,8 @@ def delete_user(request):
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
-
+        if not msg:
+            HyLog.log_delete(request.client_addr, request.session['userAccount'], str(user_id)+' success', 'user')
         return json_str
 
     return {}
@@ -217,8 +224,6 @@ def user_setting(request):
         local_id = request.session['userId']
         user_id = int(request.POST.get('user_id', 0))
         if local_id != user_id:
-            print(local_id, user_id)
-            print(type(local_id), type(user_id))
             msg = '非法请求'
         else:
             user = find_user_by_id(dbs, local_id)
@@ -233,5 +238,8 @@ def user_setting(request):
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
+        if not msg:
+            HyLog.log_update(request.client_addr, request.session['userAccount'],
+                             request.POST.get('user_id', '') + ' change pwd success', 'user')
         return json_str
     return {}

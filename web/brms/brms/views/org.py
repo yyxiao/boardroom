@@ -13,6 +13,7 @@ from pyramid.view import view_config
 from ..common.dateutils import datetime_format
 from ..service.loginutil import request_login
 from ..service.org_service import *
+from ..service.log_service import HyLog
 
 
 @view_config(route_name='to_org')
@@ -46,6 +47,8 @@ def list_org(request):
         address = request.POST.get('address', '')
         page_no = int(request.POST.get('page', 1))
         (orgs, paginator) = find_orgs(dbs, org_name, parent_id, address, org_id, page_no=page_no)
+        HyLog.log_research(request.client_addr, request.session['userAccount'],
+                           ';'.join([org_name, str(parent_id), address]), 'org')
         return render_to_response('org/list.html', locals(), request)
 
 
@@ -96,6 +99,9 @@ def add_org(request):
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
+        if not msg:
+            HyLog.log_add(request.client_addr, request.session['userAccount'],
+                          request.POST.get('org_name', '') + ' success', 'org')
 
         return json1
     return {}
@@ -162,6 +168,9 @@ def update_org(request):
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
+        if not msg:
+            HyLog.log_update(request.client_addr, request.session['userAccount'],
+                             str(org_id) + ' success', 'org')
         return json1
     return {}
 
@@ -182,5 +191,7 @@ def delete_org(request):
             'resultFlag': 'failed' if msg else 'success',
             'error_msg': msg
         }
+        if not msg:
+            HyLog.log_delete(request.client_addr, request.session['userAccount'], str(org_id)+' success', 'org')
         return json1
     return {}
