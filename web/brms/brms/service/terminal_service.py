@@ -11,7 +11,7 @@ from ..service.org_service import find_org_by_user
 import transaction
 import logging
 
-logger = logging.getLogger('operator')
+logger = logging.getLogger(__name__)
 
 
 def find_terminals(dbs, pad_code, meeting_name, page_no, user_id=None):

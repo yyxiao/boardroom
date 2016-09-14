@@ -11,7 +11,7 @@ from ..service.pad_service import *
 from ..service.meeting_service import delete_meeting, find_meeting, find_user_period
 from ..service.user_service import user_checking, account_checking
 
-logger = logging.getLogger('operator')
+logger = logging.getLogger(__name__)
 
 
 @view_config(route_name='padLogin', renderer='json')

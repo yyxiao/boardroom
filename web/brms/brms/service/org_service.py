@@ -12,7 +12,7 @@ from ..models.model import SysOrg, SysUser, SysUserOrg, HasPad, SysUserRole
 from ..common.dateutils import date_now
 from ..common.paginator import Paginator
 
-logger = logging.getLogger('operator')
+logger = logging.getLogger(__name__)
 
 
 def find_branch(dbs, user_org_id=None, org_type=None):

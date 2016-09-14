@@ -15,7 +15,7 @@ from ..service.org_service import find_org_by_user
 import logging
 import transaction
 
-logger = logging.getLogger('operator')
+logger = logging.getLogger(__name__)
 
 
 def find_org_rooms(dbs, user_id, meeting_date):

@@ -15,7 +15,7 @@ from ..service.mobile_service import *
 from ..service.meeting_service import add, find_user_period, find_meeting
 from ..service.user_service import find_user_by_id, update
 
-logger = logging.getLogger('operator')
+logger = logging.getLogger(__name__)
 
 
 @view_config(route_name='mobile_login', renderer='json')

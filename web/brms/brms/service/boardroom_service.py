@@ -17,7 +17,7 @@ from ..common.paginator import Paginator
 from ..models.model import SysOrg, HasBoardroom, SysUserOrg
 from ..service.org_service import find_org_by_user
 
-logger = logging.getLogger('operator')
+logger = logging.getLogger(__name__)
 
 
 def find_boardrooms(dbs, user_id, br_id=None, name=None, config=None, org_id=None, page_no=1, show_child=False):

@@ -11,7 +11,7 @@ from functools import reduce
 from ..common.dateutils import get_weekday
 from ..models.model import *
 
-logger = logging.getLogger('operator')
+logger = logging.getLogger(__name__)
 
 
 def check_occupy(dbs, room_id, mdate, start_time, end_time):

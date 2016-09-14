@@ -12,7 +12,7 @@ from ..common.paginator import Paginator
 from ..common.dateutils import date_now
 from .org_service import find_branch_json, find_parent_org
 
-logger = logging.getLogger('operator')
+logger = logging.getLogger(__name__)
 
 
 def find_users(dbs, org_id=None, user_account=None, user_name=None, role_name=None, page_no=1, user_id=None,
