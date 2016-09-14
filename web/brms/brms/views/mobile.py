@@ -6,6 +6,7 @@ __mtime__ = 2016/8/31
 """
 import base64
 from pyramid.view import view_config
+from pyramid.response import Response
 from ..common.dateutils import date_now, datetime_format, date_pattern1
 from ..common.jsonutils import serialize
 from ..common.password import get_password, DEFAULT_PASSWORD
@@ -61,7 +62,10 @@ def mobile_login(request):
                 "phone": user.phone if user.phone else ''
             }
         }
-    return json_a
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.json = json_a
+    return resp
 
 
 @view_config(route_name='mobile_update_user', renderer='json')
@@ -345,3 +349,31 @@ def mobile_org_meeting_list(request):
             'error_msg':error_msg
         }
     return json_str
+
+
+@view_config(route_name='mobile_delete_meeting', renderer='json')
+def mobile_delete_meeting(request):
+    dbs = request.dbsession
+    user_id = request.POST.get('user_id', '')
+    meeting_id = request.POST.get('meeting_id', '')
+    if not user_id:
+        error_msg = '用户id不能为空'
+    elif not meeting_id:
+        error_msg = '会议id不能为空'
+    else:
+        error_msg = delete_meeting(dbs, meeting_id, user_id)
+    logger.info('delMeeting--user_id:' + user_id + ',meeting_id:' + meeting_id)
+    if error_msg:
+        json = {
+            'status': False,
+            'error_msg': error_msg
+        }
+    else:
+        json = {
+            'status': True,
+            'error_msg':error_msg
+        }
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.json = json
+    return resp
