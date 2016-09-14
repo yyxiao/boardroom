@@ -120,7 +120,10 @@ def mobile_update_user(request):
                 "phone": user.phone if user.phone else ''
             }
         }
-    return json_a
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.json = json_a
+    return resp
 
 
 @view_config(route_name='mobile_meeting_list', renderer='json')
@@ -152,7 +155,10 @@ def mobile_meeting_list(request):
             'error_msg': error_msg,
             'meetings': meetings
         }
-    return json_a
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.json = json_a
+    return resp
 
 
 @view_config(route_name='mobile_room_list', renderer='json')
@@ -182,7 +188,10 @@ def mobile_room_list(request):
             'error_msg': error_msg,
             'rooms': rooms
         }
-    return json_a
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.json = json_a
+    return resp
 
 
 @view_config(route_name='mobile_add_meeting', renderer='json')
@@ -233,7 +242,10 @@ def mobile_add_meeting(request):
             'meeting': meeting_dict,
             'error_msg': ''
         }
-    return json_str
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.json = json_str
+    return resp
 
 
 @view_config(route_name='mobile_update_meeting', renderer='json')
@@ -281,7 +293,10 @@ def mobile_update_meeting(request):
             'meeting': meeting_dict,
             'error_msg': ''
         }
-    return json_str
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.json = json_str
+    return resp
 
 
 @view_config(route_name='mobile_user_meeting_list', renderer='json')
@@ -316,7 +331,10 @@ def mobile_user_meeting_list(request):
             'meeting': meetings,
             'error_msg':error_msg
         }
-    return json_str
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.json = json_str
+    return resp
 
 
 @view_config(route_name='mobile_org_meeting_list', renderer='json')
@@ -348,7 +366,10 @@ def mobile_org_meeting_list(request):
             'rooms': rooms,
             'error_msg':error_msg
         }
-    return json_str
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.json = json_str
+    return resp
 
 
 @view_config(route_name='mobile_delete_meeting', renderer='json')
