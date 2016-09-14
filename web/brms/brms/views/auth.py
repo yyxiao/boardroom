@@ -14,6 +14,7 @@ from ..service.menu_service import find_menu_json_check
 from ..service.role_service import role_menu
 from ..service.loginutil import request_login
 from ..common.dateutils import date_now
+from ..service.log_service import HyLog
 
 
 @view_config(route_name='to_auth')
@@ -61,10 +62,9 @@ def update_auth_user(request):
     if not user_id:
         error_msg = '用户ID不能为空！'
     else:
-        error_msg = '用户ID不能为空！'
-    dbs = request.dbsession
-    org_list = org_ids.split(',')
-    error_msg = user_org(dbs, user_id, create_user, org_list, date_now())
+        dbs = request.dbsession
+        org_list = org_ids.split(',')
+        error_msg = user_org(dbs, user_id, create_user, org_list, date_now())
     if error_msg:
         json1 = {
             'success': 'false',
@@ -74,6 +74,7 @@ def update_auth_user(request):
         json1 = {
             'success': 'true',
         }
+        HyLog.log_auth(request.client_addr, create_user, user_id, org_ids, 'org')
     return json1
 
 
@@ -86,10 +87,9 @@ def update_auth_role(request):
     if not role_id:
         error_msg = '角色ID不能为空！'
     else:
-        error_msg = '角色ID不能为空！'
-    dbs = request.dbsession
-    menu_list = menu_ids.split(',')
-    error_msg = role_menu(dbs, role_id, create_user, menu_list, date_now())
+        dbs = request.dbsession
+        menu_list = menu_ids.split(',')
+        error_msg = role_menu(dbs, role_id, create_user, menu_list, date_now())
     if error_msg:
         json1 = {
             'success': 'false',
@@ -99,4 +99,5 @@ def update_auth_role(request):
         json1 = {
             'success': 'true',
         }
+        HyLog.log_auth(request.client_addr, create_user, role_id, menu_ids, 'role')
     return json1
