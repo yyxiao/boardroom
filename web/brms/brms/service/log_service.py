@@ -25,7 +25,7 @@ class HyLog(object):
         HyLog.operator_logger.info('[access] ip:'+ip+' \"'+user_account+'\" accessed '+url)
 
     @staticmethod
-    def log_query(ip, user_account, msg='', research_type=''):
+    def log_research(ip, user_account, msg='', research_type=''):
         HyLog.operator_logger.info('[research]['+research_type+'] ip:'+ip+' \"'+user_account+'\"'+msg)
 
     @staticmethod

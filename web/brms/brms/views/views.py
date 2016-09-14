@@ -7,7 +7,6 @@ __mtime__ = '2016-08-03'
 """
 
 import base64
-import logging
 import transaction
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render_to_response
@@ -17,8 +16,7 @@ from brms.service.loginutil import UserTools
 from ..models.model import SysUser
 from ..common.dateutils import get_welcome
 from ..service.menu_service import get_user_menu
-
-logger = logging.getLogger('operator')
+from ..service.log_service import HyLog
 
 
 @view_config(route_name='home')
@@ -31,7 +29,7 @@ def index(request):
         except:
             return HTTPFound(request.route_url('login'))
 
-        logger.info('[access] ip:' + request.client_addr + '\"' + user_account + '\" access index.')
+        HyLog.log_access(request.client_addr, user_account, 'index')
 
         dbs = request.dbsession
         sys_menu_list = get_user_menu(dbs, user_id)
@@ -75,7 +73,7 @@ def login(request):
                         request.session['userOrgId'] = user.org_id
                         request.session['user_name_db'] = user.user_name
 
-                        logger.info('[login] ip:' + request.client_addr + '\"' + user_name + '\" login success.')
+                        HyLog.log_in(request.client_addr, user_name, 'success')
                         return HTTPFound(request.route_url("home"))
                     else:
                         error_msg = '密码错误超过5次，账号已冻结，次日解冻'
@@ -89,14 +87,14 @@ def login(request):
                     request.session['userOrgId'] = user.org_id
                     request.session['user_name_db'] = user.user_name
 
-                    logger.info('[login] ip:' + request.client_addr + '\"' + user_name + '\" login success.')
+                    HyLog.log_in(request.client_addr, user_name, 'success')
 
                     return HTTPFound(request.route_url("home"))
 
         if error_msg:
             request.session['error_msg'] = error_msg
 
-            logger.info('[login] ip:' + request.client_addr + '\"'+user_name+'\" login failed. error_msg: '+error_msg)
+            HyLog.log_in(request.client_addr, user_name, 'failed. error_msg: '+error_msg)
             return render_to_response('login.html', locals(), request)
     else:
         return render_to_response('login.html', {}, request)
@@ -111,7 +109,7 @@ def logout(request):
         del(request.session['userOrgId'])
         del(request.session['user_name_db'])
         del(request.session['loginUserSession'])
-        logger.info('[logout] ip:' + request.client_addr + '\"' + user + '\" logout.')
+        HyLog.log_out(request.client_addr, user)
     except:
         pass
     return HTTPFound(request.route_url('login'))
