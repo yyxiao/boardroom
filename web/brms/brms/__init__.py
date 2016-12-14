@@ -1,5 +1,7 @@
 from pyramid.config import Configurator
+from pyramid.events import NewRequest
 from pyramid_redis_sessions import session_factory_from_settings
+from .service.loginutil import request_login1
 # import pydevd
 
 
@@ -19,6 +21,8 @@ def main(global_config, **settings):
     config.include('.models')
     config.include('.routes')
     config.include('pyramid_tm')
+
+    config.add_subscriber(request_login1, NewRequest)
 
     session_factory = session_factory_from_settings(settings)
     config.set_session_factory(session_factory)

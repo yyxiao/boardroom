@@ -5,10 +5,22 @@ __title__ = ''
 __author__ = 'cuizc'
 __mtime__ = ''
 """
+
+import string
 from datetime import datetime
 from pyramid.response import Response
 from ..common.dateutils import datetime_format
 from ..service.log_service import HyLog
+
+
+def request_login1(event):
+    try:
+        if event.request.path.find('/static/') == -1:
+            user_name = event.request.session['userAccount']
+            print(event.request.path)
+            print(user_name)
+    except:
+        print("not login")
 
 
 def request_login(func):
